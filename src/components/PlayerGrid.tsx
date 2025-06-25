@@ -5,6 +5,7 @@ import Image from "next/image";
 import debounce from "lodash.debounce";
 import { useAppContext } from "@/context/AppContext";
 import TeamFilter from "./TeamFilter";
+import PlayerModal from "./PlayerModal";
 
 type Player = {
   player: {
@@ -25,6 +26,7 @@ export default function PlayerGrid() {
   const [search, setSearch] = useState("");
   const { season } = useAppContext();
   const [team, setTeam] = useState("");
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   useEffect(() => {
     const url = new URLSearchParams({ season: season.toString() });
@@ -70,7 +72,8 @@ export default function PlayerGrid() {
           {filtered.map((p, i) => (
             <div
               key={i}
-              className="flex items-center gap-4 border rounded p-4 shadow-sm hover:shadow-md transition"
+              onClick={() => setSelectedPlayer(p)}
+              className="cursor-pointer flex items-center gap-4 border rounded p-4 shadow-sm hover:shadow-md transition"
             >
               <Image
                 src={p.player.photo}
@@ -106,6 +109,10 @@ export default function PlayerGrid() {
           ))}
         </div>
       )}
+      <PlayerModal
+        player={selectedPlayer}
+        onClose={() => setSelectedPlayer(null)}
+      />
     </div>
   );
 }

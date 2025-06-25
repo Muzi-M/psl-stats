@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import debounce from "lodash.debounce";
 import { useAppContext } from "@/context/AppContext";
+import TeamFilter from "./TeamFilter";
 
 type Player = {
   player: {
@@ -23,15 +24,19 @@ export default function PlayerGrid() {
   const [filtered, setFiltered] = useState<Player[]>([]);
   const [search, setSearch] = useState("");
   const { season } = useAppContext();
+  const [team, setTeam] = useState("");
 
   useEffect(() => {
-    fetch(`/api/players?season=${season}`)
+    const url = new URLSearchParams({ season: season.toString() });
+    if (team) url.append("team", team);
+
+    fetch(`/api/players?${url.toString()}`)
       .then((res) => res.json())
       .then((data) => {
         setPlayers(data);
         setFiltered(data);
       });
-  }, [season]);
+  }, [season, team]);
 
   // Debounced search
   const handleSearch = debounce((term: string) => {
@@ -48,6 +53,8 @@ export default function PlayerGrid() {
 
   return (
     <div>
+      <TeamFilter value={team} onChange={setTeam} />
+
       <input
         value={search}
         onChange={handleChange}
@@ -61,12 +68,15 @@ export default function PlayerGrid() {
             key={i}
             className="border rounded p-3 shadow-sm hover:shadow-md transition"
           >
-            <div className="relative h-40 w-40 mx-auto mb-2">
+            <div
+              className="relative mx-auto mb-2"
+              style={{ width: 160, height: 160 }}
+            >
               <Image
                 src={p.player.photo}
                 alt={p.player.name}
                 fill
-                className="object-contain"
+                className="object-contain rounded"
               />
             </div>
             <h2 className="font-semibold text-center">{p.player.name}</h2>

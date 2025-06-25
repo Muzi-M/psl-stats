@@ -1,7 +1,7 @@
 "use client";
 import { useAppContext } from "@/context/AppContext";
 
-const SEASONS = [2020, 2021, 2022, 2023];
+const SEASONS = [2020, 2021, 2022, 2023, 2024];
 
 export default function SeasonToggle() {
   const { season, setSeason } = useAppContext();

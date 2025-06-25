@@ -54,7 +54,6 @@ export default function PlayerGrid() {
   return (
     <div>
       <TeamFilter value={team} onChange={setTeam} />
-
       <input
         value={search}
         onChange={handleChange}
@@ -62,34 +61,51 @@ export default function PlayerGrid() {
         className="mb-4 w-full border px-3 py-2 rounded"
       />
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filtered.map((p, i) => (
-          <div
-            key={i}
-            className="border rounded p-3 shadow-sm hover:shadow-md transition"
-          >
+      {!team ? (
+        <div className="text-center text-gray-600 mt-8">
+          Please select a team to view players.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4">
+          {filtered.map((p, i) => (
             <div
-              className="relative mx-auto mb-2"
-              style={{ width: 160, height: 160 }}
+              key={i}
+              className="flex items-center gap-4 border rounded p-4 shadow-sm hover:shadow-md transition"
             >
               <Image
                 src={p.player.photo}
                 alt={p.player.name}
-                fill
-                className="object-contain rounded"
+                width={80}
+                height={80}
+                className="object-cover rounded-full border"
               />
+
+              <div className="flex-1">
+                <h2 className="font-semibold text-lg">{p.player.name}</h2>
+                <p className="text-sm text-gray-500 mb-1">{p.teamName}</p>
+
+                <ul className="text-xs text-gray-700 space-y-1">
+                  <li>
+                    <strong>Position:</strong>{" "}
+                    {p.statistics[0]?.games?.position || "N/A"}
+                  </li>
+                  <li>
+                    <strong>Appearances:</strong>{" "}
+                    {p.statistics[0]?.games?.appearences || 0}
+                  </li>
+                  <li>
+                    <strong>Goals:</strong> {p.statistics[0]?.goals?.total || 0}
+                  </li>
+                  <li>
+                    <strong>Assists:</strong>{" "}
+                    {p.statistics[0]?.goals?.assists || 0}
+                  </li>
+                </ul>
+              </div>
             </div>
-            <h2 className="font-semibold text-center">{p.player.name}</h2>
-            <p className="text-sm text-center text-gray-500">{p.teamName}</p>
-            <ul className="text-xs mt-2 space-y-1">
-              <li>Position: {p.statistics[0]?.games?.position || "N/A"}</li>
-              <li>Appearances: {p.statistics[0]?.games?.appearences || 0}</li>
-              <li>Goals: {p.statistics[0]?.goals?.total || 0}</li>
-              <li>Assists: {p.statistics[0]?.goals?.assists || 0}</li>
-            </ul>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

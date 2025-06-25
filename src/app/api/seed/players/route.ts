@@ -2,7 +2,7 @@ import { connectToDatabase } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 const LEAGUE_ID = 288;
-const SEASONS = [2024]; // Change to any season you want to seed
+const SEASONS = [2025]; // Change to any season you want to seed
 
 export async function GET() {
   try {

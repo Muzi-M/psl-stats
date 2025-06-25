@@ -11,9 +11,10 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./ui/charts";
 
 export default function TopScorersChart({ data }: { data: any[] }) {
   const formatted = data.slice(0, 5).map((p) => ({
-    name: p.player.name.split(" ")[0], // Shorten to first name
-    goals: p.goals,
+    name: p.player.name.split(" ")[0],
+    goals: p.statistics?.[0]?.goals?.total ?? 0,
   }));
+  console.log("scorers formatted", formatted);
 
   return (
     <ChartContainer className="h-[300px] w-full">

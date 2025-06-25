@@ -40,7 +40,7 @@ export default function OverviewDashboard() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>🏆 Top 5 Teams</CardTitle>
+            <CardTitle>Top 5 Teams</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-3">
@@ -69,7 +69,7 @@ export default function OverviewDashboard() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>🕒 Last 5 Fixtures</CardTitle>
+            <CardTitle>Last 5 Fixtures</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-3 text-sm">
@@ -97,7 +97,7 @@ export default function OverviewDashboard() {
         </Card>
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>⚽ Top 5 Scorers</CardTitle>
+            <CardTitle>Top 5 Scorers</CardTitle>
           </CardHeader>
           <CardContent>
             <TopScorersChart data={scorers} />
@@ -110,7 +110,7 @@ export default function OverviewDashboard() {
         </Card>
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>⭐ Top 10 Rated Players</CardTitle>
+            <CardTitle>Top 10 Rated Players</CardTitle>
           </CardHeader>
           <CardContent>
             <TopRatedChart data={topRated} />

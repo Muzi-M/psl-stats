@@ -1,12 +1,6 @@
 "use client";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./ui/charts";
 
 export default function TopRatedChart({ data }: { data: any[] }) {
   const formatted = data.map((p) => ({
@@ -15,13 +9,17 @@ export default function TopRatedChart({ data }: { data: any[] }) {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={formatted}>
+    <ChartContainer className="h-[300px] w-full">
+      <BarChart data={formatted} accessibilityLayer>
         <XAxis dataKey="name" />
         <YAxis domain={[0, 10]} />
-        <Tooltip />
-        <Bar dataKey="rating" fill="#8884d8" />
+        <ChartTooltip
+          content={<ChartTooltipContent />}
+          cursor={false}
+          defaultIndex={1}
+        />
+        <Bar dataKey="rating" fill="#8884d8" radius={4} />
       </BarChart>
-    </ResponsiveContainer>
+    </ChartContainer>
   );
 }

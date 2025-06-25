@@ -4,14 +4,23 @@ import { useEffect, useState } from "react";
 import SeasonToggle from "./SeasonToggle";
 import TopScorersChart from "./TopScorersChart";
 import TopRatedChart from "./TopRatedChart";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 export default function OverviewDashboard() {
   const { season } = useAppContext();
 
-  const [standings, setStandings] = useState([]);
-  const [scorers, setScorers] = useState([]);
-  const [topRated, setTopRated] = useState([]);
-  const [recentFixtures, setRecentFixtures] = useState([]);
+  const [standings, setStandings] = useState<any[]>([]);
+  const [scorers, setScorers] = useState<any[]>([]);
+  const [topRated, setTopRated] = useState<any[]>([]);
+  const [recentFixtures, setRecentFixtures] = useState<any[]>([]);
 
   useEffect(() => {
     fetch(`/api/overview?season=${season}`)
@@ -25,67 +34,94 @@ export default function OverviewDashboard() {
   }, [season]);
 
   return (
-    <>
+    <div className="space-y-6">
       <SeasonToggle />
 
-      <section className="mb-6">
-        <h2 className="font-semibold mb-2">🏆 Top 5 Teams</h2>
-        <ul className="space-y-1 text-sm">
-          {standings.slice(0, 5).map((team: any, i) => (
-            <li key={i} className="flex items-center gap-2">
-              <img
-                src={team.team.logo}
-                alt={team.team.name}
-                className="w-5 h-5"
-              />
-              {team.rank}. {team.team.name} – {team.points} pts
-            </li>
-          ))}
-        </ul>
-        <div className="text-sm mt-2">
-          <a href="/standings" className="text-blue-600 hover:underline">
-            View full standings →
-          </a>
-        </div>
-      </section>
-
-      <section className="mb-6">
-        <h2 className="font-semibold mb-2">⚽ Top 5 Scorers</h2>
-        <TopScorersChart data={scorers} />
-        <div className="text-sm mt-2">
-          <a href="/players" className="text-blue-600 hover:underline">
-            View full standings →
-          </a>
-        </div>
-      </section>
-
-      <section className="mb-6">
-        <h2 className="font-semibold mb-2">⭐ Top 10 Rated Players</h2>
-        <TopRatedChart data={topRated} />
-        <div className="text-sm mt-2">
-          <a href="/players" className="text-blue-600 hover:underline">
-            View full standings →
-          </a>
-        </div>
-      </section>
-
-      <section className="mb-6">
-        <h2 className="font-semibold mb-2">🕒 Last 5 Fixtures</h2>
-        <ul className="space-y-1 text-sm">
-          {recentFixtures.map((f: any, i) => (
-            <li key={i}>
-              {f.teams.home.name} {f.goals.home} : {f.goals.away}{" "}
-              {f.teams.away.name}
-              &nbsp;({new Date(f.fixture.date).toLocaleDateString()})
-            </li>
-          ))}
-        </ul>
-        <div className="text-sm mt-2">
-          <a href="/fixtures" className="text-blue-600 hover:underline">
-            View full standings →
-          </a>
-        </div>
-      </section>
-    </>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>🏆 Top 5 Teams</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3">
+              {standings.slice(0, 5).map((team: any) => (
+                <li key={team.rank} className="flex items-center gap-3 text-sm">
+                  <img
+                    src={team.team.logo}
+                    alt={team.team.name}
+                    className="h-6 w-6"
+                  />
+                  <span className="font-medium">
+                    {team.rank}. {team.team.name}
+                  </span>
+                  <span className="ml-auto text-muted-foreground">
+                    {team.points} pts
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+          <CardFooter>
+            <Button asChild className="p-0 h-auto" variant="link">
+              <Link href="/standings">View full standings →</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>🕒 Last 5 Fixtures</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3 text-sm">
+              {recentFixtures.map((f: any, i) => (
+                <li key={i} className="flex items-center justify-between">
+                  <div>
+                    <span>{f.teams.home.name} </span>
+                    <span className="font-bold">{f.goals.home}</span>
+                    <span> : </span>
+                    <span className="font-bold">{f.goals.away}</span>
+                    <span> {f.teams.away.name}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {new Date(f.fixture.date).toLocaleDateString()}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+          <CardFooter>
+            <Button asChild className="p-0 h-auto" variant="link">
+              <Link href="/fixtures">View all fixtures →</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle>⚽ Top 5 Scorers</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TopScorersChart data={scorers} />
+          </CardContent>
+          <CardFooter>
+            <Button asChild className="p-0 h-auto" variant="link">
+              <Link href="/players">View full player stats →</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle>⭐ Top 10 Rated Players</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TopRatedChart data={topRated} />
+          </CardContent>
+          <CardFooter>
+            <Button asChild className="p-0 h-auto" variant="link">
+              <Link href="/players">View full player stats →</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    </div>
   );
 }

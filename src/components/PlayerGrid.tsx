@@ -1,13 +1,85 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import debounce from "lodash.debounce";
 import { useAppContext } from "@/context/AppContext";
 
-// Inside the component
-const { season } = useAppContext();
+type Player = {
+  player: {
+    name: string;
+    photo: string;
+    age: number;
+  };
+  statistics: {
+    games: { appearences: number; position: string };
+    goals: { total: number; assists: number };
+  }[];
+  teamName: string;
+};
 
-useEffect(() => {
-  fetch(`/api/players?season=${season}`)
-    .then((res) => res.json())
-    .then((data) => {
-      setPlayers(data);
-      setFiltered(data);
-    });
-}, [season]);
+export default function PlayerGrid() {
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [filtered, setFiltered] = useState<Player[]>([]);
+  const [search, setSearch] = useState("");
+  const { season } = useAppContext();
+
+  useEffect(() => {
+    fetch(`/api/players?season=${season}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setPlayers(data);
+        setFiltered(data);
+      });
+  }, [season]);
+
+  // Debounced search
+  const handleSearch = debounce((term: string) => {
+    const filtered = players.filter((p) =>
+      p.player.name.toLowerCase().includes(term.toLowerCase())
+    );
+    setFiltered(filtered);
+  }, 300);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    handleSearch(e.target.value);
+  };
+
+  return (
+    <div>
+      <input
+        value={search}
+        onChange={handleChange}
+        placeholder="Search players..."
+        className="mb-4 w-full border px-3 py-2 rounded"
+      />
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {filtered.map((p, i) => (
+          <div
+            key={i}
+            className="border rounded p-3 shadow-sm hover:shadow-md transition"
+          >
+            <div className="relative h-40 w-40 mx-auto mb-2">
+              <Image
+                src={p.player.photo}
+                alt={p.player.name}
+                fill
+                className="object-contain"
+              />
+            </div>
+            <h2 className="font-semibold text-center">{p.player.name}</h2>
+            <p className="text-sm text-center text-gray-500">{p.teamName}</p>
+            <ul className="text-xs mt-2 space-y-1">
+              <li>Position: {p.statistics[0]?.games?.position || "N/A"}</li>
+              <li>Appearances: {p.statistics[0]?.games?.appearences || 0}</li>
+              <li>Goals: {p.statistics[0]?.goals?.total || 0}</li>
+              <li>Assists: {p.statistics[0]?.goals?.assists || 0}</li>
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

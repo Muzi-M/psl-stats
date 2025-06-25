@@ -1,4 +1,4 @@
-import FixturesGrid from "@/components/FixturesGrid";
+import FixturesGrid from "@/components/FixtureGrid";
 import SeasonToggle from "@/components/SeasonToggle";
 
 export default function FixturesPage() {

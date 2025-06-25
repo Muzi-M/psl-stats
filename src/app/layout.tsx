@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AppProvider } from "@/context/AppContext";
+import Sidebar from "@/components/Sidebar";
 
 export default function RootLayout({
   children,
@@ -9,7 +10,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AppProvider>{children}</AppProvider>
+        <AppProvider>
+          <div className="flex min-h-screen">
+            <Sidebar />
+            <main className="flex-1 p-4 bg-background">{children}</main>
+          </div>
+        </AppProvider>
       </body>
     </html>
   );

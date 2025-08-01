@@ -118,4 +118,45 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Override browser default select styling */
+  select {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  select option {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  /* Dark mode specific overrides */
+  .dark select {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  .dark select option {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+}
+
+/* Additional dropdown styling */
+.dropdown-menu {
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-menu button {
+  background-color: transparent;
+  color: hsl(var(--card-foreground));
+}
+
+.dropdown-menu button:hover {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
 }

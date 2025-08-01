@@ -1,6 +1,10 @@
 "use client";
 import { useAppContext } from "@/context/AppContext";
+import { useLoading } from "@/context/LoadingContext";
 import { useEffect, useState } from "react";
+import debounce from "lodash.debounce";
+import { Search } from "lucide-react";
+import LoadingSpinner from "./LoadingSpinner";
 
 type Fixture = {
   fixture: { date: string; status: { short: string } };
@@ -13,34 +17,164 @@ type Fixture = {
 
 export default function FixturesGrid() {
   const { season } = useAppContext();
+  const { setIsLoading, setLoadingMessage } = useLoading();
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
+  const [filteredFixtures, setFilteredFixtures] = useState<Fixture[]>([]);
+  const [search, setSearch] = useState("");
+  const [selectedTeam, setSelectedTeam] = useState("");
+  const [teams, setTeams] = useState<string[]>([]);
+  const [isLoading, setIsLoadingLocal] = useState(false);
 
   useEffect(() => {
+    setIsLoadingLocal(true);
+    setLoadingMessage("Loading fixtures...");
+    setIsLoading(true);
+
     fetch(`/api/fixtures?season=${season}`)
       .then((res) => res.json())
-      .then(setFixtures);
-  }, [season]);
+      .then((data) => {
+        setFixtures(data);
+        setFilteredFixtures(data);
+      })
+      .finally(() => {
+        setIsLoadingLocal(false);
+        setIsLoading(false);
+      });
+  }, [season, setIsLoading, setLoadingMessage]);
+
+  useEffect(() => {
+    fetch("/api/teams")
+      .then((res) => res.json())
+      .then(setTeams);
+  }, []);
+
+  // Debounced search
+  const handleSearch = debounce((term: string) => {
+    let filtered = fixtures;
+
+    // Filter by search term
+    if (term) {
+      filtered = filtered.filter(
+        (f) =>
+          f.teams.home.name.toLowerCase().includes(term.toLowerCase()) ||
+          f.teams.away.name.toLowerCase().includes(term.toLowerCase())
+      );
+    }
+
+    // Filter by selected team
+    if (selectedTeam) {
+      filtered = filtered.filter(
+        (f) =>
+          f.teams.home.name === selectedTeam ||
+          f.teams.away.name === selectedTeam
+      );
+    }
+
+    setFilteredFixtures(filtered);
+  }, 300);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearch(value);
+    handleSearch(value);
+  };
+
+  const handleTeamChange = (team: string) => {
+    setSelectedTeam(team);
+    let filtered = fixtures;
+
+    // Filter by search term
+    if (search) {
+      filtered = filtered.filter(
+        (f) =>
+          f.teams.home.name.toLowerCase().includes(search.toLowerCase()) ||
+          f.teams.away.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    // Filter by selected team
+    if (team) {
+      filtered = filtered.filter(
+        (f) => f.teams.home.name === team || f.teams.away.name === team
+      );
+    }
+
+    setFilteredFixtures(filtered);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {fixtures.map((f, i) => (
-        <div
-          key={i}
-          className="border rounded p-4 shadow-sm hover:shadow-md transition"
-        >
-          <p className="text-sm text-gray-500 mb-1">
-            {new Date(f.fixture.date).toLocaleString()} (
-            {f.fixture.status.short})
-          </p>
-          <div className="flex items-center justify-between font-medium">
-            <span>{f.teams.home.name}</span>
-            <span>
-              {f.goals.home ?? "-"} : {f.goals.away ?? "-"}
-            </span>
-            <span>{f.teams.away.name}</span>
-          </div>
+    <div className="space-y-6">
+      {/* Search and Filter Controls */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        {/* Search Input */}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            value={search}
+            onChange={handleSearchChange}
+            placeholder="Search fixtures by team name..."
+            className="w-full pl-10 pr-4 py-2 border border-input bg-background text-foreground rounded focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+          />
         </div>
-      ))}
+
+        {/* Team Filter */}
+        <div className="relative">
+          <select
+            value={selectedTeam}
+            onChange={(e) => handleTeamChange(e.target.value)}
+            className="border border-input bg-background text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent min-w-[150px]"
+          >
+            <option value="">All Teams</option>
+            {teams.map((team, i) => (
+              <option key={i} value={team}>
+                {team}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Results Count */}
+      <div className="text-sm text-muted-foreground">
+        Showing {filteredFixtures.length} of {fixtures.length} fixtures
+      </div>
+
+      {/* Fixtures Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {filteredFixtures.map((f, i) => (
+          <div
+            key={`${f.fixture.date}-${f.teams.home.name}-${f.teams.away.name}-${i}`}
+            className="border rounded p-4 shadow-sm hover:shadow-md transition"
+          >
+            <p className="text-sm text-muted-foreground mb-1">
+              {new Date(f.fixture.date).toLocaleString()} (
+              {f.fixture.status.short})
+            </p>
+            <div className="flex items-center justify-between font-medium">
+              <span>{f.teams.home.name}</span>
+              <span>
+                {f.goals.home ?? "-"} : {f.goals.away ?? "-"}
+              </span>
+              <span>{f.teams.away.name}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* No Results Message */}
+      {filteredFixtures.length === 0 && (
+        <div className="text-center py-8 text-muted-foreground">
+          No fixtures found matching your search criteria.
+        </div>
+      )}
     </div>
   );
 }

@@ -1,9 +1,11 @@
 "use client";
 import { useAppContext } from "@/context/AppContext";
+import { useLoading } from "@/context/LoadingContext";
 import { useEffect, useState } from "react";
 import SeasonToggle from "./SeasonToggle";
 import TopScorersChart from "./TopScorersChart";
 import TopRatedChart from "./TopRatedChart";
+import LoadingSpinner from "./LoadingSpinner";
 import {
   Card,
   CardContent,
@@ -16,13 +18,19 @@ import Link from "next/link";
 
 export default function OverviewDashboard() {
   const { season } = useAppContext();
+  const { setIsLoading, setLoadingMessage } = useLoading();
 
   const [standings, setStandings] = useState<any[]>([]);
   const [scorers, setScorers] = useState<any[]>([]);
   const [topRated, setTopRated] = useState<any[]>([]);
   const [recentFixtures, setRecentFixtures] = useState<any[]>([]);
+  const [isDataLoading, setIsDataLoading] = useState(false);
 
   useEffect(() => {
+    setIsDataLoading(true);
+    setLoadingMessage("Loading overview data...");
+    setIsLoading(true);
+
     fetch(`/api/overview?season=${season}`)
       .then((res) => res.json())
       .then((data) => {
@@ -30,8 +38,23 @@ export default function OverviewDashboard() {
         setScorers(data.scorers || []);
         setTopRated(data.topRated || []);
         setRecentFixtures(data.fixtures || []);
+      })
+      .finally(() => {
+        setIsDataLoading(false);
+        setIsLoading(false);
       });
-  }, [season]);
+  }, [season, setIsLoading, setLoadingMessage]);
+
+  if (isDataLoading) {
+    return (
+      <div className="space-y-6">
+        <SeasonToggle />
+        <div className="flex items-center justify-center py-12">
+          <LoadingSpinner size="lg" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

@@ -1,20 +1,34 @@
 "use client";
-import { Bar, BarChart, XAxis, YAxis } from "recharts";
 
 export default function TopRatedChart({ data }: { data: any[] }) {
-  const formatted = data.map((p) => ({
-    name: p.player.name.split(" ")[0], // Shorten to first name
-    rating: parseFloat(p.avgRating.toFixed(2)), // Ensure number
-  }));
-  //   console.log(data);
+  const topRated = data.slice(0, 10);
 
   return (
-    <div style={{ background: "red", height: 300 }}>
-      <BarChart width={400} height={300} data={formatted}>
-        <XAxis dataKey="name" />
-        <YAxis domain={[0, 10]} />
-        <Bar dataKey="rating" fill="#8884d8" radius={4} />
-      </BarChart>
+    <div className="space-y-3">
+      {topRated.map((player: any, index: number) => (
+        <div
+          key={`${player.player.id || player.player.name}-${index}`}
+          className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+        >
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-lg text-muted-foreground">
+              {index + 1}
+            </span>
+            <div>
+              <div className="font-medium">{player.player.name}</div>
+              <div className="text-sm text-muted-foreground">
+                {player.statistics?.[0]?.team?.name || "Unknown Team"}
+              </div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="font-bold text-lg">
+              {parseFloat(player.avgRating).toFixed(1)}
+            </div>
+            <div className="text-sm text-muted-foreground">rating</div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

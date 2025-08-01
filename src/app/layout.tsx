@@ -1,7 +1,8 @@
 import "./globals.css";
 import { AppProvider } from "@/context/AppContext";
-import Sidebar from "@/components/Sidebar";
+import { LoadingProvider } from "@/context/LoadingContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import AppContent from "@/components/AppContent";
 
 export default function RootLayout({
   children,
@@ -12,12 +13,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <AppProvider>
-            <div className="flex min-h-screen">
-              <Sidebar />
-              <main className="flex-1 p-4 bg-background">{children}</main>
-            </div>
-          </AppProvider>
+          <LoadingProvider>
+            <AppProvider>
+              <AppContent>{children}</AppContent>
+            </AppProvider>
+          </LoadingProvider>
         </ThemeProvider>
       </body>
     </html>

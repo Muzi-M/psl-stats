@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import debounce from "lodash.debounce";
 import { useAppContext } from "@/context/AppContext";
+import { useLoading } from "@/context/LoadingContext";
 import TeamFilter from "./TeamFilter";
 import PlayerModal from "./PlayerModal";
+import LoadingSpinner from "./LoadingSpinner";
 
 type Player = {
   player: {
@@ -25,10 +27,16 @@ export default function PlayerGrid() {
   const [filtered, setFiltered] = useState<Player[]>([]);
   const [search, setSearch] = useState("");
   const { season } = useAppContext();
+  const { setIsLoading, setLoadingMessage } = useLoading();
   const [team, setTeam] = useState("");
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [isLoading, setIsLoadingLocal] = useState(false);
 
   useEffect(() => {
+    setIsLoadingLocal(true);
+    setLoadingMessage("Loading players...");
+    setIsLoading(true);
+
     const url = new URLSearchParams({ season: season.toString() });
     if (team) url.append("team", team);
 
@@ -37,8 +45,12 @@ export default function PlayerGrid() {
       .then((data) => {
         setPlayers(data);
         setFiltered(data);
+      })
+      .finally(() => {
+        setIsLoadingLocal(false);
+        setIsLoading(false);
       });
-  }, [season, team]);
+  }, [season, team, setIsLoading, setLoadingMessage]);
 
   // Debounced search
   const handleSearch = debounce((term: string) => {
@@ -53,6 +65,14 @@ export default function PlayerGrid() {
     handleSearch(e.target.value);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
   return (
     <div>
       <TeamFilter value={team} onChange={setTeam} />
@@ -60,11 +80,11 @@ export default function PlayerGrid() {
         value={search}
         onChange={handleChange}
         placeholder="Search players..."
-        className="mb-4 w-full border px-3 py-2 rounded"
+        className="mb-4 w-full border border-input bg-background text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
       />
 
       {!team ? (
-        <div className="text-center text-gray-600 mt-8">
+        <div className="text-center text-muted-foreground mt-8">
           Please select a team to view players.
         </div>
       ) : (
@@ -85,9 +105,11 @@ export default function PlayerGrid() {
 
               <div className="flex-1">
                 <h2 className="font-semibold text-lg">{p.player.name}</h2>
-                <p className="text-sm text-gray-500 mb-1">{p.teamName}</p>
+                <p className="text-sm text-muted-foreground mb-1">
+                  {p.teamName}
+                </p>
 
-                <ul className="text-xs text-gray-700 space-y-1">
+                <ul className="text-xs text-muted-foreground space-y-1">
                   <li>
                     <strong>Position:</strong>{" "}
                     {p.statistics[0]?.games?.position || "N/A"}

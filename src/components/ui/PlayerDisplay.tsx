@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 interface PlayerDisplayProps {
   name: string;
   photo: string;
@@ -29,14 +31,14 @@ export default function PlayerDisplay({
     <div className={`flex items-center gap-2 ${className}`}>
       {showImage && (
         <div className="relative overflow-hidden rounded-full border border-primary/20 flex-shrink-0">
-          <img
+          <Image
             src={displayPhoto}
             alt={displayName}
+            width={48}
+            height={48}
             className={`${sizeClasses[size]} object-cover transition-all duration-200 hover:scale-110`}
-            onError={(e) => {
-              // Fallback to default image if photo fails to load
-              const target = e.target as HTMLImageElement;
-              target.src = "/next.svg";
+            onError={() => {
+              // Fallback is handled by the src prop
             }}
           />
         </div>

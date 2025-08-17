@@ -44,7 +44,12 @@ export default function PlayerGrid() {
     if (team) url.append("team", team);
 
     fetch(`/api/players?${url.toString()}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
         // Filter out any players with missing required data
         const validPlayers = data.filter(
@@ -123,7 +128,7 @@ export default function PlayerGrid() {
 
             return (
               <div
-                key={i}
+                key={`${p.player.name}-${i}`}
                 onClick={() => setSelectedPlayer(p)}
                 className="cursor-pointer flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4 border rounded-lg p-3 lg:p-4 shadow-sm hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 ease-out transform-gpu bg-card hover:bg-accent/50 group"
               >
@@ -132,14 +137,9 @@ export default function PlayerGrid() {
                     <Image
                       src={playerPhoto}
                       alt={p.player.name}
-                      width={60}
-                      height={60}
+                      width={80}
+                      height={80}
                       className="object-cover w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:scale-110"
-                      onError={(e) => {
-                        // Fallback to default image if player photo fails to load
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/next.svg";
-                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>

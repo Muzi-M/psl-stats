@@ -54,12 +54,27 @@ export default function Sidebar({ onClose }: SidebarProps) {
           ))}
         </nav>
         <div className="mt-auto pt-4 space-y-4">
-          {/* Cool Theme Toggle */}
+          {/* Powered by section - Now at the top */}
+          <div className="flex flex-col items-center gap-2 pt-4 border-t border-border/50">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
+              <span className="font-medium">Powered by</span>
+              <div className="relative w-32 h-12">
+                <Image
+                  src="/Infinix_logo-removebg-preview.png"
+                  alt="Infinix"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Cool Theme Toggle - Now at the bottom */}
           <div className="flex items-center justify-center">
             <div className="relative">
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="relative w-16 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full p-1 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 transform-gpu"
+                className="relative w-16 h-8 bg-gradient-to-r from-gray-600 to-gray-800 rounded-full p-1 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 transform-gpu"
               >
                 <div
                   className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ease-in-out transform-gpu ${
@@ -75,21 +90,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
                   </div>
                 </div>
               </button>
-            </div>
-          </div>
-
-          {/* Powered by section */}
-          <div className="flex flex-col items-center gap-2 pt-4 border-t border-border/50">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-              <span className="font-medium">Powered by</span>
-              <div className="relative w-20 h-8">
-                <Image
-                  src="/Infinix_logo-removebg-preview.png"
-                  alt="Infinix"
-                  fill
-                  className="object-contain"
-                />
-              </div>
             </div>
           </div>
         </div>
@@ -120,12 +120,27 @@ export default function Sidebar({ onClose }: SidebarProps) {
         ))}
       </nav>
       <div className="mt-auto pt-4 space-y-4">
-        {/* Cool Theme Toggle */}
+        {/* Powered by section - Now at the top */}
+        <div className="flex flex-col items-center gap-2 pt-4 border-t border-border/50">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
+            <span className="font-medium">Powered by</span>
+            <div className="relative w-32 h-12">
+              <Image
+                src="/Infinix_logo-removebg-preview.png"
+                alt="Infinix"
+                fill
+                className="object-contain"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Cool Theme Toggle - Now at the bottom with greyish dark gradient */}
         <div className="flex items-center justify-center">
           <div className="relative">
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="relative w-16 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full p-1 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 transform-gpu"
+              className="relative w-16 h-8 bg-gradient-to-r from-gray-600 to-gray-800 rounded-full p-1 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 transform-gpu"
             >
               <div
                 className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ease-in-out transform-gpu ${
@@ -141,21 +156,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
                 </div>
               </div>
             </button>
-          </div>
-        </div>
-
-        {/* Powered by section */}
-        <div className="flex flex-col items-center gap-2 pt-4 border-t border-border/50">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-            <span className="font-medium">Powered by</span>
-            <div className="relative w-20 h-8">
-              <Image
-                src="/Infinix_logo-removebg-preview.png"
-                alt="Infinix"
-                fill
-                className="object-contain"
-              />
-            </div>
           </div>
         </div>
       </div>

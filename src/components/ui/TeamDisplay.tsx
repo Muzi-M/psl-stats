@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 interface TeamDisplayProps {
   name: string;
   logo: string;
@@ -29,14 +31,14 @@ export default function TeamDisplay({
     <div className={`flex items-center gap-2 ${className}`}>
       {showBadge && (
         <div className="relative overflow-hidden rounded-full border border-primary/20 flex-shrink-0">
-          <img
+          <Image
             src={displayLogo}
             alt={displayName}
+            width={24}
+            height={24}
             className={`${sizeClasses[size]} transition-all duration-200 hover:scale-110`}
-            onError={(e) => {
-              // Fallback to default image if logo fails to load
-              const target = e.target as HTMLImageElement;
-              target.src = "/next.svg";
+            onError={() => {
+              // Fallback is handled by the src prop
             }}
           />
         </div>

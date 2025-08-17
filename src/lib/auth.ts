@@ -17,17 +17,32 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: "/auth/error",
   },
   callbacks: {
-    async session({ session, user }) {
+    async session({ session, user, token }) {
+      console.log("Session callback - user:", user?.id, "token:", token?.id);
       if (session.user) {
-        session.user.id = user.id;
+        session.user.id = (user?.id || token?.id) as string;
       }
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
+      console.log(
+        "JWT callback - user:",
+        user?.id,
+        "account:",
+        account?.provider
+      );
       if (user) {
         token.id = user.id;
       }
       return token;
+    },
+    async redirect({ url, baseUrl }) {
+      console.log("Redirect callback - url:", url, "baseUrl:", baseUrl);
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
   },
   session: {

@@ -36,39 +36,15 @@ export default function SignIn() {
     try {
       console.log("Starting Google sign in...");
       console.log("Current URL:", window.location.href);
-      console.log("NEXTAUTH_URL:", process.env.NEXT_PUBLIC_NEXTAUTH_URL);
 
-      const result = await signIn("google", {
+      // Let NextAuth handle the entire OAuth flow
+      await signIn("google", {
         callbackUrl: "/",
-        redirect: false,
+        redirect: true,
       });
 
-      console.log("Sign in result:", result);
-
-      if (result?.error) {
-        console.error("Sign in error:", result.error);
-        setIsLoading(false);
-      } else if (result?.ok) {
-        console.log("Sign in successful, redirecting...");
-        console.log("Result details:", result);
-
-        // Try multiple redirect approaches
-        try {
-          // First try router push
-          await router.push("/");
-          console.log("Router push completed");
-        } catch (routerError) {
-          console.log(
-            "Router push failed, trying window.location:",
-            routerError
-          );
-          // Fallback to window.location
-          window.location.href = "/";
-        }
-      } else {
-        console.log("No result from sign in");
-        setIsLoading(false);
-      }
+      // This code won't execute if redirect is true, but keeping for safety
+      console.log("Sign in initiated, redirecting to Google...");
     } catch (error) {
       console.error("Sign in error:", error);
       setIsLoading(false);

@@ -19,21 +19,21 @@ export async function GET(req: NextRequest) {
   ]);
 
   const scorers = players
-    .filter((p) => p.statistics?.[0]?.goals?.total)
+    .filter((p: any) => p.statistics?.[0]?.goals?.total)
     .sort(
-      (a, b) =>
+      (a: any, b: any) =>
         (b.statistics[0]?.goals?.total || 0) -
         (a.statistics[0]?.goals?.total || 0)
     )
     .slice(0, 5);
 
   const topRated = players
-    .filter((p) => p.statistics?.[0]?.games?.rating)
-    .map((p) => ({
+    .filter((p: any) => p.statistics?.[0]?.games?.rating)
+    .map((p: any) => ({
       ...p,
       avgRating: parseFloat(p.statistics[0].games.rating),
     }))
-    .sort((a, b) => b.avgRating - a.avgRating)
+    .sort((a: any, b: any) => b.avgRating - a.avgRating)
     .slice(0, 10);
 
   return NextResponse.json({

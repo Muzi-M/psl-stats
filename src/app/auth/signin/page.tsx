@@ -34,10 +34,7 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      const result = await signIn("google", { callbackUrl: "/" });
-      if (result?.error) {
-        console.error("Sign in error:", result.error);
-      }
+      await signIn("google", { callbackUrl: "/" });
     } catch (error) {
       console.error("Sign in error:", error);
     } finally {

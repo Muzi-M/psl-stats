@@ -37,7 +37,10 @@ export default function Sidebar({ onClose }: SidebarProps) {
   };
 
   const handleSignOut = () => {
-    signOut({ callbackUrl: "/auth/signin" });
+    signOut({
+      callbackUrl: "/auth/signin",
+      redirect: true,
+    });
   };
 
   if (!mounted) {

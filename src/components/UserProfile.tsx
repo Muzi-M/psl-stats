@@ -30,7 +30,10 @@ export default function UserProfile() {
   }
 
   const handleSignOut = () => {
-    signOut({ callbackUrl: "/auth/signin" });
+    signOut({
+      callbackUrl: "/auth/signin",
+      redirect: true,
+    });
   };
 
   return (

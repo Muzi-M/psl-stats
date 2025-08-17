@@ -21,13 +21,29 @@ export default function middleware(req: NextRequest) {
   const jwtToken = req.cookies.get("next-auth.jwt-token");
   const secureJwtToken = req.cookies.get("__Secure-next-auth.jwt-token");
 
+  // Check for the actual JWT token that NextAuth uses
+  const authToken = req.cookies.get("next-auth.auth-token");
+  const secureAuthToken = req.cookies.get("__Secure-next-auth.auth-token");
+
+  // Check for any cookie that contains "next-auth" (fallback)
+  const allCookies = req.cookies.getAll();
+  const hasNextAuthCookie = allCookies.some(
+    (cookie) =>
+      cookie.name.includes("next-auth") &&
+      cookie.value &&
+      cookie.value.length > 10
+  );
+
   // Check if any auth-related cookies exist
   const isLoggedIn = !!(
     sessionToken ||
     secureSessionToken ||
     csrfToken ||
     jwtToken ||
-    secureJwtToken
+    secureJwtToken ||
+    authToken ||
+    secureAuthToken ||
+    hasNextAuthCookie
   );
 
   // Debug logging (always log for troubleshooting)
@@ -39,21 +55,28 @@ export default function middleware(req: NextRequest) {
     csrfToken: !!csrfToken,
     jwtToken: !!jwtToken,
     secureJwtToken: !!secureJwtToken,
+    authToken: !!authToken,
+    secureAuthToken: !!secureAuthToken,
+    hasNextAuthCookie,
     isLoggedIn,
     sessionTokenValue: sessionToken?.value ? "exists" : "null",
     secureSessionTokenValue: secureSessionToken?.value ? "exists" : "null",
     jwtTokenValue: jwtToken?.value ? "exists" : "null",
     secureJwtTokenValue: secureJwtToken?.value ? "exists" : "null",
+    authTokenValue: authToken?.value ? "exists" : "null",
+    secureAuthTokenValue: secureAuthToken?.value ? "exists" : "null",
+    allCookies: allCookies.map((c) => c.name).join(", "),
   });
 
-  // Temporarily disable auth checks to debug session issue
-  // if (!isLoggedIn && !isPublicRoute) {
-  //   return NextResponse.redirect(new URL("/auth/signin", req.url));
-  // }
+  // If the user is not logged in and trying to access a protected route
+  if (!isLoggedIn && !isPublicRoute) {
+    return NextResponse.redirect(new URL("/auth/signin", req.url));
+  }
 
-  // if (isLoggedIn && isPublicRoute) {
-  //   return NextResponse.redirect(new URL("/", req.url));
-  // }
+  // If the user is logged in and trying to access auth pages, redirect to home
+  if (isLoggedIn && isPublicRoute) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
 
   return NextResponse.next();
 }

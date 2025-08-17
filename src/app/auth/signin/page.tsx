@@ -22,6 +22,9 @@ export default function SignIn() {
   useEffect(() => {
     const checkSession = async () => {
       try {
+        // Add a small delay to ensure session is properly cleared
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
         const session = await getSession();
         console.log("Session check result:", session);
         if (session) {

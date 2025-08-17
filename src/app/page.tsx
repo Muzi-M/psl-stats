@@ -2,7 +2,7 @@ import OverviewDashboard from "@/components/OverviewDashboard";
 
 export default function HomePage() {
   return (
-    <main className="p-4 max-w-7xl mx-auto">
+    <main className="space-y-4 lg:space-y-6">
       <OverviewDashboard />
     </main>
   );

@@ -15,7 +15,11 @@ const navLinks = [
   { href: "/teams", label: "Teams" },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+export default function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -23,6 +27,12 @@ export default function Sidebar() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleLinkClick = () => {
+    if (onClose) {
+      onClose();
+    }
+  };
 
   if (!mounted) {
     return (
@@ -55,8 +65,8 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="h-screen sticky top-0 flex flex-col gap-2 w-56 min-w-[12rem] p-4 bg-card border-r">
-      <div className="mb-6 text-2xl font-bold tracking-tight text-primary">
+    <aside className="h-screen sticky top-0 flex flex-col gap-2 w-56 min-w-[12rem] p-4 bg-card border-r shadow-lg">
+      <div className="mb-6 text-xl lg:text-2xl font-bold tracking-tight text-primary">
         PSL Dashboard
       </div>
       <nav className="flex flex-col gap-1">
@@ -65,7 +75,8 @@ export default function Sidebar() {
             asChild
             key={link.href}
             variant={pathname === link.href ? "default" : "ghost"}
-            className="justify-start w-full"
+            className="justify-start w-full text-sm lg:text-base"
+            onClick={handleLinkClick}
           >
             <Link href={link.href}>{link.label}</Link>
           </Button>
@@ -74,7 +85,7 @@ export default function Sidebar() {
       <div className="mt-auto pt-4">
         <Button
           variant="outline"
-          className="w-full flex items-center justify-center"
+          className="w-full flex items-center justify-center text-sm"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         >
           {theme === "dark" ? "🌙 Dark" : "☀️ Light"}

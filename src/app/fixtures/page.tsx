@@ -1,12 +1,11 @@
-import FixturesGrid from "@/components/FixtureGrid";
+import FixtureGrid from "@/components/FixtureGrid";
 import SeasonToggle from "@/components/SeasonToggle";
 
 export default function FixturesPage() {
   return (
-    <main className="p-4 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">PSL Fixtures</h1>
+    <div className="space-y-4 lg:space-y-6">
       <SeasonToggle />
-      <FixturesGrid />
-    </main>
+      <FixtureGrid />
+    </div>
   );
 }

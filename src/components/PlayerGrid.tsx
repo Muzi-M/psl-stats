@@ -67,65 +67,82 @@ export default function PlayerGrid() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div className="flex items-center justify-center py-8 lg:py-12">
         <LoadingSpinner size="lg" />
       </div>
     );
   }
 
   return (
-    <div>
-      <TeamFilter value={team} onChange={setTeam} />
-      <input
-        value={search}
-        onChange={handleChange}
-        placeholder="Search players..."
-        className="mb-4 w-full border border-input bg-background text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-      />
+    <div className="space-y-4">
+      <div className="space-y-3">
+        <TeamFilter value={team} onChange={setTeam} />
+        <input
+          value={search}
+          onChange={handleChange}
+          placeholder="Search players..."
+          className="w-full border border-input bg-background text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent text-sm lg:text-base"
+        />
+      </div>
 
       {!team ? (
-        <div className="text-center text-muted-foreground mt-8">
-          Please select a team to view players.
+        <div className="text-center text-muted-foreground mt-8 py-8">
+          <p className="text-sm lg:text-base">
+            Please select a team to view players.
+          </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid gap-3 lg:gap-4">
           {filtered.map((p, i) => (
             <div
               key={i}
               onClick={() => setSelectedPlayer(p)}
-              className="cursor-pointer flex items-center gap-4 border rounded p-4 shadow-sm hover:shadow-md transition"
+              className="cursor-pointer flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4 border rounded-lg p-3 lg:p-4 shadow-sm hover:shadow-md transition-all duration-200 bg-card"
             >
-              <Image
-                src={p.player.photo}
-                alt={p.player.name}
-                width={80}
-                height={80}
-                className="object-cover rounded-full border"
-              />
+              <div className="flex-shrink-0">
+                <Image
+                  src={p.player.photo}
+                  alt={p.player.name}
+                  width={60}
+                  height={60}
+                  className="object-cover rounded-full border w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20"
+                />
+              </div>
 
-              <div className="flex-1">
-                <h2 className="font-semibold text-lg">{p.player.name}</h2>
-                <p className="text-sm text-muted-foreground mb-1">
+              <div className="flex-1 min-w-0">
+                <h2 className="font-semibold text-base lg:text-lg mb-1 truncate">
+                  {p.player.name}
+                </h2>
+                <p className="text-sm text-muted-foreground mb-2 lg:mb-3 truncate">
                   {p.teamName}
                 </p>
 
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>
-                    <strong>Position:</strong>{" "}
-                    {p.statistics[0]?.games?.position || "N/A"}
-                  </li>
-                  <li>
-                    <strong>Appearances:</strong>{" "}
-                    {p.statistics[0]?.games?.appearences || 0}
-                  </li>
-                  <li>
-                    <strong>Goals:</strong> {p.statistics[0]?.goals?.total || 0}
-                  </li>
-                  <li>
-                    <strong>Assists:</strong>{" "}
-                    {p.statistics[0]?.goals?.assists || 0}
-                  </li>
-                </ul>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 lg:gap-3 text-xs lg:text-sm">
+                  <div className="flex flex-col">
+                    <span className="text-muted-foreground">Position</span>
+                    <span className="font-medium">
+                      {p.statistics[0]?.games?.position || "N/A"}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-muted-foreground">Apps</span>
+                    <span className="font-medium">
+                      {p.statistics[0]?.games?.appearences || 0}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-muted-foreground">Goals</span>
+                    <span className="font-medium">
+                      {p.statistics[0]?.goals?.total || 0}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-muted-foreground">Assists</span>
+                    <span className="font-medium">
+                      {p.statistics[0]?.goals?.assists || 0}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           ))}

@@ -1,81 +1,55 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
-import { ChevronDown } from "lucide-react";
 
-export default function TeamFilter({
-  value,
-  onChange,
-}: {
+import { useEffect, useState } from "react";
+import { useAppContext } from "@/context/AppContext";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+
+interface TeamFilterProps {
   value: string;
   onChange: (team: string) => void;
-}) {
-  const [teams, setTeams] = useState<string[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+}
+
+export default function TeamFilter({ value, onChange }: TeamFilterProps) {
+  const [teams, setTeams] = useState<any[]>([]);
+  const { season } = useAppContext();
 
   useEffect(() => {
-    fetch("/api/teams") // we'll make this next
+    fetch(`/api/teams?season=${season}`)
       .then((res) => res.json())
       .then(setTeams);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [season]);
 
   return (
-    <div className="relative mb-4" ref={dropdownRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between border border-input bg-background text-foreground px-3 py-1 rounded w-full focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-      >
-        <span>{value || "All Teams"}</span>
-        <ChevronDown className="h-4 w-4 ml-2" />
-      </button>
-
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-full border border-input bg-card text-card-foreground rounded shadow-lg z-[9999] max-h-60 overflow-y-auto dropdown-menu">
-          <button
-            onClick={() => {
-              onChange("");
-              setIsOpen(false);
-            }}
-            className={`w-full text-left px-3 py-2 hover:bg-accent hover:text-accent-foreground transition-colors ${
-              value === ""
-                ? "bg-accent text-accent-foreground"
-                : "text-card-foreground"
-            }`}
-          >
-            All Teams
-          </button>
-          {teams.map((team, i) => (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg lg:text-xl">Select Team</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          {teams.map((team) => (
             <button
-              key={i}
-              onClick={() => {
-                onChange(team);
-                setIsOpen(false);
-              }}
-              className={`w-full text-left px-3 py-2 hover:bg-accent hover:text-accent-foreground transition-colors ${
-                team === value
-                  ? "bg-accent text-accent-foreground"
-                  : "text-card-foreground"
+              key={team.id}
+              onClick={() => onChange(team.id.toString())}
+              className={`p-3 rounded-lg border transition-all duration-200 text-center hover:shadow-md ${
+                value === team.id.toString()
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-card hover:bg-accent"
               }`}
             >
-              {team}
+              <div className="flex flex-col items-center gap-2">
+                <img
+                  src={team.logo}
+                  alt={team.name}
+                  className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 object-contain"
+                />
+                <span className="text-xs sm:text-sm font-medium truncate w-full">
+                  {team.name}
+                </span>
+              </div>
             </button>
           ))}
         </div>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   );
 }

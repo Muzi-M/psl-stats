@@ -1,13 +1,23 @@
 "use client";
+
+import { useEffect, useState } from "react";
 import { useAppContext } from "@/context/AppContext";
 import { useLoading } from "@/context/LoadingContext";
-import { useEffect, useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./Table";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 export default function StandingsTable() {
+  const [standings, setStandings] = useState<any[]>([]);
   const { season } = useAppContext();
   const { setIsLoading, setLoadingMessage } = useLoading();
-  const [rows, setRows] = useState<any[]>([]);
   const [isLoading, setIsLoadingLocal] = useState(false);
 
   useEffect(() => {
@@ -17,7 +27,9 @@ export default function StandingsTable() {
 
     fetch(`/api/standings?season=${season}`)
       .then((res) => res.json())
-      .then(setRows)
+      .then((data) => {
+        setStandings(data);
+      })
       .finally(() => {
         setIsLoadingLocal(false);
         setIsLoading(false);
@@ -26,40 +38,140 @@ export default function StandingsTable() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div className="flex items-center justify-center py-8 lg:py-12">
         <LoadingSpinner size="lg" />
       </div>
     );
   }
 
   return (
-    <table className="w-full border text-sm mt-4">
-      <thead className="bg-muted">
-        <tr>
-          <th className="p-2 text-left">#</th>
-          <th className="p-2 text-left">Team</th>
-          <th className="p-2">P</th>
-          <th className="p-2">W</th>
-          <th className="p-2">D</th>
-          <th className="p-2">L</th>
-          <th className="p-2">GD</th>
-          <th className="p-2">Pts</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, i) => (
-          <tr key={i} className="border-t">
-            <td className="p-2">{row.rank}</td>
-            <td className="p-2">{row.team.name}</td>
-            <td className="p-2 text-center">{row.all.played}</td>
-            <td className="p-2 text-center">{row.all.win}</td>
-            <td className="p-2 text-center">{row.all.draw}</td>
-            <td className="p-2 text-center">{row.all.lose}</td>
-            <td className="p-2 text-center">{row.goalsDiff}</td>
-            <td className="p-2 text-center font-semibold">{row.points}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg lg:text-xl">League Standings</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* Desktop Table */}
+          <div className="hidden lg:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-12">Pos</TableHead>
+                  <TableHead>Team</TableHead>
+                  <TableHead className="text-center">P</TableHead>
+                  <TableHead className="text-center">W</TableHead>
+                  <TableHead className="text-center">D</TableHead>
+                  <TableHead className="text-center">L</TableHead>
+                  <TableHead className="text-center">GF</TableHead>
+                  <TableHead className="text-center">GA</TableHead>
+                  <TableHead className="text-center">GD</TableHead>
+                  <TableHead className="text-center">Pts</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {standings.map((team: any) => (
+                  <TableRow key={team.rank}>
+                    <TableCell className="font-medium">{team.rank}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={team.team.logo}
+                          alt={team.team.name}
+                          className="h-6 w-6"
+                        />
+                        <span className="font-medium">{team.team.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {team.all.played}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {team.all.win}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {team.all.draw}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {team.all.lose}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {team.all.goals.for}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {team.all.goals.against}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {team.goalsDiff}
+                    </TableCell>
+                    <TableCell className="text-center font-bold">
+                      {team.points}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="lg:hidden space-y-3">
+            {standings.map((team: any) => (
+              <div
+                key={team.rank}
+                className="border rounded-lg p-3 bg-card shadow-sm"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-lg">{team.rank}</span>
+                    <img
+                      src={team.team.logo}
+                      alt={team.team.name}
+                      className="h-6 w-6"
+                    />
+                    <span className="font-medium text-sm lg:text-base truncate">
+                      {team.team.name}
+                    </span>
+                  </div>
+                  <span className="font-bold text-lg">{team.points} pts</span>
+                </div>
+
+                <div className="grid grid-cols-4 gap-2 text-xs">
+                  <div className="text-center">
+                    <div className="text-muted-foreground">P</div>
+                    <div className="font-medium">{team.all.played}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-muted-foreground">W</div>
+                    <div className="font-medium">{team.all.win}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-muted-foreground">D</div>
+                    <div className="font-medium">{team.all.draw}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-muted-foreground">L</div>
+                    <div className="font-medium">{team.all.lose}</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 text-xs mt-2">
+                  <div className="text-center">
+                    <div className="text-muted-foreground">GF</div>
+                    <div className="font-medium">{team.all.goals.for}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-muted-foreground">GA</div>
+                    <div className="font-medium">{team.all.goals.against}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-muted-foreground">GD</div>
+                    <div className="font-medium">{team.goalsDiff}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

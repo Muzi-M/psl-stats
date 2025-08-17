@@ -47,9 +47,9 @@ export default function OverviewDashboard() {
 
   if (isDataLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 lg:space-y-6">
         <SeasonToggle />
-        <div className="flex items-center justify-center py-12">
+        <div className="flex items-center justify-center py-8 lg:py-12">
           <LoadingSpinner size="lg" />
         </div>
       </div>
@@ -57,27 +57,30 @@ export default function OverviewDashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 lg:space-y-6">
       <SeasonToggle />
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 lg:gap-6 sm:grid-cols-2 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Top 5 Teams</CardTitle>
+            <CardTitle className="text-lg lg:text-xl">Top 5 Teams</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-3">
+            <ul className="space-y-2 lg:space-y-3">
               {standings.slice(0, 5).map((team: any) => (
-                <li key={team.rank} className="flex items-center gap-3 text-sm">
+                <li
+                  key={team.rank}
+                  className="flex items-center gap-2 lg:gap-3 text-sm lg:text-base"
+                >
                   <img
                     src={team.team.logo}
                     alt={team.team.name}
-                    className="h-6 w-6"
+                    className="h-5 w-5 lg:h-6 lg:w-6 flex-shrink-0"
                   />
-                  <span className="font-medium">
+                  <span className="font-medium truncate">
                     {team.rank}. {team.team.name}
                   </span>
-                  <span className="ml-auto text-muted-foreground">
+                  <span className="ml-auto text-muted-foreground flex-shrink-0">
                     {team.points} pts
                   </span>
                 </li>
@@ -85,27 +88,32 @@ export default function OverviewDashboard() {
             </ul>
           </CardContent>
           <CardFooter>
-            <Button asChild className="p-0 h-auto" variant="link">
+            <Button asChild className="p-0 h-auto text-sm" variant="link">
               <Link href="/standings">View full standings →</Link>
             </Button>
           </CardFooter>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Last 5 Fixtures</CardTitle>
+            <CardTitle className="text-lg lg:text-xl">
+              Last 5 Fixtures
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-2 lg:space-y-3 text-sm lg:text-base">
               {recentFixtures.map((f: any, i) => (
-                <li key={i} className="flex items-center justify-between">
-                  <div>
-                    <span>{f.teams.home.name} </span>
+                <li
+                  key={i}
+                  className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-1"
+                >
+                  <div className="flex flex-wrap items-center gap-1">
+                    <span className="truncate">{f.teams.home.name} </span>
                     <span className="font-bold">{f.goals.home}</span>
                     <span> : </span>
                     <span className="font-bold">{f.goals.away}</span>
-                    <span> {f.teams.away.name}</span>
+                    <span className="truncate"> {f.teams.away.name}</span>
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground lg:text-sm">
                     {new Date(f.fixture.date).toLocaleDateString()}
                   </div>
                 </li>
@@ -113,33 +121,39 @@ export default function OverviewDashboard() {
             </ul>
           </CardContent>
           <CardFooter>
-            <Button asChild className="p-0 h-auto" variant="link">
+            <Button asChild className="p-0 h-auto text-sm" variant="link">
               <Link href="/fixtures">View all fixtures →</Link>
             </Button>
           </CardFooter>
         </Card>
-        <Card className="md:col-span-2">
+        <Card className="sm:col-span-2">
           <CardHeader>
-            <CardTitle>Top 5 Scorers</CardTitle>
+            <CardTitle className="text-lg lg:text-xl">Top 5 Scorers</CardTitle>
           </CardHeader>
           <CardContent>
-            <TopScorersChart data={scorers} />
+            <div className="h-64 lg:h-80">
+              <TopScorersChart data={scorers} />
+            </div>
           </CardContent>
           <CardFooter>
-            <Button asChild className="p-0 h-auto" variant="link">
+            <Button asChild className="p-0 h-auto text-sm" variant="link">
               <Link href="/players">View full player stats →</Link>
             </Button>
           </CardFooter>
         </Card>
-        <Card className="md:col-span-2">
+        <Card className="sm:col-span-2">
           <CardHeader>
-            <CardTitle>Top 10 Rated Players</CardTitle>
+            <CardTitle className="text-lg lg:text-xl">
+              Top 10 Rated Players
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <TopRatedChart data={topRated} />
+            <div className="h-64 lg:h-80">
+              <TopRatedChart data={topRated} />
+            </div>
           </CardContent>
           <CardFooter>
-            <Button asChild className="p-0 h-auto" variant="link">
+            <Button asChild className="p-0 h-auto text-sm" variant="link">
               <Link href="/players">View full player stats →</Link>
             </Button>
           </CardFooter>

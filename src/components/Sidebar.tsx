@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 const navLinks = [
   { href: "/", label: "Overview" },
@@ -35,6 +36,10 @@ export default function Sidebar({ onClose }: SidebarProps) {
     }
   };
 
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/auth/signin" });
+  };
+
   if (!mounted) {
     return (
       <aside className="h-screen sticky top-0 flex flex-col gap-2 w-56 min-w-[12rem] p-4 bg-card border-r shadow-lg">
@@ -53,6 +58,18 @@ export default function Sidebar({ onClose }: SidebarProps) {
             </Button>
           ))}
         </nav>
+
+        {/* Sign Out Button */}
+        <div className="pt-2">
+          <Button
+            variant="ghost"
+            className="justify-start w-full text-sm lg:text-base text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950/20"
+            onClick={handleSignOut}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign Out
+          </Button>
+        </div>
         <div className="mt-auto pt-4 space-y-4">
           {/* Powered by section - Now at the top */}
           <div className="flex flex-col items-center gap-2 pt-4 border-t border-border/50">
@@ -119,6 +136,18 @@ export default function Sidebar({ onClose }: SidebarProps) {
           </Button>
         ))}
       </nav>
+
+      {/* Sign Out Button */}
+      <div className="pt-2">
+        <Button
+          variant="ghost"
+          className="justify-start w-full text-sm lg:text-base text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950/20 transition-all duration-200 ease-out transform-gpu hover:scale-[1.02] hover:-translate-y-0.5"
+          onClick={handleSignOut}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Sign Out
+        </Button>
+      </div>
       <div className="mt-auto pt-4 space-y-4">
         {/* Powered by section - Now at the top */}
         <div className="flex flex-col items-center gap-2 pt-4 border-t border-border/50">

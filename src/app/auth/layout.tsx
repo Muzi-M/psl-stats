@@ -30,12 +30,18 @@ export default function AuthLayout({
       enableSystem
       disableTransitionOnChange
     >
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex flex-col">
+      <div className="min-h-screen bg-background flex flex-col">
         {/* Header with App Identity and Theme Toggle */}
         <div className="flex items-center justify-between p-6">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">I</span>
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center overflow-hidden">
+              <Image
+                src="/Infinix_logo-removebg-preview.png"
+                alt="Infinix Logo"
+                width={32}
+                height={32}
+                className="object-contain"
+              />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -72,8 +78,14 @@ export default function AuthLayout({
             <span className="text-sm text-gray-600 dark:text-gray-400">
               Powered by
             </span>
-            <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded flex items-center justify-center">
-              <span className="text-white font-bold text-xs">I</span>
+            <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded flex items-center justify-center overflow-hidden">
+              <Image
+                src="/Infinix_logo-removebg-preview.png"
+                alt="Infinix Logo"
+                width={20}
+                height={20}
+                className="object-contain"
+              />
             </div>
           </div>
         </div>

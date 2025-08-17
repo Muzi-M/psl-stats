@@ -32,14 +32,15 @@ export default function middleware(req: NextRequest) {
     });
   }
 
-  // Temporarily disable auth checks to debug OAuth flow
-  // if (!isLoggedIn && !isPublicRoute) {
-  //   return NextResponse.redirect(new URL("/auth/signin", req.url));
-  // }
+  // If the user is not logged in and trying to access a protected route
+  if (!isLoggedIn && !isPublicRoute) {
+    return NextResponse.redirect(new URL("/auth/signin", req.url));
+  }
 
-  // if (isLoggedIn && isPublicRoute) {
-  //   return NextResponse.redirect(new URL("/", req.url));
-  // }
+  // If the user is logged in and trying to access auth pages, redirect to home
+  if (isLoggedIn && isPublicRoute) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
 
   return NextResponse.next();
 }

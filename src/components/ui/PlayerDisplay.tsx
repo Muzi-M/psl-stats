@@ -21,18 +21,27 @@ export default function PlayerDisplay({
     lg: "h-12 w-12",
   };
 
+  // Fallback values
+  const displayName = name || "Unknown Player";
+  const displayPhoto = photo || "/next.svg";
+
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       {showImage && (
         <div className="relative overflow-hidden rounded-full border border-primary/20 flex-shrink-0">
           <img
-            src={photo}
-            alt={name}
+            src={displayPhoto}
+            alt={displayName}
             className={`${sizeClasses[size]} object-cover transition-all duration-200 hover:scale-110`}
+            onError={(e) => {
+              // Fallback to default image if photo fails to load
+              const target = e.target as HTMLImageElement;
+              target.src = "/next.svg";
+            }}
           />
         </div>
       )}
-      <span className="font-medium truncate">{name}</span>
+      <span className="font-medium truncate">{displayName}</span>
     </div>
   );
 }

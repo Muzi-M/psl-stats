@@ -46,8 +46,23 @@ export default function PlayerGrid() {
     fetch(`/api/players?${url.toString()}`)
       .then((res) => res.json())
       .then((data) => {
-        setPlayers(data);
-        setFiltered(data);
+        // Filter out any players with missing required data
+        const validPlayers = data.filter(
+          (player: any) =>
+            player &&
+            player.player &&
+            player.player.name &&
+            player.statistics &&
+            Array.isArray(player.statistics) &&
+            player.statistics.length > 0
+        );
+        setPlayers(validPlayers);
+        setFiltered(validPlayers);
+      })
+      .catch((error) => {
+        console.error("Error fetching players:", error);
+        setPlayers([]);
+        setFiltered([]);
       })
       .finally(() => {
         setIsLoadingLocal(false);
@@ -58,7 +73,7 @@ export default function PlayerGrid() {
   // Debounced search
   const handleSearch = debounce((term: string) => {
     const filtered = players.filter((p) =>
-      p.player.name.toLowerCase().includes(term.toLowerCase())
+      p.player?.name?.toLowerCase().includes(term.toLowerCase())
     );
     setFiltered(filtered);
   }, 300);
@@ -96,68 +111,84 @@ export default function PlayerGrid() {
         </div>
       ) : (
         <div className="grid gap-3 lg:gap-4">
-          {filtered.map((p, i) => (
-            <div
-              key={i}
-              onClick={() => setSelectedPlayer(p)}
-              className="cursor-pointer flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4 border rounded-lg p-3 lg:p-4 shadow-sm hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 ease-out transform-gpu bg-card hover:bg-accent/50 group"
-            >
-              <div className="flex-shrink-0">
-                <div className="relative overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary/40 transition-all duration-300">
-                  <Image
-                    src={p.player.photo}
-                    alt={p.player.name}
-                    width={60}
-                    height={60}
-                    className="object-cover w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:scale-110"
+          {filtered.map((p, i) => {
+            // Ensure all required data exists before rendering
+            if (!p.player?.name || !p.statistics?.[0]) {
+              return null;
+            }
+
+            const stats = p.statistics[0];
+            const playerPhoto = p.player.photo || "/next.svg"; // Fallback image
+            const teamLogo = stats?.team?.logo || "/next.svg"; // Fallback image
+
+            return (
+              <div
+                key={i}
+                onClick={() => setSelectedPlayer(p)}
+                className="cursor-pointer flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4 border rounded-lg p-3 lg:p-4 shadow-sm hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 ease-out transform-gpu bg-card hover:bg-accent/50 group"
+              >
+                <div className="flex-shrink-0">
+                  <div className="relative overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary/40 transition-all duration-300">
+                    <Image
+                      src={playerPhoto}
+                      alt={p.player.name}
+                      width={60}
+                      height={60}
+                      className="object-cover w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:scale-110"
+                      onError={(e) => {
+                        // Fallback to default image if player photo fails to load
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/next.svg";
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <PlayerDisplay
+                    name={p.player.name}
+                    photo={playerPhoto}
+                    size="sm"
+                    className="mb-1 group-hover:text-primary transition-colors duration-200"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-              </div>
+                  <TeamDisplay
+                    name={p.teamName || "Unknown Team"}
+                    logo={teamLogo}
+                    size="sm"
+                    className="mb-2 lg:mb-3 text-sm text-muted-foreground group-hover:text-primary/70 transition-colors duration-200"
+                  />
 
-              <div className="flex-1 min-w-0">
-                <PlayerDisplay
-                  name={p.player.name}
-                  photo={p.player.photo}
-                  size="sm"
-                  className="mb-1 group-hover:text-primary transition-colors duration-200"
-                />
-                <TeamDisplay
-                  name={p.teamName}
-                  logo={p.statistics?.[0]?.team?.logo || ""}
-                  size="sm"
-                  className="mb-2 lg:mb-3 text-sm text-muted-foreground group-hover:text-primary/70 transition-colors duration-200"
-                />
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 lg:gap-3 text-xs lg:text-sm">
-                  <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <span className="text-muted-foreground">Position</span>
-                    <span className="font-medium">
-                      {p.statistics[0]?.games?.position || "N/A"}
-                    </span>
-                  </div>
-                  <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <span className="text-muted-foreground">Apps</span>
-                    <span className="font-medium">
-                      {p.statistics[0]?.games?.appearences || 0}
-                    </span>
-                  </div>
-                  <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <span className="text-muted-foreground">Goals</span>
-                    <span className="font-medium">
-                      {p.statistics[0]?.goals?.total || 0}
-                    </span>
-                  </div>
-                  <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <span className="text-muted-foreground">Assists</span>
-                    <span className="font-medium">
-                      {p.statistics[0]?.goals?.assists || 0}
-                    </span>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 lg:gap-3 text-xs lg:text-sm">
+                    <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <span className="text-muted-foreground">Position</span>
+                      <span className="font-medium">
+                        {stats?.games?.position || "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <span className="text-muted-foreground">Apps</span>
+                      <span className="font-medium">
+                        {stats?.games?.appearences || 0}
+                      </span>
+                    </div>
+                    <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <span className="text-muted-foreground">Goals</span>
+                      <span className="font-medium">
+                        {stats?.goals?.total || 0}
+                      </span>
+                    </div>
+                    <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <span className="text-muted-foreground">Assists</span>
+                      <span className="font-medium">
+                        {stats?.goals?.assists || 0}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
       <PlayerModal

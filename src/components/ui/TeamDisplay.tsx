@@ -21,18 +21,27 @@ export default function TeamDisplay({
     lg: "h-8 w-8",
   };
 
+  // Fallback values
+  const displayName = name || "Unknown Team";
+  const displayLogo = logo || "/next.svg";
+
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       {showBadge && (
         <div className="relative overflow-hidden rounded-full border border-primary/20 flex-shrink-0">
           <img
-            src={logo}
-            alt={name}
+            src={displayLogo}
+            alt={displayName}
             className={`${sizeClasses[size]} transition-all duration-200 hover:scale-110`}
+            onError={(e) => {
+              // Fallback to default image if logo fails to load
+              const target = e.target as HTMLImageElement;
+              target.src = "/next.svg";
+            }}
           />
         </div>
       )}
-      <span className="font-medium truncate">{name}</span>
+      <span className="font-medium truncate">{displayName}</span>
     </div>
   );
 }

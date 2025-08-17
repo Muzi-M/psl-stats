@@ -9,7 +9,7 @@ export default function PlayerModal({
   player: any;
   onClose: () => void;
 }) {
-  if (!player) return null;
+  if (!player || !player.player) return null;
 
   const stats = player.statistics?.[0];
 
@@ -22,14 +22,14 @@ export default function PlayerModal({
 
         <div className="flex items-center gap-4 mb-4">
           <PlayerDisplay
-            name={player.player.name}
-            photo={player.player.photo}
+            name={player.player.name || "Unknown Player"}
+            photo={player.player.photo || "/next.svg"}
             size="lg"
             className="text-xl font-bold"
           />
           <TeamDisplay
-            name={player.teamName}
-            logo={player.statistics?.[0]?.team?.logo || ""}
+            name={player.teamName || "Unknown Team"}
+            logo={stats?.team?.logo || "/next.svg"}
             size="md"
             className="text-sm text-muted-foreground"
           />
@@ -37,7 +37,7 @@ export default function PlayerModal({
 
         <ul className="text-sm space-y-1">
           <li>
-            <strong>Age:</strong> {player.player.age}
+            <strong>Age:</strong> {player.player.age || "N/A"}
           </li>
           <li>
             <strong>Position:</strong> {stats?.games?.position || "N/A"}

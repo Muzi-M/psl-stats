@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { Sun, Moon } from "lucide-react";
 
 const navLinks = [
   { href: "/", label: "Overview" },
@@ -53,27 +54,40 @@ export default function Sidebar({ onClose }: SidebarProps) {
           ))}
         </nav>
         <div className="mt-auto pt-4 space-y-4">
-          <Button
-            variant="outline"
-            className="w-full flex items-center justify-center text-sm"
-          >
-            ☀️ Light
-          </Button>
+          {/* Cool Theme Toggle */}
+          <div className="flex items-center justify-center">
+            <div className="relative">
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="relative w-16 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full p-1 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 transform-gpu"
+              >
+                <div
+                  className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ease-in-out transform-gpu ${
+                    theme === "dark" ? "translate-x-8" : "translate-x-0"
+                  }`}
+                >
+                  <div className="flex items-center justify-center w-full h-full">
+                    {theme === "dark" ? (
+                      <Moon className="w-3 h-3 text-gray-800" />
+                    ) : (
+                      <Sun className="w-3 h-3 text-yellow-500" />
+                    )}
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
 
           {/* Powered by section */}
           <div className="flex flex-col items-center gap-2 pt-4 border-t border-border/50">
             <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
               <span className="font-medium">Powered by</span>
-              <div className="relative w-12 h-5">
+              <div className="relative w-20 h-8">
                 <Image
                   src="/Infinix_logo-removebg-preview.png"
                   alt="Infinix"
                   fill
                   className="object-contain"
-                  style={{
-                    filter:
-                      "brightness(0) saturate(100%) invert(0) sepia(0) saturate(0) hue-rotate(0deg) brightness(0.4) contrast(1)",
-                  }}
                 />
               </div>
             </div>
@@ -106,28 +120,40 @@ export default function Sidebar({ onClose }: SidebarProps) {
         ))}
       </nav>
       <div className="mt-auto pt-4 space-y-4">
-        <Button
-          variant="outline"
-          className="w-full flex items-center justify-center text-sm transition-all duration-200 ease-out transform-gpu hover:scale-[1.02] hover:-translate-y-0.5 hover:shadow-md"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        >
-          {theme === "dark" ? "🌙 Dark" : "☀️ Light"}
-        </Button>
+        {/* Cool Theme Toggle */}
+        <div className="flex items-center justify-center">
+          <div className="relative">
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="relative w-16 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full p-1 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 transform-gpu"
+            >
+              <div
+                className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ease-in-out transform-gpu ${
+                  theme === "dark" ? "translate-x-8" : "translate-x-0"
+                }`}
+              >
+                <div className="flex items-center justify-center w-full h-full">
+                  {theme === "dark" ? (
+                    <Moon className="w-3 h-3 text-gray-800" />
+                  ) : (
+                    <Sun className="w-3 h-3 text-yellow-500" />
+                  )}
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
 
         {/* Powered by section */}
         <div className="flex flex-col items-center gap-2 pt-4 border-t border-border/50">
           <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
             <span className="font-medium">Powered by</span>
-            <div className="relative w-12 h-5">
+            <div className="relative w-20 h-8">
               <Image
                 src="/Infinix_logo-removebg-preview.png"
                 alt="Infinix"
                 fill
-                className="object-contain dark:invert"
-                style={{
-                  filter:
-                    "brightness(0) saturate(100%) invert(0) sepia(0) saturate(0) hue-rotate(0deg) brightness(0.4) contrast(1)",
-                }}
+                className="object-contain"
               />
             </div>
           </div>

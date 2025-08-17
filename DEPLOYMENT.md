@@ -75,6 +75,34 @@ RAPIDAPI_KEY=your_rapidapi_key_for_football_data
    - `/api/seed/players` - Seed players data
    - `/api/seed/fixtures` - Seed fixtures data
 
+## Authentication Setup
+
+### Google OAuth Setup
+
+1. **Go to Google Cloud Console**: https://console.cloud.google.com/
+2. **Create a new project** or select an existing one
+3. **Enable Google+ API**:
+   - Go to "APIs & Services" > "Library"
+   - Search for "Google+ API" and enable it
+4. **Create OAuth 2.0 credentials**:
+   - Go to "APIs & Services" > "Credentials"
+   - Click "Create Credentials" > "OAuth 2.0 Client IDs"
+   - Choose "Web application"
+   - Add authorized redirect URIs:
+     - `https://your-app-name.herokuapp.com/api/auth/callback/google`
+     - `http://localhost:3000/api/auth/callback/google` (for local development)
+5. **Copy the credentials** and set as environment variables:
+   - `GOOGLE_CLIENT_ID`
+   - `GOOGLE_CLIENT_SECRET`
+
+### NextAuth Configuration
+
+1. **Generate a secure secret** for `NEXTAUTH_SECRET`:
+   ```bash
+   openssl rand -base64 32
+   ```
+2. **Set the correct `NEXTAUTH_URL`** to your production domain
+
 ## API Setup
 
 1. **Get a RapidAPI key** from [API-Football](https://rapidapi.com/api-sports/api/api-football/)
@@ -97,6 +125,13 @@ RAPIDAPI_KEY=your_rapidapi_key_for_football_data
 
 - Verify RapidAPI key is valid and has sufficient credits
 - Check API rate limits
+
+### Authentication Issues
+
+- **"UntrustedHost" error**: Ensure `NEXTAUTH_URL` is set correctly to your production domain
+- **Google OAuth errors**: Verify Google OAuth credentials are correct and redirect URIs are properly configured
+- **"Configuration" error**: Check that all required environment variables are set
+- **Session issues**: Ensure `NEXTAUTH_SECRET` is set and is consistent across deployments
 
 ## Local Testing
 

@@ -6,7 +6,6 @@ import SearchBar from "./SearchBar";
 import SeasonToggle from "./SeasonToggle";
 import UserProfile from "./UserProfile";
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -15,7 +14,6 @@ interface HeaderProps {
 
 export default function Header({ onMenuToggle, isSidebarOpen }: HeaderProps) {
   const { data: session } = useSession();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

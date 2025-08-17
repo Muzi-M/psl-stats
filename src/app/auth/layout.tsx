@@ -30,17 +30,12 @@ export default function AuthLayout({
       enableSystem
       disableTransitionOnChange
     >
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex flex-col">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex flex-col">
         {/* Header with App Identity and Theme Toggle */}
         <div className="flex items-center justify-between p-6">
           <div className="flex items-center space-x-3">
-            <div className="relative w-8 h-8">
-              <Image
-                src="/Infinix_logo-removebg-preview.png"
-                alt="Infinix"
-                fill
-                className="object-contain"
-              />
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">I</span>
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -77,13 +72,8 @@ export default function AuthLayout({
             <span className="text-sm text-gray-600 dark:text-gray-400">
               Powered by
             </span>
-            <div className="relative w-5 h-5">
-              <Image
-                src="/Infinix_logo-removebg-preview.png"
-                alt="Infinix"
-                fill
-                className="object-contain"
-              />
+            <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded flex items-center justify-center">
+              <span className="text-white font-bold text-xs">I</span>
             </div>
           </div>
         </div>

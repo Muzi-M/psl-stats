@@ -34,7 +34,24 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      await signIn("google", { callbackUrl: "/" });
+      console.log("Starting Google sign in...");
+      const result = await signIn("google", {
+        callbackUrl: "/",
+        redirect: false,
+      });
+
+      console.log("Sign in result:", result);
+
+      if (result?.error) {
+        console.error("Sign in error:", result.error);
+        setIsLoading(false);
+      } else if (result?.ok) {
+        console.log("Sign in successful, redirecting...");
+        router.push("/");
+      } else {
+        console.log("No result from sign in");
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error("Sign in error:", error);
       setIsLoading(false);

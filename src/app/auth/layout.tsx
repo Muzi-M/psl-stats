@@ -5,7 +5,6 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 export default function AuthLayout({
   children,
@@ -35,16 +34,26 @@ export default function AuthLayout({
         <div className="flex items-center justify-between p-6">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg overflow-hidden">
-              <Image
+              <img
                 src="/Infinix_logo-removebg-preview.png"
                 alt="Infinix Logo"
-                width={48}
-                height={48}
                 className="w-full h-full object-contain"
-                priority
                 onLoad={() => console.log("Logo loaded successfully")}
                 onError={(e) => {
-                  console.error("Logo failed to load:", e);
+                  console.error("Logo failed to load, trying fallback:", e);
+                  // Try fallback path
+                  const target = e.target as HTMLImageElement;
+                  target.src = "/infinix-fav-icon.png";
+                  target.onerror = (fallbackError) => {
+                    console.error("Fallback logo also failed:", fallbackError);
+                    // Final fallback to text
+                    target.style.display = "none";
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML =
+                        '<span class="text-white font-bold text-xl">I</span>';
+                    }
+                  };
                 }}
               />
             </div>
@@ -84,16 +93,32 @@ export default function AuthLayout({
               Powered by
             </span>
             <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 rounded overflow-hidden">
-              <Image
+              <img
                 src="/Infinix_logo-removebg-preview.png"
                 alt="Infinix Logo"
-                width={32}
-                height={32}
                 className="w-full h-full object-contain"
-                priority
                 onLoad={() => console.log("Footer logo loaded successfully")}
                 onError={(e) => {
-                  console.error("Footer logo failed to load:", e);
+                  console.error(
+                    "Footer logo failed to load, trying fallback:",
+                    e
+                  );
+                  // Try fallback path
+                  const target = e.target as HTMLImageElement;
+                  target.src = "/infinix-fav-icon.png";
+                  target.onerror = (fallbackError) => {
+                    console.error(
+                      "Footer fallback logo also failed:",
+                      fallbackError
+                    );
+                    // Final fallback to text
+                    target.style.display = "none";
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML =
+                        '<span class="text-white font-bold text-sm">I</span>';
+                    }
+                  };
                 }}
               />
             </div>

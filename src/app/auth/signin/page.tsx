@@ -60,26 +60,14 @@ export default function SignIn() {
       console.log("Current URL:", window.location.href);
       console.log("Environment:", process.env.NODE_ENV);
 
-      // Let NextAuth handle the entire OAuth flow
-      const result = await signIn("google", {
+      // Use automatic redirect for better OAuth flow
+      await signIn("google", {
         callbackUrl: "/",
-        redirect: false, // Don't redirect automatically, handle it manually
+        redirect: true, // Let NextAuth handle the redirect
       });
 
-      console.log("Sign in result:", result);
-
-      if (result?.error) {
-        console.error("Sign in error:", result.error);
-        setError(`Sign in failed: ${result.error}`);
-        setIsLoading(false);
-      } else if (result?.ok) {
-        console.log("Sign in successful, redirecting...");
-        router.push("/");
-      } else {
-        // If no result, the redirect should have happened
-        console.log("No result returned, checking if redirect happened");
-        setIsLoading(false);
-      }
+      // This code won't execute if redirect is true, but keeping for safety
+      console.log("Sign in initiated, redirecting to Google...");
     } catch (error) {
       console.error("Sign in error:", error);
       setError("An unexpected error occurred during sign in");

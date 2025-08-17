@@ -10,31 +10,13 @@ export default function middleware(req: NextRequest) {
     pathname.startsWith(route)
   );
 
-  // Check for authentication token in cookies
+  // Check for authentication token in cookies - simplified approach
   const sessionToken = req.cookies.get("next-auth.session-token");
   const secureSessionToken = req.cookies.get(
     "__Secure-next-auth.session-token"
   );
   const csrfToken = req.cookies.get("__Host-next-auth.csrf-token");
   const secureCsrfToken = req.cookies.get("__Secure-next-auth.csrf-token");
-
-  // Also check for JWT token cookies
-  const jwtToken = req.cookies.get("next-auth.jwt-token");
-  const secureJwtToken = req.cookies.get("__Secure-next-auth.jwt-token");
-
-  // Check for the actual JWT token that NextAuth uses
-  const authToken = req.cookies.get("next-auth.auth-token");
-  const secureAuthToken = req.cookies.get("__Secure-next-auth.auth-token");
-
-  // Check for any cookie that contains "next-auth" (fallback)
-  const allCookies = req.cookies.getAll();
-  const hasNextAuthCookie = allCookies.some(
-    (cookie) =>
-      cookie.name.includes("next-auth") &&
-      cookie.value &&
-      cookie.value.length > 10 &&
-      cookie.value !== "null"
-  );
 
   // Check if any auth-related cookies exist and have valid values
   const isLoggedIn = !!(
@@ -45,39 +27,18 @@ export default function middleware(req: NextRequest) {
     (csrfToken && csrfToken.value && csrfToken.value !== "null") ||
     (secureCsrfToken &&
       secureCsrfToken.value &&
-      secureCsrfToken.value !== "null") ||
-    (jwtToken && jwtToken.value && jwtToken.value !== "null") ||
-    (secureJwtToken &&
-      secureJwtToken.value &&
-      secureJwtToken.value !== "null") ||
-    (authToken && authToken.value && authToken.value !== "null") ||
-    (secureAuthToken &&
-      secureAuthToken.value &&
-      secureAuthToken.value !== "null") ||
-    hasNextAuthCookie
+      secureCsrfToken.value !== "null")
   );
 
-  // Debug logging (always log for troubleshooting)
+  // Debug logging
   console.log("Middleware Debug:", {
     pathname,
     isPublicRoute,
-    sessionToken: !!sessionToken,
-    secureSessionToken: !!secureSessionToken,
-    csrfToken: !!csrfToken,
-    secureCsrfToken: !!secureCsrfToken,
-    jwtToken: !!jwtToken,
-    secureJwtToken: !!secureJwtToken,
-    authToken: !!authToken,
-    secureAuthToken: !!secureAuthToken,
-    hasNextAuthCookie,
     isLoggedIn,
-    sessionTokenValue: sessionToken?.value || "null",
-    secureSessionTokenValue: secureSessionToken?.value || "null",
-    jwtTokenValue: jwtToken?.value || "null",
-    secureJwtTokenValue: secureJwtToken?.value || "null",
-    authTokenValue: authToken?.value || "null",
-    secureAuthTokenValue: secureAuthToken?.value || "null",
-    allCookies: allCookies.map((c) => c.name).join(", "),
+    sessionToken: sessionToken?.value || "null",
+    secureSessionToken: secureSessionToken?.value || "null",
+    csrfToken: csrfToken?.value || "null",
+    secureCsrfToken: secureCsrfToken?.value || "null",
   });
 
   // If the user is not logged in and trying to access a protected route

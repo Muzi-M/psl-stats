@@ -40,41 +40,93 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/psl-dashboard
 
 ## Recent Fixes and Improvements
 
-### Logo Display Issues (Fixed)
+### Logo Display Issues (Fixed - Latest Update)
 
 **Problem**: Logos were not displaying properly and showing fallback "I" icons.
 
-**Solution**:
+**Latest Solution**:
 
-- Updated to use Next.js `Image` component for better optimization
-- Added proper error handling and loading states
-- Improved image container styling with `overflow-hidden`
+- Reverted to regular `<img>` tags for better compatibility
+- Added fallback logo path (`/infinix-fav-icon.png`) if main logo fails
+- Improved error handling with multiple fallback attempts
+- Added test page at `/test-logos` to verify logo accessibility
 
 **Files Modified**:
 
 - `src/app/auth/layout.tsx`
+- `src/app/test-logos/page.tsx` (new test page)
 
-### OAuth Flow Issues (Fixed)
+### OAuth Flow Issues (Fixed - Latest Update)
 
 **Problem**: Users were being redirected back to the sign-in page after clicking "Sign in with Google".
 
-**Root Causes**:
+**Latest Solutions**:
 
-1. Cookie detection issues in middleware
-2. Improper session token handling
-3. Missing secure cookie configuration
-
-**Solutions**:
-
-1. **Enhanced Middleware**: Improved cookie detection logic to properly validate session tokens
-2. **NextAuth Configuration**: Added explicit cookie configuration and session management
-3. **Sign-in Flow**: Updated to handle authentication results properly with better error handling
+1. **Simplified Middleware**: Reduced complexity in cookie detection to focus on core authentication
+2. **Enhanced NextAuth Configuration**: Added explicit cookie configuration for all NextAuth cookies
+3. **Improved Sign-in Flow**: Reverted to automatic redirect handling for better OAuth flow
+4. **Debug Mode**: Enabled comprehensive logging to track authentication issues
 
 **Files Modified**:
 
 - `src/lib/auth.ts`
 - `src/middleware.ts`
 - `src/app/auth/signin/page.tsx`
+
+## Current Issues and Solutions
+
+### Issue 1: Logo Loading Failures
+
+**Symptoms**:
+
+- Console errors: "Logo failed to load"
+- Icons showing instead of logos
+
+**Immediate Solutions**:
+
+1. **Test Logo Accessibility**: Visit `/test-logos` to verify logo files are accessible
+2. **Check File Paths**: Ensure logo files exist in `/public/` directory
+3. **Fallback System**: The system now tries multiple logo paths automatically
+
+**Debugging Steps**:
+
+```bash
+# Check if logo files exist
+ls -la public/Infinix_logo-removebg-preview.png
+ls -la public/infinix-fav-icon.png
+
+# Test logo accessibility
+curl -I https://your-domain.com/Infinix_logo-removebg-preview.png
+curl -I https://your-domain.com/infinix-fav-icon.png
+```
+
+### Issue 2: OAuth Redirect Loop
+
+**Symptoms**:
+
+- Sign-in appears successful but user stays on sign-in page
+- No authentication cookies being set
+- Middleware logs show all cookies as "null"
+
+**Immediate Solutions**:
+
+1. **Verify Environment Variables**:
+
+   ```bash
+   heroku config:get NEXTAUTH_URL
+   heroku config:get NEXTAUTH_SECRET
+   heroku config:get GOOGLE_CLIENT_ID
+   heroku config:get GOOGLE_CLIENT_SECRET
+   ```
+
+2. **Check Google OAuth Configuration**:
+
+   - Ensure redirect URI is exactly: `https://infinixdigital-footy-48dc94474adc.herokuapp.com/api/auth/callback/google`
+   - Verify domain is authorized in Google Cloud Console
+
+3. **Clear Browser Data**:
+   - Clear cookies and cache
+   - Try in incognito/private mode
 
 ## Troubleshooting
 
@@ -89,9 +141,10 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/psl-dashboard
 
 **Solutions**:
 
-- Verify the logo file exists in `/public/Infinix_logo-removebg-preview.png`
+- Visit `/test-logos` to verify logo accessibility
 - Check browser console for CORS or loading errors
-- Ensure the image path is correct in the code
+- Verify the image paths are correct
+- Check if files exist in the public directory
 
 #### 2. OAuth Redirect Loop
 
@@ -213,7 +266,12 @@ This will provide detailed logs for:
    npm run dev
    ```
 
-2. **Test authentication flow**:
+2. **Test logo accessibility**:
+
+   - Visit `http://localhost:3000/test-logos`
+   - Verify both logos load successfully
+
+3. **Test authentication flow**:
 
    - Navigate to `/auth/signin`
    - Click "Continue with Google"
@@ -221,7 +279,7 @@ This will provide detailed logs for:
    - Complete authentication
    - Verify redirect back to dashboard
 
-3. **Test session persistence**:
+4. **Test session persistence**:
    - Refresh the page
    - Verify user remains logged in
    - Check browser cookies
@@ -229,10 +287,13 @@ This will provide detailed logs for:
 ### Production Testing
 
 1. **Deploy to staging environment**
-2. **Test with production Google OAuth credentials**
-3. **Verify all environment variables**
-4. **Test authentication flow end-to-end**
-5. **Monitor logs for any issues**
+2. **Test logo accessibility**:
+   - Visit `https://your-domain.com/test-logos`
+   - Verify logos load correctly
+3. **Test with production Google OAuth credentials**
+4. **Verify all environment variables**
+5. **Test authentication flow end-to-end**
+6. **Monitor logs for any issues**
 
 ## Security Considerations
 
@@ -251,10 +312,12 @@ If you encounter issues not covered in this guide:
 3. Test with a fresh browser session (clear cookies)
 4. Review the NextAuth.js documentation for additional guidance
 5. Check Google Cloud Console for OAuth configuration issues
+6. Visit `/test-logos` to verify logo accessibility
 
 ## Recent Updates
 
-- **2025-08-17**: Fixed logo display issues and OAuth flow problems
-- **2025-08-17**: Enhanced middleware cookie detection
-- **2025-08-17**: Improved error handling in sign-in flow
-- **2025-08-17**: Added comprehensive troubleshooting guide
+- **2025-08-17**: Fixed logo display issues with fallback system
+- **2025-08-17**: Simplified middleware for better OAuth flow
+- **2025-08-17**: Enhanced NextAuth configuration with explicit cookie settings
+- **2025-08-17**: Added test page for logo verification
+- **2025-08-17**: Updated troubleshooting guide with current issues

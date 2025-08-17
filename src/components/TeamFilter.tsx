@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useAppContext } from "@/context/AppContext";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import TeamDisplay from "./ui/TeamDisplay";
+import { Button } from "./ui/button";
+import { ChevronDown, Check } from "lucide-react";
 
 interface TeamFilterProps {
   value: string;
@@ -13,6 +14,7 @@ interface TeamFilterProps {
 export default function TeamFilter({ value, onChange }: TeamFilterProps) {
   const [teams, setTeams] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { season } = useAppContext();
 
   useEffect(() => {
@@ -40,6 +42,11 @@ export default function TeamFilter({ value, onChange }: TeamFilterProps) {
         setIsLoading(false);
       });
   }, [season]);
+
+  const handleTeamSelect = (teamName: string) => {
+    onChange(teamName);
+    setIsOpen(false);
+  };
 
   if (isLoading) {
     return (
@@ -77,55 +84,40 @@ export default function TeamFilter({ value, onChange }: TeamFilterProps) {
         <CardTitle className="text-lg lg:text-xl">Select Team</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-          {teams.map((teamName, index) => {
-            const isSelected = value === teamName;
-            return (
-              <button
-                key={`${teamName}-${index}`}
-                onClick={() => onChange(teamName)}
-                className={`p-3 rounded-lg border-2 transition-all duration-300 ease-out text-center group transform-gpu hover:scale-105 hover:-translate-y-1 relative overflow-hidden ${
-                  isSelected
-                    ? "border-primary bg-primary text-primary-foreground shadow-xl scale-105 -translate-y-1 ring-4 ring-primary/20 font-semibold"
-                    : "border-border bg-card hover:bg-accent hover:shadow-lg hover:border-primary/50"
-                }`}
-              >
-                {/* Selection indicator */}
-                {isSelected && (
-                  <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-t-[20px] border-t-primary-foreground transform rotate-45 translate-x-2 -translate-y-2"></div>
-                )}
+        <div className="relative">
+          <Button
+            onClick={() => setIsOpen(!isOpen)}
+            variant="outline"
+            className="w-full justify-between items-center p-4 h-auto"
+          >
+            <span className="text-left">{value || "Choose a team..."}</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </Button>
 
-                <div className="flex flex-col items-center gap-2">
-                  <div
-                    className={`text-xs sm:text-sm font-medium truncate w-full transition-colors duration-200 ${
-                      isSelected
-                        ? "text-primary-foreground"
-                        : "group-hover:text-primary"
-                    }`}
-                  >
-                    {teamName || "Unknown Team"}
-                  </div>
-
-                  {/* Selection checkmark */}
-                  {isSelected && (
-                    <div className="absolute top-1 right-1 w-4 h-4 bg-primary-foreground rounded-full flex items-center justify-center">
-                      <svg
-                        className="w-2.5 h-2.5 text-primary"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
+          {isOpen && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto">
+              {teams.map((teamName, index) => (
+                <button
+                  key={`${teamName}-${index}`}
+                  onClick={() => handleTeamSelect(teamName)}
+                  className={`w-full px-4 py-3 text-left hover:bg-accent transition-colors duration-200 flex items-center justify-between ${
+                    value === teamName
+                      ? "bg-primary/10 text-primary font-medium"
+                      : ""
+                  }`}
+                >
+                  <span className="truncate">{teamName || "Unknown Team"}</span>
+                  {value === teamName && (
+                    <Check className="h-4 w-4 text-primary" />
                   )}
-                </div>
-              </button>
-            );
-          })}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

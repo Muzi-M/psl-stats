@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useAppContext } from "@/context/AppContext";
 import { useLoading } from "@/context/LoadingContext";
 import LoadingSpinner from "./LoadingSpinner";
@@ -111,11 +112,19 @@ export default function StandingsTable() {
                       {team.rank || "N/A"}
                     </TableCell>
                     <TableCell>
-                      <TeamDisplay
-                        name={team.team?.name || "Unknown Team"}
-                        logo={team.team?.logo || "/next.svg"}
-                        size="md"
-                      />
+                      <Link
+                        href={`/teams/${encodeURIComponent(
+                          team.team?.name || "Unknown Team"
+                        )}`}
+                        className="block hover:scale-105 transition-transform duration-200"
+                      >
+                        <TeamDisplay
+                          name={team.team?.name || "Unknown Team"}
+                          logo={team.team?.logo || "/next.svg"}
+                          size="md"
+                          className="hover:text-primary transition-colors duration-200"
+                        />
+                      </Link>
                     </TableCell>
                     <TableCell className="text-center">
                       {team.all?.played || 0}
@@ -150,65 +159,70 @@ export default function StandingsTable() {
           {/* Mobile Cards */}
           <div className="lg:hidden space-y-3">
             {standings.map((team: any) => (
-              <div
+              <Link
                 key={team.rank}
-                className="border rounded-lg p-3 bg-card shadow-sm hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 ease-out transform-gpu group"
+                href={`/teams/${encodeURIComponent(
+                  team.team?.name || "Unknown Team"
+                )}`}
+                className="block"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
+                <div className="border rounded-lg p-3 bg-card shadow-sm hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 ease-out transform-gpu group">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">
+                        {team.rank || "N/A"}
+                      </span>
+                      <TeamDisplay
+                        name={team.team?.name || "Unknown Team"}
+                        logo={team.team?.logo || "/next.svg"}
+                        size="sm"
+                        className="font-medium text-sm lg:text-base truncate group-hover:text-primary transition-colors duration-200"
+                      />
+                    </div>
                     <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">
-                      {team.rank || "N/A"}
+                      {team.points || 0} pts
                     </span>
-                    <TeamDisplay
-                      name={team.team?.name || "Unknown Team"}
-                      logo={team.team?.logo || "/next.svg"}
-                      size="sm"
-                      className="font-medium text-sm lg:text-base truncate group-hover:text-primary transition-colors duration-200"
-                    />
                   </div>
-                  <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">
-                    {team.points || 0} pts
-                  </span>
-                </div>
 
-                <div className="grid grid-cols-4 gap-2 text-xs">
-                  <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <div className="text-muted-foreground">P</div>
-                    <div className="font-medium">{team.all?.played || 0}</div>
-                  </div>
-                  <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <div className="text-muted-foreground">W</div>
-                    <div className="font-medium">{team.all?.win || 0}</div>
-                  </div>
-                  <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <div className="text-muted-foreground">D</div>
-                    <div className="font-medium">{team.all?.draw || 0}</div>
-                  </div>
-                  <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <div className="text-muted-foreground">L</div>
-                    <div className="font-medium">{team.all?.lose || 0}</div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 text-xs mt-2">
-                  <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <div className="text-muted-foreground">GF</div>
-                    <div className="font-medium">
-                      {team.all?.goals?.for || 0}
+                  <div className="grid grid-cols-4 gap-2 text-xs">
+                    <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <div className="text-muted-foreground">P</div>
+                      <div className="font-medium">{team.all?.played || 0}</div>
+                    </div>
+                    <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <div className="text-muted-foreground">W</div>
+                      <div className="font-medium">{team.all?.win || 0}</div>
+                    </div>
+                    <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <div className="text-muted-foreground">D</div>
+                      <div className="font-medium">{team.all?.draw || 0}</div>
+                    </div>
+                    <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <div className="text-muted-foreground">L</div>
+                      <div className="font-medium">{team.all?.lose || 0}</div>
                     </div>
                   </div>
-                  <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <div className="text-muted-foreground">GA</div>
-                    <div className="font-medium">
-                      {team.all?.goals?.against || 0}
+
+                  <div className="grid grid-cols-3 gap-2 text-xs mt-2">
+                    <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <div className="text-muted-foreground">GF</div>
+                      <div className="font-medium">
+                        {team.all?.goals?.for || 0}
+                      </div>
+                    </div>
+                    <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <div className="text-muted-foreground">GA</div>
+                      <div className="font-medium">
+                        {team.all?.goals?.against || 0}
+                      </div>
+                    </div>
+                    <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <div className="text-muted-foreground">GD</div>
+                      <div className="font-medium">{team.goalsDiff || 0}</div>
                     </div>
                   </div>
-                  <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <div className="text-muted-foreground">GD</div>
-                    <div className="font-medium">{team.goalsDiff || 0}</div>
-                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </CardContent>

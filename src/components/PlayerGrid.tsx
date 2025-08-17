@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import debounce from "lodash.debounce";
 import { useAppContext } from "@/context/AppContext";
 import { useLoading } from "@/context/LoadingContext";
@@ -165,15 +166,27 @@ export default function PlayerGrid() {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg lg:text-xl font-bold group-hover:text-primary transition-colors duration-200">
-                        {p.player.name}
-                      </h3>
-                      <TeamDisplay
-                        name={p.teamName || "Unknown Team"}
-                        logo={teamLogo}
-                        size="md"
-                        className="text-sm text-muted-foreground group-hover:text-primary/70 transition-colors duration-200"
-                      />
+                      <Link
+                        href={`/players/${encodeURIComponent(p.player.name)}`}
+                        className="block hover:scale-105 transition-transform duration-200"
+                      >
+                        <h3 className="text-lg lg:text-xl font-bold group-hover:text-primary transition-colors duration-200 hover:text-primary">
+                          {p.player.name}
+                        </h3>
+                      </Link>
+                      <Link
+                        href={`/teams/${encodeURIComponent(
+                          p.teamName || "Unknown Team"
+                        )}`}
+                        className="inline-block hover:scale-105 transition-transform duration-200"
+                      >
+                        <TeamDisplay
+                          name={p.teamName || "Unknown Team"}
+                          logo={teamLogo}
+                          size="md"
+                          className="text-sm text-muted-foreground group-hover:text-primary/70 hover:text-primary transition-colors duration-200"
+                        />
+                      </Link>
                     </div>
                   </div>
 

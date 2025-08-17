@@ -9,7 +9,7 @@ type AppContextType = {
 const AppContext = createContext<AppContextType | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [season, setSeason] = useState(2023);
+  const [season, setSeason] = useState(2024);
 
   return (
     <AppContext.Provider value={{ season, setSeason }}>

@@ -2,6 +2,7 @@
 import { useAppContext } from "@/context/AppContext";
 import { useLoading } from "@/context/LoadingContext";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import debounce from "lodash.debounce";
 import { Search } from "lucide-react";
 import LoadingSpinner from "./LoadingSpinner";
@@ -196,21 +197,35 @@ export default function FixturesGrid() {
               ({f.fixture?.status?.short || "TBD"})
             </p>
             <div className="flex items-center justify-between font-medium">
-              <TeamDisplay
-                name={f.teams?.home?.name || "Unknown Team"}
-                logo={f.teams?.home?.logo || "/next.svg"}
-                size="sm"
-                className="flex-1"
-              />
+              <Link
+                href={`/teams/${encodeURIComponent(
+                  f.teams?.home?.name || "Unknown Team"
+                )}`}
+                className="flex-1 hover:scale-105 transition-transform duration-200"
+              >
+                <TeamDisplay
+                  name={f.teams?.home?.name || "Unknown Team"}
+                  logo={f.teams?.home?.logo || "/next.svg"}
+                  size="sm"
+                  className="hover:text-primary transition-colors duration-200"
+                />
+              </Link>
               <span className="mx-4">
                 {f.goals?.home ?? "-"} : {f.goals?.away ?? "-"}
               </span>
-              <TeamDisplay
-                name={f.teams?.away?.name || "Unknown Team"}
-                logo={f.teams?.away?.logo || "/next.svg"}
-                size="sm"
-                className="flex-1 text-right"
-              />
+              <Link
+                href={`/teams/${encodeURIComponent(
+                  f.teams?.away?.name || "Unknown Team"
+                )}`}
+                className="flex-1 text-right hover:scale-105 transition-transform duration-200"
+              >
+                <TeamDisplay
+                  name={f.teams?.away?.name || "Unknown Team"}
+                  logo={f.teams?.away?.logo || "/next.svg"}
+                  size="sm"
+                  className="hover:text-primary transition-colors duration-200"
+                />
+              </Link>
             </div>
           </div>
         ))}

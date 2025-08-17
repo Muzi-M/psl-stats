@@ -3,6 +3,7 @@
 import { useAppContext } from "@/context/AppContext";
 import { useLoading } from "@/context/LoadingContext";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import LoadingSpinner from "./LoadingSpinner";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
@@ -325,22 +326,27 @@ export default function TeamDashboard() {
               <CardContent>
                 <div className="space-y-3">
                   {topScorers.map((player, index) => (
-                    <div
+                    <Link
                       key={index}
-                      className="flex items-center justify-between"
+                      href={`/players/${encodeURIComponent(
+                        player.player?.name || "Unknown Player"
+                      )}`}
+                      className="block hover:scale-105 transition-transform duration-200"
                     >
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">
-                          {index + 1}.
-                        </span>
-                        <span className="text-sm">
-                          {player.player?.name || "Unknown Player"}
+                      <div className="flex items-center justify-between hover:bg-accent/50 p-2 rounded transition-colors duration-200">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">
+                            {index + 1}.
+                          </span>
+                          <span className="text-sm hover:text-primary transition-colors duration-200">
+                            {player.player?.name || "Unknown Player"}
+                          </span>
+                        </div>
+                        <span className="font-semibold text-green-600">
+                          {player.statistics?.[0]?.goals?.total || 0}
                         </span>
                       </div>
-                      <span className="font-semibold text-green-600">
-                        {player.statistics?.[0]?.goals?.total || 0}
-                      </span>
-                    </div>
+                    </Link>
                   ))}
                   {topScorers.length === 0 && (
                     <div className="text-sm text-muted-foreground">
@@ -361,22 +367,27 @@ export default function TeamDashboard() {
               <CardContent>
                 <div className="space-y-3">
                   {topAssists.map((player, index) => (
-                    <div
+                    <Link
                       key={index}
-                      className="flex items-center justify-between"
+                      href={`/players/${encodeURIComponent(
+                        player.player?.name || "Unknown Player"
+                      )}`}
+                      className="block hover:scale-105 transition-transform duration-200"
                     >
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">
-                          {index + 1}.
-                        </span>
-                        <span className="text-sm">
-                          {player.player?.name || "Unknown Player"}
+                      <div className="flex items-center justify-between hover:bg-accent/50 p-2 rounded transition-colors duration-200">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">
+                            {index + 1}.
+                          </span>
+                          <span className="text-sm hover:text-primary transition-colors duration-200">
+                            {player.player?.name || "Unknown Player"}
+                          </span>
+                        </div>
+                        <span className="font-semibold text-blue-600">
+                          {player.statistics?.[0]?.goals?.assists || 0}
                         </span>
                       </div>
-                      <span className="font-semibold text-blue-600">
-                        {player.statistics?.[0]?.goals?.assists || 0}
-                      </span>
-                    </div>
+                    </Link>
                   ))}
                   {topAssists.length === 0 && (
                     <div className="text-sm text-muted-foreground">
@@ -399,42 +410,47 @@ export default function TeamDashboard() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {teamPlayers.map((player, index) => (
-                  <div
+                  <Link
                     key={index}
-                    className="border rounded p-3 hover:shadow-md transition"
+                    href={`/players/${encodeURIComponent(
+                      player.player?.name || "Unknown Player"
+                    )}`}
+                    className="block hover:scale-105 transition-transform duration-200"
                   >
-                    <div className="flex items-center gap-3">
-                      <PlayerDisplay
-                        name={player.player?.name || "Unknown Player"}
-                        photo={player.player?.photo || "/next.svg"}
-                        size="md"
-                        className="flex-1"
-                      />
-                      <div className="text-sm text-muted-foreground">
-                        {player.statistics?.[0]?.games?.position || "N/A"}
+                    <div className="border rounded p-3 hover:shadow-md transition hover:bg-accent/50">
+                      <div className="flex items-center gap-3">
+                        <PlayerDisplay
+                          name={player.player?.name || "Unknown Player"}
+                          photo={player.player?.photo || "/next.svg"}
+                          size="md"
+                          className="flex-1 hover:text-primary transition-colors duration-200"
+                        />
+                        <div className="text-sm text-muted-foreground">
+                          {player.statistics?.[0]?.games?.position || "N/A"}
+                        </div>
+                      </div>
+                      <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
+                        <div className="text-center">
+                          <div className="font-semibold">
+                            {player.statistics?.[0]?.games?.appearences || 0}
+                          </div>
+                          <div className="text-muted-foreground">Apps</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-semibold text-green-600">
+                            {player.statistics?.[0]?.goals?.total || 0}
+                          </div>
+                          <div className="text-muted-foreground">Goals</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-semibold text-blue-600">
+                            {player.statistics?.[0]?.goals?.assists || 0}
+                          </div>
+                          <div className="text-muted-foreground">Assists</div>
+                        </div>
                       </div>
                     </div>
-                    <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
-                      <div className="text-center">
-                        <div className="font-semibold">
-                          {player.statistics?.[0]?.games?.appearences || 0}
-                        </div>
-                        <div className="text-muted-foreground">Apps</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="font-semibold text-green-600">
-                          {player.statistics?.[0]?.goals?.total || 0}
-                        </div>
-                        <div className="text-muted-foreground">Goals</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="font-semibold text-blue-600">
-                          {player.statistics?.[0]?.goals?.assists || 0}
-                        </div>
-                        <div className="text-muted-foreground">Assists</div>
-                      </div>
-                    </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </CardContent>

@@ -34,20 +34,9 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      const result = await signIn("google", {
-        callbackUrl: "/",
-        redirect: false,
-      });
-
-      if (result?.error) {
-        console.error("Sign in error:", result.error);
-        // You can add a toast notification here
-      } else if (result?.ok) {
-        router.push("/");
-      }
+      await signIn("google", { callbackUrl: "/" });
     } catch (error) {
       console.error("Sign in error:", error);
-    } finally {
       setIsLoading(false);
     }
   };

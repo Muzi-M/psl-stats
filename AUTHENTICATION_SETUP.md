@@ -214,6 +214,7 @@ If you encounter issues:
 
 1. **Sidebar showing on auth pages** - Fixed with new layout
 2. **Google OAuth redirect loop** - Users redirected back to sign-in page
+3. **Edge Runtime compatibility issues** - Fixed middleware to work with Edge Runtime
 
 ### Required Actions:
 
@@ -249,7 +250,7 @@ heroku config
 
 ```bash
 git add .
-git commit -m "Fix authentication layout and redirect issues"
+git commit -m "Fix authentication layout, redirect issues, and Edge Runtime compatibility"
 git push heroku main
 ```
 

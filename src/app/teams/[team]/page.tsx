@@ -97,7 +97,7 @@ export default function TeamPage() {
 
   // Load team data when selected team changes
   useEffect(() => {
-    if (!selectedTeam) return;
+    if (!selectedTeam || !season) return;
 
     setIsLoadingLocal(true);
 
@@ -127,10 +127,39 @@ export default function TeamPage() {
             goalsAgainst: teamStanding.all?.goals?.against || 0,
             goalDifference: teamStanding.goalsDiff || 0,
           });
+        } else {
+          // Set default stats if team not found in standings
+          setTeamStats({
+            teamName: selectedTeam,
+            logo: "/next.svg",
+            position: 0,
+            points: 0,
+            played: 0,
+            won: 0,
+            drawn: 0,
+            lost: 0,
+            goalsFor: 0,
+            goalsAgainst: 0,
+            goalDifference: 0,
+          });
         }
       })
       .catch((error) => {
         console.error("Error fetching standings:", error);
+        // Set default stats on error
+        setTeamStats({
+          teamName: selectedTeam,
+          logo: "/next.svg",
+          position: 0,
+          points: 0,
+          played: 0,
+          won: 0,
+          drawn: 0,
+          lost: 0,
+          goalsFor: 0,
+          goalsAgainst: 0,
+          goalDifference: 0,
+        });
       });
 
     // Fetch team players data
@@ -216,6 +245,55 @@ export default function TeamPage() {
     return (
       <div className="flex items-center justify-center py-8 lg:py-12">
         <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  // Ensure we have valid data before rendering
+  if (!selectedTeam || !teamStats) {
+    return (
+      <div className="space-y-6">
+        {/* Team Selector */}
+        <div className="relative team-dropdown">
+          <Button
+            onClick={() =>
+              !isTeamsLoading && setIsDropdownOpen(!isDropdownOpen)
+            }
+            disabled={isTeamsLoading}
+            className="flex items-center justify-between border border-input bg-background text-foreground px-4 py-2 rounded min-w-[200px] focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:opacity-50"
+          >
+            <span>
+              {isTeamsLoading
+                ? "Loading teams..."
+                : selectedTeam || "Select a team"}
+            </span>
+            <ChevronDown className="h-4 w-4 ml-2" />
+          </Button>
+
+          {isDropdownOpen && teams.length > 0 && !isTeamsLoading && (
+            <div className="absolute top-full left-0 mt-1 w-full border border-input bg-card text-card-foreground rounded shadow-lg z-[9999] min-w-[200px] dropdown-menu">
+              {teams.map((team, i) => (
+                <button
+                  key={`${team}-${i}`}
+                  onClick={() => handleTeamSelect(team)}
+                  className={`w-full text-left px-3 py-2 hover:bg-accent hover:text-accent-foreground transition-colors ${
+                    team === selectedTeam
+                      ? "bg-accent text-accent-foreground"
+                      : "text-card-foreground"
+                  }`}
+                >
+                  {team}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="text-center py-12 text-muted-foreground">
+          {isTeamsLoading
+            ? "Loading teams..."
+            : "Please select a team to view detailed statistics."}
+        </div>
       </div>
     );
   }
@@ -355,7 +433,7 @@ export default function TeamPage() {
                 <div className="space-y-3">
                   {topScorers.map((player, index) => (
                     <Link
-                      key={index}
+                      key={`scorer-${index}`}
                       href={`/players/${encodeURIComponent(
                         player.player?.name || "Unknown Player"
                       )}`}
@@ -396,7 +474,7 @@ export default function TeamPage() {
                 <div className="space-y-3">
                   {topAssists.map((player, index) => (
                     <Link
-                      key={index}
+                      key={`assist-${index}`}
                       href={`/players/${encodeURIComponent(
                         player.player?.name || "Unknown Player"
                       )}`}
@@ -439,7 +517,7 @@ export default function TeamPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {teamPlayers.map((player, index) => (
                   <Link
-                    key={index}
+                    key={`player-${index}`}
                     href={`/players/${encodeURIComponent(
                       player.player?.name || "Unknown Player"
                     )}`}

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
 
-export default function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Public routes that don't require authentication
@@ -10,20 +11,16 @@ export default function middleware(req: NextRequest) {
     pathname.startsWith(route)
   );
 
-  // Check for authentication token in cookies
-  const token =
-    req.cookies.get("next-auth.session-token") ||
-    req.cookies.get("__Secure-next-auth.session-token");
-
-  const isLoggedIn = !!token;
+  // Check for authentication using NextAuth
+  const session = await auth();
 
   // If the user is not logged in and trying to access a protected route
-  if (!isLoggedIn && !isPublicRoute) {
+  if (!session && !isPublicRoute) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
 
   // If the user is logged in and trying to access auth pages, redirect to home
-  if (isLoggedIn && isPublicRoute) {
+  if (session && isPublicRoute) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 

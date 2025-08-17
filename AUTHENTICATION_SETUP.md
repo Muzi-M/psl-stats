@@ -207,3 +207,65 @@ If you encounter issues:
 2. Verify all environment variables are set correctly
 3. Check Heroku logs: `heroku logs --tail`
 4. Ensure Google OAuth credentials are properly configured
+
+## Immediate Fixes for Current Issues
+
+### Current Problems Identified:
+
+1. **Sidebar showing on auth pages** - Fixed with new layout
+2. **Google OAuth redirect loop** - Users redirected back to sign-in page
+
+### Required Actions:
+
+#### 1. Set Correct Environment Variables on Heroku
+
+```bash
+# Set the correct NextAuth URL
+heroku config:set NEXTAUTH_URL=https://infinixdigital-footy-48dc94474adc.herokuapp.com
+
+# Generate and set a secure secret
+heroku config:set NEXTAUTH_SECRET=$(openssl rand -base64 32)
+
+# Set Google OAuth credentials (replace with your actual values)
+heroku config:set GOOGLE_CLIENT_ID=your-actual-google-client-id
+heroku config:set GOOGLE_CLIENT_SECRET=your-actual-google-client-secret
+
+# Verify the settings
+heroku config
+```
+
+#### 2. Update Google OAuth Redirect URIs
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Navigate to "APIs & Services" > "Credentials"
+3. Edit your OAuth 2.0 Client ID
+4. Add this exact redirect URI:
+   ```
+   https://infinixdigital-footy-48dc94474adc.herokuapp.com/api/auth/callback/google
+   ```
+5. Save the changes
+
+#### 3. Deploy the Updated Code
+
+```bash
+git add .
+git commit -m "Fix authentication layout and redirect issues"
+git push heroku main
+```
+
+#### 4. Test the Authentication
+
+1. Visit: https://infinixdigital-footy-48dc94474adc.herokuapp.com/auth/signin
+2. Click "Continue with Google"
+3. Complete the OAuth flow
+4. You should be redirected to the dashboard
+
+#### 5. Check Heroku Logs
+
+If issues persist, check the logs:
+
+```bash
+heroku logs --tail
+```
+
+Look for any authentication-related errors.

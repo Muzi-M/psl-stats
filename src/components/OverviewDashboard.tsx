@@ -61,26 +61,30 @@ export default function OverviewDashboard() {
       <SeasonToggle />
 
       <div className="grid gap-4 lg:gap-6 sm:grid-cols-2 lg:grid-cols-2">
-        <Card>
+        <Card className="hover:shadow-xl transition-all duration-300 ease-out group">
           <CardHeader>
-            <CardTitle className="text-lg lg:text-xl">Top 5 Teams</CardTitle>
+            <CardTitle className="text-lg lg:text-xl group-hover:text-primary transition-colors duration-200">
+              Top 5 Teams
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 lg:space-y-3">
               {standings.slice(0, 5).map((team: any) => (
                 <li
                   key={team.rank}
-                  className="flex items-center gap-2 lg:gap-3 text-sm lg:text-base"
+                  className="flex items-center gap-2 lg:gap-3 text-sm lg:text-base p-2 rounded-md hover:bg-accent/50 transition-all duration-200 hover:scale-[1.02] transform-gpu group/item"
                 >
-                  <img
-                    src={team.team.logo}
-                    alt={team.team.name}
-                    className="h-5 w-5 lg:h-6 lg:w-6 flex-shrink-0"
-                  />
-                  <span className="font-medium truncate">
+                  <div className="relative overflow-hidden rounded-full border border-primary/20">
+                    <img
+                      src={team.team.logo}
+                      alt={team.team.name}
+                      className="h-5 w-5 lg:h-6 lg:w-6 flex-shrink-0 transition-all duration-200 group-hover/item:scale-110"
+                    />
+                  </div>
+                  <span className="font-medium truncate group-hover/item:text-primary transition-colors duration-200">
                     {team.rank}. {team.team.name}
                   </span>
-                  <span className="ml-auto text-muted-foreground flex-shrink-0">
+                  <span className="ml-auto text-muted-foreground flex-shrink-0 group-hover/item:text-primary transition-colors duration-200">
                     {team.points} pts
                   </span>
                 </li>
@@ -93,9 +97,9 @@ export default function OverviewDashboard() {
             </Button>
           </CardFooter>
         </Card>
-        <Card>
+        <Card className="hover:shadow-xl transition-all duration-300 ease-out group">
           <CardHeader>
-            <CardTitle className="text-lg lg:text-xl">
+            <CardTitle className="text-lg lg:text-xl group-hover:text-primary transition-colors duration-200">
               Last 5 Fixtures
             </CardTitle>
           </CardHeader>
@@ -104,16 +108,21 @@ export default function OverviewDashboard() {
               {recentFixtures.map((f: any, i) => (
                 <li
                   key={i}
-                  className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-1"
+                  className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-1 p-2 rounded-md hover:bg-accent/50 transition-all duration-200 hover:scale-[1.02] transform-gpu group/item"
                 >
                   <div className="flex flex-wrap items-center gap-1">
-                    <span className="truncate">{f.teams.home.name} </span>
+                    <span className="truncate group-hover/item:text-primary transition-colors duration-200">
+                      {f.teams.home.name}{" "}
+                    </span>
                     <span className="font-bold">{f.goals.home}</span>
                     <span> : </span>
                     <span className="font-bold">{f.goals.away}</span>
-                    <span className="truncate"> {f.teams.away.name}</span>
+                    <span className="truncate group-hover/item:text-primary transition-colors duration-200">
+                      {" "}
+                      {f.teams.away.name}
+                    </span>
                   </div>
-                  <div className="text-xs text-muted-foreground lg:text-sm">
+                  <div className="text-xs text-muted-foreground lg:text-sm group-hover/item:text-primary/70 transition-colors duration-200">
                     {new Date(f.fixture.date).toLocaleDateString()}
                   </div>
                 </li>
@@ -126,9 +135,11 @@ export default function OverviewDashboard() {
             </Button>
           </CardFooter>
         </Card>
-        <Card className="sm:col-span-2">
+        <Card className="sm:col-span-2 hover:shadow-xl transition-all duration-300 ease-out group">
           <CardHeader>
-            <CardTitle className="text-lg lg:text-xl">Top 5 Scorers</CardTitle>
+            <CardTitle className="text-lg lg:text-xl group-hover:text-primary transition-colors duration-200">
+              Top 5 Scorers
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64 lg:h-80">
@@ -141,9 +152,9 @@ export default function OverviewDashboard() {
             </Button>
           </CardFooter>
         </Card>
-        <Card className="sm:col-span-2">
+        <Card className="sm:col-span-2 hover:shadow-xl transition-all duration-300 ease-out group">
           <CardHeader>
-            <CardTitle className="text-lg lg:text-xl">
+            <CardTitle className="text-lg lg:text-xl group-hover:text-primary transition-colors duration-200">
               Top 10 Rated Players
             </CardTitle>
           </CardHeader>

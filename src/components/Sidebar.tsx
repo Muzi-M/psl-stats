@@ -36,8 +36,8 @@ export default function Sidebar({ onClose }: SidebarProps) {
 
   if (!mounted) {
     return (
-      <aside className="h-screen sticky top-0 flex flex-col gap-2 w-56 min-w-[12rem] p-4 bg-card border-r">
-        <div className="mb-6 text-2xl font-bold tracking-tight text-primary">
+      <aside className="h-screen sticky top-0 flex flex-col gap-2 w-56 min-w-[12rem] p-4 bg-card border-r shadow-lg">
+        <div className="mb-6 text-xl lg:text-2xl font-bold tracking-tight text-primary">
           PSL Dashboard
         </div>
         <nav className="flex flex-col gap-1">
@@ -46,7 +46,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
               asChild
               key={link.href}
               variant={pathname === link.href ? "default" : "ghost"}
-              className="justify-start w-full"
+              className="justify-start w-full text-sm lg:text-base"
             >
               <Link href={link.href}>{link.label}</Link>
             </Button>
@@ -55,7 +55,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
         <div className="mt-auto pt-4">
           <Button
             variant="outline"
-            className="w-full flex items-center justify-center"
+            className="w-full flex items-center justify-center text-sm"
           >
             ☀️ Light
           </Button>
@@ -65,8 +65,8 @@ export default function Sidebar({ onClose }: SidebarProps) {
   }
 
   return (
-    <aside className="h-screen sticky top-0 flex flex-col gap-2 w-56 min-w-[12rem] p-4 bg-card border-r shadow-lg">
-      <div className="mb-6 text-xl lg:text-2xl font-bold tracking-tight text-primary">
+    <aside className="h-screen sticky top-0 flex flex-col gap-2 w-56 min-w-[12rem] p-4 bg-card border-r shadow-lg backdrop-blur-sm">
+      <div className="mb-6 text-xl lg:text-2xl font-bold tracking-tight text-primary hover:scale-105 transition-transform duration-200 transform-gpu">
         PSL Dashboard
       </div>
       <nav className="flex flex-col gap-1">
@@ -75,7 +75,11 @@ export default function Sidebar({ onClose }: SidebarProps) {
             asChild
             key={link.href}
             variant={pathname === link.href ? "default" : "ghost"}
-            className="justify-start w-full text-sm lg:text-base"
+            className={`justify-start w-full text-sm lg:text-base transition-all duration-200 ease-out transform-gpu hover:scale-[1.02] hover:-translate-y-0.5 ${
+              pathname === link.href
+                ? "scale-[1.02] -translate-y-0.5 shadow-lg"
+                : ""
+            }`}
             onClick={handleLinkClick}
           >
             <Link href={link.href}>{link.label}</Link>
@@ -85,7 +89,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
       <div className="mt-auto pt-4">
         <Button
           variant="outline"
-          className="w-full flex items-center justify-center text-sm"
+          className="w-full flex items-center justify-center text-sm transition-all duration-200 ease-out transform-gpu hover:scale-[1.02] hover:-translate-y-0.5 hover:shadow-md"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         >
           {theme === "dark" ? "🌙 Dark" : "☀️ Light"}

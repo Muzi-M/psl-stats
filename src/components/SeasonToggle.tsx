@@ -10,7 +10,7 @@ export default function SeasonToggle() {
   const { season, setSeason } = useAppContext();
 
   return (
-    <Card>
+    <Card className="hover:shadow-xl transition-all duration-300 ease-out">
       <CardHeader>
         <CardTitle className="text-lg lg:text-xl">Season</CardTitle>
       </CardHeader>
@@ -22,7 +22,9 @@ export default function SeasonToggle() {
               variant={season === s ? "default" : "outline"}
               size="sm"
               onClick={() => setSeason(s)}
-              className="text-sm lg:text-base"
+              className={`text-sm lg:text-base transition-all duration-300 ease-out transform-gpu hover:scale-105 hover:-translate-y-0.5 ${
+                season === s ? "scale-105 -translate-y-0.5 shadow-lg" : ""
+              }`}
             >
               {s}
             </Button>

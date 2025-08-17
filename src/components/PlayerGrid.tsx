@@ -81,7 +81,7 @@ export default function PlayerGrid() {
           value={search}
           onChange={handleChange}
           placeholder="Search players..."
-          className="w-full border border-input bg-background text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent text-sm lg:text-base"
+          className="w-full border border-input bg-background text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent text-sm lg:text-base transition-all duration-200 hover:shadow-md focus:shadow-lg"
         />
       </div>
 
@@ -97,46 +97,49 @@ export default function PlayerGrid() {
             <div
               key={i}
               onClick={() => setSelectedPlayer(p)}
-              className="cursor-pointer flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4 border rounded-lg p-3 lg:p-4 shadow-sm hover:shadow-md transition-all duration-200 bg-card"
+              className="cursor-pointer flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4 border rounded-lg p-3 lg:p-4 shadow-sm hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 ease-out transform-gpu bg-card hover:bg-accent/50 group"
             >
               <div className="flex-shrink-0">
-                <Image
-                  src={p.player.photo}
-                  alt={p.player.name}
-                  width={60}
-                  height={60}
-                  className="object-cover rounded-full border w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20"
-                />
+                <div className="relative overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary/40 transition-all duration-300">
+                  <Image
+                    src={p.player.photo}
+                    alt={p.player.name}
+                    width={60}
+                    height={60}
+                    className="object-cover w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
               </div>
 
               <div className="flex-1 min-w-0">
-                <h2 className="font-semibold text-base lg:text-lg mb-1 truncate">
+                <h2 className="font-semibold text-base lg:text-lg mb-1 truncate group-hover:text-primary transition-colors duration-200">
                   {p.player.name}
                 </h2>
-                <p className="text-sm text-muted-foreground mb-2 lg:mb-3 truncate">
+                <p className="text-sm text-muted-foreground mb-2 lg:mb-3 truncate group-hover:text-primary/70 transition-colors duration-200">
                   {p.teamName}
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 lg:gap-3 text-xs lg:text-sm">
-                  <div className="flex flex-col">
+                  <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
                     <span className="text-muted-foreground">Position</span>
                     <span className="font-medium">
                       {p.statistics[0]?.games?.position || "N/A"}
                     </span>
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
                     <span className="text-muted-foreground">Apps</span>
                     <span className="font-medium">
                       {p.statistics[0]?.games?.appearences || 0}
                     </span>
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
                     <span className="text-muted-foreground">Goals</span>
                     <span className="font-medium">
                       {p.statistics[0]?.goals?.total || 0}
                     </span>
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
                     <span className="text-muted-foreground">Assists</span>
                     <span className="font-medium">
                       {p.statistics[0]?.goals?.assists || 0}

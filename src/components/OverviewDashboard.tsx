@@ -15,6 +15,7 @@ import {
 } from "./ui/card";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import TeamDisplay from "./ui/TeamDisplay";
 
 export default function OverviewDashboard() {
   const { season } = useAppContext();
@@ -74,16 +75,12 @@ export default function OverviewDashboard() {
                   key={team.rank}
                   className="flex items-center gap-2 lg:gap-3 text-sm lg:text-base p-2 rounded-md hover:bg-accent/50 transition-all duration-200 hover:scale-[1.02] transform-gpu group/item"
                 >
-                  <div className="relative overflow-hidden rounded-full border border-primary/20">
-                    <img
-                      src={team.team.logo}
-                      alt={team.team.name}
-                      className="h-5 w-5 lg:h-6 lg:w-6 flex-shrink-0 transition-all duration-200 group-hover/item:scale-110"
-                    />
-                  </div>
-                  <span className="font-medium truncate group-hover/item:text-primary transition-colors duration-200">
-                    {team.rank}. {team.team.name}
-                  </span>
+                  <TeamDisplay
+                    name={`${team.rank}. ${team.team.name}`}
+                    logo={team.team.logo}
+                    size="md"
+                    className="flex-1 group-hover/item:text-primary transition-colors duration-200"
+                  />
                   <span className="ml-auto text-muted-foreground flex-shrink-0 group-hover/item:text-primary transition-colors duration-200">
                     {team.points} pts
                   </span>

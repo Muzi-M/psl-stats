@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "./Table";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import TeamDisplay from "./ui/TeamDisplay";
 
 export default function StandingsTable() {
   const [standings, setStandings] = useState<any[]>([]);
@@ -76,16 +77,11 @@ export default function StandingsTable() {
                   >
                     <TableCell className="font-medium">{team.rank}</TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div className="relative overflow-hidden rounded-full border border-primary/20">
-                          <img
-                            src={team.team.logo}
-                            alt={team.team.name}
-                            className="h-6 w-6 transition-all duration-200 hover:scale-110"
-                          />
-                        </div>
-                        <span className="font-medium">{team.team.name}</span>
-                      </div>
+                      <TeamDisplay
+                        name={team.team.name}
+                        logo={team.team.logo}
+                        size="md"
+                      />
                     </TableCell>
                     <TableCell className="text-center">
                       {team.all.played}

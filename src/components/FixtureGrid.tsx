@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import debounce from "lodash.debounce";
 import { Search } from "lucide-react";
 import LoadingSpinner from "./LoadingSpinner";
+import TeamDisplay from "./ui/TeamDisplay";
 
 type Fixture = {
   fixture: { date: string; status: { short: string } };
@@ -159,11 +160,21 @@ export default function FixturesGrid() {
               {f.fixture.status.short})
             </p>
             <div className="flex items-center justify-between font-medium">
-              <span>{f.teams.home.name}</span>
-              <span>
+              <TeamDisplay
+                name={f.teams.home.name}
+                logo={f.teams.home.logo}
+                size="sm"
+                className="flex-1"
+              />
+              <span className="mx-4">
                 {f.goals.home ?? "-"} : {f.goals.away ?? "-"}
               </span>
-              <span>{f.teams.away.name}</span>
+              <TeamDisplay
+                name={f.teams.away.name}
+                logo={f.teams.away.logo}
+                size="sm"
+                className="flex-1 text-right"
+              />
             </div>
           </div>
         ))}

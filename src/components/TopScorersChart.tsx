@@ -1,5 +1,8 @@
 "use client";
 
+import TeamDisplay from "./ui/TeamDisplay";
+import PlayerDisplay from "./ui/PlayerDisplay";
+
 export default function TopScorersChart({ data }: { data: any[] }) {
   const topScorers = data.slice(0, 5);
 
@@ -15,10 +18,18 @@ export default function TopScorersChart({ data }: { data: any[] }) {
               {index + 1}
             </span>
             <div className="min-w-0 flex-1">
-              <div className="font-medium truncate">{player.player.name}</div>
-              <div className="text-sm text-muted-foreground truncate">
-                {player.statistics?.[0]?.team?.name || "Unknown Team"}
-              </div>
+              <PlayerDisplay
+                name={player.player.name}
+                photo={player.player.photo}
+                size="sm"
+                className="mb-1"
+              />
+              <TeamDisplay
+                name={player.statistics?.[0]?.team?.name || "Unknown Team"}
+                logo={player.statistics?.[0]?.team?.logo || ""}
+                size="sm"
+                className="text-sm text-muted-foreground"
+              />
             </div>
           </div>
           <div className="text-right flex-shrink-0 ml-2">

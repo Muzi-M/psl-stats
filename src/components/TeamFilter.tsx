@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAppContext } from "@/context/AppContext";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import TeamDisplay from "./ui/TeamDisplay";
 
 interface TeamFilterProps {
   value: string;
@@ -37,17 +38,12 @@ export default function TeamFilter({ value, onChange }: TeamFilterProps) {
               }`}
             >
               <div className="flex flex-col items-center gap-2">
-                <div className="relative overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary/40 transition-all duration-300">
-                  <img
-                    src={team.logo}
-                    alt={team.name}
-                    className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 object-contain transition-all duration-300 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-                <span className="text-xs sm:text-sm font-medium truncate w-full group-hover:text-primary transition-colors duration-200">
-                  {team.name}
-                </span>
+                <TeamDisplay
+                  name={team.name}
+                  logo={team.logo}
+                  size="lg"
+                  className="text-xs sm:text-sm font-medium truncate w-full group-hover:text-primary transition-colors duration-200"
+                />
               </div>
             </button>
           ))}

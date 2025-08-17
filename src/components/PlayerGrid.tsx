@@ -8,6 +8,8 @@ import { useLoading } from "@/context/LoadingContext";
 import TeamFilter from "./TeamFilter";
 import PlayerModal from "./PlayerModal";
 import LoadingSpinner from "./LoadingSpinner";
+import TeamDisplay from "./ui/TeamDisplay";
+import PlayerDisplay from "./ui/PlayerDisplay";
 
 type Player = {
   player: {
@@ -18,6 +20,7 @@ type Player = {
   statistics: {
     games: { appearences: number; position: string };
     goals: { total: number; assists: number };
+    team?: { logo: string };
   }[];
   teamName: string;
 };
@@ -113,12 +116,18 @@ export default function PlayerGrid() {
               </div>
 
               <div className="flex-1 min-w-0">
-                <h2 className="font-semibold text-base lg:text-lg mb-1 truncate group-hover:text-primary transition-colors duration-200">
-                  {p.player.name}
-                </h2>
-                <p className="text-sm text-muted-foreground mb-2 lg:mb-3 truncate group-hover:text-primary/70 transition-colors duration-200">
-                  {p.teamName}
-                </p>
+                <PlayerDisplay
+                  name={p.player.name}
+                  photo={p.player.photo}
+                  size="sm"
+                  className="mb-1 group-hover:text-primary transition-colors duration-200"
+                />
+                <TeamDisplay
+                  name={p.teamName}
+                  logo={p.statistics?.[0]?.team?.logo || ""}
+                  size="sm"
+                  className="mb-2 lg:mb-3 text-sm text-muted-foreground group-hover:text-primary/70 transition-colors duration-200"
+                />
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 lg:gap-3 text-xs lg:text-sm">
                   <div className="flex flex-col p-2 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">

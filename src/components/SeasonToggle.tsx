@@ -3,6 +3,7 @@
 import { useAppContext } from "@/context/AppContext";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { formatSeason } from "@/lib/utils";
 
 const seasons = [2020, 2021, 2022, 2023, 2024, 2025];
 
@@ -26,7 +27,7 @@ export default function SeasonToggle() {
                 season === s ? "scale-105 -translate-y-0.5 shadow-lg" : ""
               }`}
             >
-              {s}
+              {formatSeason(s)}
             </Button>
           ))}
         </div>

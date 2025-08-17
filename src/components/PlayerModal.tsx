@@ -1,5 +1,7 @@
 "use client";
 import Image from "next/image";
+import PlayerDisplay from "./ui/PlayerDisplay";
+import TeamDisplay from "./ui/TeamDisplay";
 
 export default function PlayerModal({
   player,
@@ -20,17 +22,18 @@ export default function PlayerModal({
         </button>
 
         <div className="flex items-center gap-4 mb-4">
-          <Image
-            src={player.player.photo}
-            alt={player.player.name}
-            width={80}
-            height={80}
-            className="rounded-full border"
+          <PlayerDisplay
+            name={player.player.name}
+            photo={player.player.photo}
+            size="lg"
+            className="text-xl font-bold"
           />
-          <div>
-            <h2 className="text-xl font-bold">{player.player.name}</h2>
-            <p className="text-sm text-muted-foreground">{player.teamName}</p>
-          </div>
+          <TeamDisplay
+            name={player.teamName}
+            logo={player.statistics?.[0]?.team?.logo || ""}
+            size="md"
+            className="text-sm text-muted-foreground"
+          />
         </div>
 
         <ul className="text-sm space-y-1">

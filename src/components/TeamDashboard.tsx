@@ -7,6 +7,8 @@ import LoadingSpinner from "./LoadingSpinner";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { ChevronDown, Users, Trophy, Target, TrendingUp } from "lucide-react";
+import TeamDisplay from "./ui/TeamDisplay";
+import PlayerDisplay from "./ui/PlayerDisplay";
 
 interface TeamStats {
   teamName: string;
@@ -191,14 +193,11 @@ export default function TeamDashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                {teamStats.logo && (
-                  <img
-                    src={teamStats.logo}
-                    alt={teamStats.teamName}
-                    className="h-6 w-6"
-                  />
-                )}
-                {teamStats.teamName}
+                <TeamDisplay
+                  name={teamStats.teamName}
+                  logo={teamStats.logo || ""}
+                  size="md"
+                />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -359,16 +358,14 @@ export default function TeamDashboard() {
                     className="border rounded p-3 hover:shadow-md transition"
                   >
                     <div className="flex items-center gap-3">
-                      <img
-                        src={player.player.photo}
-                        alt={player.player.name}
-                        className="w-12 h-12 rounded-full object-cover"
+                      <PlayerDisplay
+                        name={player.player.name}
+                        photo={player.player.photo}
+                        size="md"
+                        className="flex-1"
                       />
-                      <div className="flex-1">
-                        <div className="font-medium">{player.player.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {player.statistics[0]?.games?.position || "N/A"}
-                        </div>
+                      <div className="text-sm text-muted-foreground">
+                        {player.statistics[0]?.games?.position || "N/A"}
                       </div>
                     </div>
                     <div className="mt-2 grid grid-cols-3 gap-2 text-xs">

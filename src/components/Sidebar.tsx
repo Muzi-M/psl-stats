@@ -92,12 +92,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
                   alt="Infinix"
                   fill
                   className="object-contain"
-                  onError={(e) => {
-                    console.error("Sidebar logo failed to load:", e);
-                    // Fallback to favicon
-                    const target = e.target as HTMLImageElement;
-                    target.src = "/infinix-fav-icon.png";
-                  }}
                 />
               </div>
             </div>
@@ -176,12 +170,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
                 alt="Infinix"
                 fill
                 className="object-contain"
-                onError={(e) => {
-                  console.error("Sidebar logo failed to load:", e);
-                  // Fallback to favicon
-                  const target = e.target as HTMLImageElement;
-                  target.src = "/infinix-fav-icon.png";
-                }}
               />
             </div>
           </div>

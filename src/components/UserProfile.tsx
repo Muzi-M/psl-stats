@@ -29,11 +29,19 @@ export default function UserProfile() {
     return null;
   }
 
-  const handleSignOut = () => {
-    signOut({
-      callbackUrl: "/auth/signin",
-      redirect: true,
-    });
+  const handleSignOut = async () => {
+    try {
+      console.log("UserProfile sign out initiated...");
+      await signOut({
+        callbackUrl: "/auth/signin",
+        redirect: true,
+      });
+      console.log("UserProfile sign out completed successfully");
+    } catch (error) {
+      console.error("UserProfile sign out error:", error);
+      // Fallback: try to redirect manually
+      window.location.href = "/auth/signin";
+    }
   };
 
   return (

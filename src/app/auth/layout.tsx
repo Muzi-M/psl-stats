@@ -46,13 +46,18 @@ export default function AuthLayout({
                   target.src = "/infinix-fav-icon.png";
                   target.onerror = (fallbackError) => {
                     console.error("Fallback logo also failed:", fallbackError);
-                    // Final fallback to text
-                    target.style.display = "none";
-                    const parent = target.parentElement;
-                    if (parent) {
-                      parent.innerHTML =
-                        '<span class="text-white font-bold text-xl">I</span>';
-                    }
+                    // Try another approach - use a different path
+                    target.src = `${window.location.origin}/Infinix_logo-removebg-preview.png`;
+                    target.onerror = (finalError) => {
+                      console.error("All logo attempts failed:", finalError);
+                      // Final fallback to text
+                      target.style.display = "none";
+                      const parent = target.parentElement;
+                      if (parent) {
+                        parent.innerHTML =
+                          '<span class="text-white font-bold text-xl">I</span>';
+                      }
+                    };
                   };
                 }}
               />
@@ -111,13 +116,21 @@ export default function AuthLayout({
                       "Footer fallback logo also failed:",
                       fallbackError
                     );
-                    // Final fallback to text
-                    target.style.display = "none";
-                    const parent = target.parentElement;
-                    if (parent) {
-                      parent.innerHTML =
-                        '<span class="text-white font-bold text-sm">I</span>';
-                    }
+                    // Try another approach - use a different path
+                    target.src = `${window.location.origin}/Infinix_logo-removebg-preview.png`;
+                    target.onerror = (finalError) => {
+                      console.error(
+                        "Footer all logo attempts failed:",
+                        finalError
+                      );
+                      // Final fallback to text
+                      target.style.display = "none";
+                      const parent = target.parentElement;
+                      if (parent) {
+                        parent.innerHTML =
+                          '<span class="text-white font-bold text-sm">I</span>';
+                      }
+                    };
                   };
                 }}
               />

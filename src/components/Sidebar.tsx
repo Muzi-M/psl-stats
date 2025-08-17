@@ -36,11 +36,19 @@ export default function Sidebar({ onClose }: SidebarProps) {
     }
   };
 
-  const handleSignOut = () => {
-    signOut({
-      callbackUrl: "/auth/signin",
-      redirect: true,
-    });
+  const handleSignOut = async () => {
+    try {
+      console.log("Sign out initiated...");
+      await signOut({
+        callbackUrl: "/auth/signin",
+        redirect: true,
+      });
+      console.log("Sign out completed successfully");
+    } catch (error) {
+      console.error("Sign out error:", error);
+      // Fallback: try to redirect manually
+      window.location.href = "/auth/signin";
+    }
   };
 
   if (!mounted) {
@@ -84,6 +92,12 @@ export default function Sidebar({ onClose }: SidebarProps) {
                   alt="Infinix"
                   fill
                   className="object-contain"
+                  onError={(e) => {
+                    console.error("Sidebar logo failed to load:", e);
+                    // Fallback to favicon
+                    const target = e.target as HTMLImageElement;
+                    target.src = "/infinix-fav-icon.png";
+                  }}
                 />
               </div>
             </div>
@@ -162,6 +176,12 @@ export default function Sidebar({ onClose }: SidebarProps) {
                 alt="Infinix"
                 fill
                 className="object-contain"
+                onError={(e) => {
+                  console.error("Sidebar logo failed to load:", e);
+                  // Fallback to favicon
+                  const target = e.target as HTMLImageElement;
+                  target.src = "/infinix-fav-icon.png";
+                }}
               />
             </div>
           </div>

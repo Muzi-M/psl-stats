@@ -57,11 +57,13 @@ export default function TeamPage() {
   const [teamPlayers, setTeamPlayers] = useState<PlayerStats[]>([]);
   const [isLoading, setIsLoadingLocal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isTeamsLoading, setIsTeamsLoading] = useState(true);
 
   const teamNameFromUrl = decodeURIComponent(params.team as string);
 
   // Load teams list
   useEffect(() => {
+    setIsTeamsLoading(true);
     fetch("/api/teams")
       .then((res) => {
         if (!res.ok) {
@@ -70,10 +72,11 @@ export default function TeamPage() {
         return res.json();
       })
       .then((data) => {
-        // Extract team names from valid teams
-        const teamNames = (data || [])
-          .filter((team: any) => team && team.name)
-          .map((team: any) => team.name);
+        // The API returns an array of team names (strings)
+        const teamNames = (data || []).filter(
+          (team: any) =>
+            team && typeof team === "string" && team.trim().length > 0
+        );
         setTeams(teamNames);
 
         // Set the team from URL as selected
@@ -86,6 +89,9 @@ export default function TeamPage() {
       .catch((error) => {
         console.error("Error fetching teams:", error);
         setTeams([]);
+      })
+      .finally(() => {
+        setIsTeamsLoading(false);
       });
   }, [teamNameFromUrl]);
 
@@ -164,6 +170,21 @@ export default function TeamPage() {
     router.push(`/teams/${encodeURIComponent(teamName)}`);
   };
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest(".team-dropdown")) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const topScorers = teamPlayers
     .filter((p) => p.statistics?.[0]?.goals?.total > 0)
     .sort(
@@ -202,20 +223,25 @@ export default function TeamPage() {
   return (
     <div className="space-y-6">
       {/* Team Selector */}
-      <div className="relative">
+      <div className="relative team-dropdown">
         <Button
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center justify-between border border-input bg-background text-foreground px-4 py-2 rounded min-w-[200px] focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+          onClick={() => !isTeamsLoading && setIsDropdownOpen(!isDropdownOpen)}
+          disabled={isTeamsLoading}
+          className="flex items-center justify-between border border-input bg-background text-foreground px-4 py-2 rounded min-w-[200px] focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:opacity-50"
         >
-          <span>{selectedTeam || "Select a team"}</span>
+          <span>
+            {isTeamsLoading
+              ? "Loading teams..."
+              : selectedTeam || "Select a team"}
+          </span>
           <ChevronDown className="h-4 w-4 ml-2" />
         </Button>
 
-        {isDropdownOpen && (
+        {isDropdownOpen && teams.length > 0 && !isTeamsLoading && (
           <div className="absolute top-full left-0 mt-1 w-full border border-input bg-card text-card-foreground rounded shadow-lg z-[9999] min-w-[200px] dropdown-menu">
             {teams.map((team, i) => (
               <button
-                key={i}
+                key={`${team}-${i}`}
                 onClick={() => handleTeamSelect(team)}
                 className={`w-full text-left px-3 py-2 hover:bg-accent hover:text-accent-foreground transition-colors ${
                   team === selectedTeam

@@ -1,3 +1,5 @@
+"use client";
+
 export default function TestLogos() {
   return (
     <div className="p-8 space-y-8">
@@ -10,8 +12,6 @@ export default function TestLogos() {
             src="/Infinix_logo-removebg-preview.png"
             alt="Main Logo"
             className="w-32 h-32 object-contain border"
-            onLoad={() => console.log("Main logo loaded successfully")}
-            onError={(e) => console.error("Main logo failed to load:", e)}
           />
         </div>
 
@@ -21,8 +21,6 @@ export default function TestLogos() {
             src="/infinix-fav-icon.png"
             alt="Favicon Logo"
             className="w-32 h-32 object-contain border"
-            onLoad={() => console.log("Favicon logo loaded successfully")}
-            onError={(e) => console.error("Favicon logo failed to load:", e)}
           />
         </div>
 

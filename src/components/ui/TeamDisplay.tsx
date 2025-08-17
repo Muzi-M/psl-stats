@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 
 interface TeamDisplayProps {
   name: string;
@@ -17,6 +18,8 @@ export default function TeamDisplay({
   showBadge = true,
   size = "md",
 }: TeamDisplayProps) {
+  const [imageError, setImageError] = useState(false);
+
   const sizeClasses = {
     sm: "h-4 w-4",
     md: "h-5 w-5 lg:h-6 lg:w-6",
@@ -25,7 +28,7 @@ export default function TeamDisplay({
 
   // Fallback values
   const displayName = name || "Unknown Team";
-  const displayLogo = logo || "/next.svg";
+  const displayLogo = imageError || !logo ? "/next.svg" : logo;
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
@@ -38,8 +41,9 @@ export default function TeamDisplay({
             height={24}
             className={`${sizeClasses[size]} transition-all duration-200 hover:scale-110`}
             onError={() => {
-              // Fallback is handled by the src prop
+              setImageError(true);
             }}
+            unoptimized
           />
         </div>
       )}

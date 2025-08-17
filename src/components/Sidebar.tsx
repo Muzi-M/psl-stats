@@ -122,7 +122,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
       <div className="mt-auto pt-4 space-y-4">
         {/* Powered by section - Now at the top */}
         <div className="flex flex-col items-center gap-2 pt-4 border-t border-border/50">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
+          <div className="flex items-center gap-2 text-[10px] text-muted-foreground/50">
             <span className="font-medium">Powered by</span>
             <div className="relative w-32 h-12">
               <Image

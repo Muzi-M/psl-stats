@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 
 interface PlayerDisplayProps {
   name: string;
@@ -17,6 +18,8 @@ export default function PlayerDisplay({
   showImage = true,
   size = "md",
 }: PlayerDisplayProps) {
+  const [imageError, setImageError] = useState(false);
+
   const sizeClasses = {
     sm: "h-6 w-6",
     md: "h-8 w-8",
@@ -25,7 +28,7 @@ export default function PlayerDisplay({
 
   // Fallback values
   const displayName = name || "Unknown Player";
-  const displayPhoto = photo || "/next.svg";
+  const displayPhoto = imageError || !photo ? "/next.svg" : photo;
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
@@ -38,8 +41,9 @@ export default function PlayerDisplay({
             height={48}
             className={`${sizeClasses[size]} object-cover transition-all duration-200 hover:scale-110`}
             onError={() => {
-              // Fallback is handled by the src prop
+              setImageError(true);
             }}
+            unoptimized
           />
         </div>
       )}

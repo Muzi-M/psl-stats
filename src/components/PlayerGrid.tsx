@@ -140,6 +140,7 @@ export default function PlayerGrid() {
                       width={80}
                       height={80}
                       className="object-cover w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:scale-110"
+                      unoptimized
                     />
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>

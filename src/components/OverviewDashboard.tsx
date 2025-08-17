@@ -77,9 +77,6 @@ export default function OverviewDashboard() {
     return (
       <div className="space-y-4 lg:space-y-6">
         <SeasonToggle />
-        <div className="flex items-center justify-center py-8 lg:py-12">
-          <LoadingSpinner size="lg" />
-        </div>
       </div>
     );
   }
@@ -98,23 +95,28 @@ export default function OverviewDashboard() {
           <CardContent>
             <ul className="space-y-2 lg:space-y-3">
               {standings.slice(0, 5).map((team: any) => (
-                <li
+                <Link
                   key={team.rank}
-                  className="flex items-center gap-2 lg:gap-3 text-sm lg:text-base p-2 rounded-md hover:bg-accent/50 transition-all duration-200 hover:scale-[1.02] transform-gpu group/item"
+                  href={`/teams/${encodeURIComponent(
+                    team.team?.name || "Unknown Team"
+                  )}`}
+                  className="block hover:scale-105 transition-transform duration-200"
                 >
-                  <span className="font-bold text-lg text-muted-foreground flex-shrink-0 group-hover/item:text-primary transition-colors duration-200">
-                    {team.rank}.
-                  </span>
-                  <TeamDisplay
-                    name={team.team?.name || "Unknown Team"}
-                    logo={team.team?.logo || "/next.svg"}
-                    size="md"
-                    className="flex-1 group-hover/item:text-primary transition-colors duration-200"
-                  />
-                  <span className="ml-auto text-muted-foreground flex-shrink-0 group-hover/item:text-primary transition-colors duration-200">
-                    {team.points || 0} pts
-                  </span>
-                </li>
+                  <li className="flex items-center gap-2 lg:gap-3 text-sm lg:text-base p-2 rounded-md hover:bg-accent/50 transition-all duration-200 hover:scale-[1.02] transform-gpu group/item">
+                    <span className="font-bold text-lg text-muted-foreground flex-shrink-0 group-hover/item:text-primary transition-colors duration-200">
+                      {team.rank}.
+                    </span>
+                    <TeamDisplay
+                      name={team.team?.name || "Unknown Team"}
+                      logo={team.team?.logo || "/next.svg"}
+                      size="md"
+                      className="flex-1 group-hover/item:text-primary transition-colors duration-200"
+                    />
+                    <span className="ml-auto text-muted-foreground flex-shrink-0 group-hover/item:text-primary transition-colors duration-200">
+                      {team.points || 0} pts
+                    </span>
+                  </li>
+                </Link>
               ))}
             </ul>
           </CardContent>
@@ -138,21 +140,35 @@ export default function OverviewDashboard() {
                   className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-1 p-2 rounded-md hover:bg-accent/50 transition-all duration-200 hover:scale-[1.02] transform-gpu group/item"
                 >
                   <div className="flex flex-wrap items-center gap-2">
-                    <TeamDisplay
-                      name={f.teams?.home?.name || "Unknown Team"}
-                      logo={f.teams?.home?.logo || "/next.svg"}
-                      size="sm"
-                      className="group-hover/item:text-primary transition-colors duration-200"
-                    />
+                    <Link
+                      href={`/teams/${encodeURIComponent(
+                        f.teams?.home?.name || "Unknown Team"
+                      )}`}
+                      className="hover:scale-105 transition-transform duration-200"
+                    >
+                      <TeamDisplay
+                        name={f.teams?.home?.name || "Unknown Team"}
+                        logo={f.teams?.home?.logo || "/next.svg"}
+                        size="sm"
+                        className="group-hover/item:text-primary transition-colors duration-200"
+                      />
+                    </Link>
                     <span className="font-bold">{f.goals?.home || 0}</span>
                     <span> : </span>
                     <span className="font-bold">{f.goals?.away || 0}</span>
-                    <TeamDisplay
-                      name={f.teams?.away?.name || "Unknown Team"}
-                      logo={f.teams?.away?.logo || "/next.svg"}
-                      size="sm"
-                      className="group-hover/item:text-primary transition-colors duration-200"
-                    />
+                    <Link
+                      href={`/teams/${encodeURIComponent(
+                        f.teams?.away?.name || "Unknown Team"
+                      )}`}
+                      className="hover:scale-105 transition-transform duration-200"
+                    >
+                      <TeamDisplay
+                        name={f.teams?.away?.name || "Unknown Team"}
+                        logo={f.teams?.away?.logo || "/next.svg"}
+                        size="sm"
+                        className="group-hover/item:text-primary transition-colors duration-200"
+                      />
+                    </Link>
                   </div>
                   <div className="text-xs text-muted-foreground lg:text-sm group-hover/item:text-primary/70 transition-colors duration-200">
                     {f.fixture?.date

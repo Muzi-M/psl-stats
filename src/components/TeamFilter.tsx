@@ -99,7 +99,7 @@ export default function TeamFilter({ value, onChange }: TeamFilterProps) {
           </Button>
 
           {isOpen && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl z-[9999] max-h-60 overflow-y-auto">
               {teams.map((teamName, index) => (
                 <button
                   key={`${teamName}-${index}`}

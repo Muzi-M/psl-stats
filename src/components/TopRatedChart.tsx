@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import TeamDisplay from "./ui/TeamDisplay";
 import PlayerDisplay from "./ui/PlayerDisplay";
 
@@ -36,18 +37,32 @@ export default function TopRatedChart({ data }: { data: any[] }) {
               {index + 1}
             </span>
             <div className="min-w-0 flex-1">
-              <PlayerDisplay
-                name={player.player.name || "Unknown Player"}
-                photo={player.player.photo || "/next.svg"}
-                size="sm"
-                className="mb-1"
-              />
-              <TeamDisplay
-                name={player.statistics?.[0]?.team?.name || "Unknown Team"}
-                logo={player.statistics?.[0]?.team?.logo || "/next.svg"}
-                size="sm"
-                className="text-sm text-muted-foreground"
-              />
+              <Link
+                href={`/players/${encodeURIComponent(
+                  player.player.name || "Unknown Player"
+                )}`}
+                className="block hover:scale-105 transition-transform duration-200"
+              >
+                <PlayerDisplay
+                  name={player.player.name || "Unknown Player"}
+                  photo={player.player.photo || "/next.svg"}
+                  size="sm"
+                  className="mb-1 hover:text-primary transition-colors duration-200"
+                />
+              </Link>
+              <Link
+                href={`/teams/${encodeURIComponent(
+                  player.statistics?.[0]?.team?.name || "Unknown Team"
+                )}`}
+                className="block hover:scale-105 transition-transform duration-200"
+              >
+                <TeamDisplay
+                  name={player.statistics?.[0]?.team?.name || "Unknown Team"}
+                  logo={player.statistics?.[0]?.team?.logo || "/next.svg"}
+                  size="sm"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
+                />
+              </Link>
             </div>
           </div>
           <div className="text-right flex-shrink-0 ml-2">

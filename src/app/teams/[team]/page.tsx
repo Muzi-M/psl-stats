@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import { useAppContext } from "@/context/AppContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -172,28 +173,33 @@ export default function TeamPage() {
             {teamData.players.map((player, index) => {
               const stats = player.statistics[0];
               return (
-                <div
+                <Link
                   key={`${player.player.name}-${index}`}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-all duration-200"
+                  href={`/players/${encodeURIComponent(player.player.name)}`}
+                  className="block hover:scale-105 transition-transform duration-200"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="font-medium">{player.player.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {stats?.games?.position || "N/A"}
+                  <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-all duration-200">
+                    <div className="flex items-center gap-3">
+                      <div className="font-medium hover:text-primary transition-colors duration-200">
+                        {player.player.name}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {stats?.games?.position || "N/A"}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm">
+                      <span className="text-green-600 font-medium">
+                        {stats?.goals?.total || 0} goals
+                      </span>
+                      <span className="text-blue-600 font-medium">
+                        {stats?.goals?.assists || 0} assists
+                      </span>
+                      <span className="text-muted-foreground">
+                        {stats?.games?.appearences || 0} apps
+                      </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 text-sm">
-                    <span className="text-green-600 font-medium">
-                      {stats?.goals?.total || 0} goals
-                    </span>
-                    <span className="text-blue-600 font-medium">
-                      {stats?.goals?.assists || 0} assists
-                    </span>
-                    <span className="text-muted-foreground">
-                      {stats?.games?.appearences || 0} apps
-                    </span>
-                  </div>
-                </div>
+                </Link>
               );
             })}
           </div>

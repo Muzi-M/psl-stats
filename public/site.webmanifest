@@ -1,0 +1,21 @@
+{
+  "name": "PSL Dashboard",
+  "short_name": "PSL Dashboard",
+  "description": "Premier Soccer League Analytics Dashboard",
+  "icons": [
+    {
+      "src": "/infinix-fav-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/infinix-fav-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/"
+}

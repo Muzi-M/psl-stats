@@ -11,7 +11,10 @@ export const metadata: Metadata = {
   description:
     "Comprehensive analytics and insights for the Premier Soccer League with real-time data, player statistics, team standings, and fixture management.",
   icons: {
-    icon: "/infinix-fav-icon.png",
+    icon: [
+      { url: "/infinix-fav-icon.png", type: "image/png" },
+      { url: "/favicon.ico", type: "image/x-icon" },
+    ],
     shortcut: "/infinix-fav-icon.png",
     apple: "/infinix-fav-icon.png",
   },
@@ -25,9 +28,25 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/infinix-fav-icon.png" />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/infinix-fav-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/infinix-fav-icon.png"
+        />
         <link rel="shortcut icon" href="/infinix-fav-icon.png" />
-        <link rel="apple-touch-icon" href="/infinix-fav-icon.png" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/infinix-fav-icon.png"
+        />
+        <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

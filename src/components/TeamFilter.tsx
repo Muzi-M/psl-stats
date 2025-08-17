@@ -12,13 +12,63 @@ interface TeamFilterProps {
 
 export default function TeamFilter({ value, onChange }: TeamFilterProps) {
   const [teams, setTeams] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { season } = useAppContext();
 
   useEffect(() => {
+    setIsLoading(true);
     fetch(`/api/teams?season=${season}`)
-      .then((res) => res.json())
-      .then(setTeams);
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        // Filter out invalid data
+        const validTeams = (data || []).filter(
+          (team: any) => team && team.id && team.name
+        );
+        setTeams(validTeams);
+      })
+      .catch((error) => {
+        console.error("Error fetching teams:", error);
+        setTeams([]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [season]);
+
+  if (isLoading) {
+    return (
+      <Card className="hover:shadow-xl transition-all duration-300 ease-out">
+        <CardHeader>
+          <CardTitle className="text-lg lg:text-xl">Select Team</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center py-8 text-muted-foreground">
+            <p>Loading teams...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (teams.length === 0) {
+    return (
+      <Card className="hover:shadow-xl transition-all duration-300 ease-out">
+        <CardHeader>
+          <CardTitle className="text-lg lg:text-xl">Select Team</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center py-8 text-muted-foreground">
+            <p>No teams available</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="hover:shadow-xl transition-all duration-300 ease-out">
@@ -39,8 +89,8 @@ export default function TeamFilter({ value, onChange }: TeamFilterProps) {
             >
               <div className="flex flex-col items-center gap-2">
                 <TeamDisplay
-                  name={team.name}
-                  logo={team.logo}
+                  name={team.name || "Unknown Team"}
+                  logo={team.logo || "/next.svg"}
                   size="lg"
                   className="text-xs sm:text-sm font-medium truncate w-full group-hover:text-primary transition-colors duration-200"
                 />

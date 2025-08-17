@@ -32,10 +32,29 @@ export default function FixturesGrid() {
     setIsLoading(true);
 
     fetch(`/api/fixtures?season=${season}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
-        setFixtures(data);
-        setFilteredFixtures(data);
+        // Filter out invalid data
+        const validFixtures = (data || []).filter(
+          (fixture: any) =>
+            fixture &&
+            fixture.teams &&
+            fixture.teams.home &&
+            fixture.teams.away &&
+            fixture.fixture
+        );
+        setFixtures(validFixtures);
+        setFilteredFixtures(validFixtures);
+      })
+      .catch((error) => {
+        console.error("Error fetching fixtures:", error);
+        setFixtures([]);
+        setFilteredFixtures([]);
       })
       .finally(() => {
         setIsLoadingLocal(false);
@@ -45,8 +64,23 @@ export default function FixturesGrid() {
 
   useEffect(() => {
     fetch("/api/teams")
-      .then((res) => res.json())
-      .then(setTeams);
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        // Extract team names from valid teams
+        const teamNames = (data || [])
+          .filter((team: any) => team && team.name)
+          .map((team: any) => team.name);
+        setTeams(teamNames);
+      })
+      .catch((error) => {
+        console.error("Error fetching teams:", error);
+        setTeams([]);
+      });
   }, []);
 
   // Debounced search
@@ -57,8 +91,8 @@ export default function FixturesGrid() {
     if (term) {
       filtered = filtered.filter(
         (f) =>
-          f.teams.home.name.toLowerCase().includes(term.toLowerCase()) ||
-          f.teams.away.name.toLowerCase().includes(term.toLowerCase())
+          f.teams?.home?.name?.toLowerCase().includes(term.toLowerCase()) ||
+          f.teams?.away?.name?.toLowerCase().includes(term.toLowerCase())
       );
     }
 
@@ -66,8 +100,8 @@ export default function FixturesGrid() {
     if (selectedTeam) {
       filtered = filtered.filter(
         (f) =>
-          f.teams.home.name === selectedTeam ||
-          f.teams.away.name === selectedTeam
+          f.teams?.home?.name === selectedTeam ||
+          f.teams?.away?.name === selectedTeam
       );
     }
 
@@ -88,15 +122,15 @@ export default function FixturesGrid() {
     if (search) {
       filtered = filtered.filter(
         (f) =>
-          f.teams.home.name.toLowerCase().includes(search.toLowerCase()) ||
-          f.teams.away.name.toLowerCase().includes(search.toLowerCase())
+          f.teams?.home?.name?.toLowerCase().includes(search.toLowerCase()) ||
+          f.teams?.away?.name?.toLowerCase().includes(search.toLowerCase())
       );
     }
 
     // Filter by selected team
     if (team) {
       filtered = filtered.filter(
-        (f) => f.teams.home.name === team || f.teams.away.name === team
+        (f) => f.teams?.home?.name === team || f.teams?.away?.name === team
       );
     }
 
@@ -152,26 +186,28 @@ export default function FixturesGrid() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {filteredFixtures.map((f, i) => (
           <div
-            key={`${f.fixture.date}-${f.teams.home.name}-${f.teams.away.name}-${i}`}
+            key={`${f.fixture?.date}-${f.teams?.home?.name}-${f.teams?.away?.name}-${i}`}
             className="border rounded p-4 shadow-sm hover:shadow-md transition"
           >
             <p className="text-sm text-muted-foreground mb-1">
-              {new Date(f.fixture.date).toLocaleString()} (
-              {f.fixture.status.short})
+              {f.fixture?.date
+                ? new Date(f.fixture.date).toLocaleString()
+                : "Date TBD"}{" "}
+              ({f.fixture?.status?.short || "TBD"})
             </p>
             <div className="flex items-center justify-between font-medium">
               <TeamDisplay
-                name={f.teams.home.name}
-                logo={f.teams.home.logo}
+                name={f.teams?.home?.name || "Unknown Team"}
+                logo={f.teams?.home?.logo || "/next.svg"}
                 size="sm"
                 className="flex-1"
               />
               <span className="mx-4">
-                {f.goals.home ?? "-"} : {f.goals.away ?? "-"}
+                {f.goals?.home ?? "-"} : {f.goals?.away ?? "-"}
               </span>
               <TeamDisplay
-                name={f.teams.away.name}
-                logo={f.teams.away.logo}
+                name={f.teams?.away?.name || "Unknown Team"}
+                logo={f.teams?.away?.logo || "/next.svg"}
                 size="sm"
                 className="flex-1 text-right"
               />

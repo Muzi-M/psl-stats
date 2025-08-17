@@ -62,18 +62,31 @@ export default function TeamDashboard() {
     setIsLoading(true);
 
     fetch("/api/teams")
-      .then((res) => res.json())
-      .then((data) => {
-        setTeams(data);
-        if (data.length > 0 && !selectedTeam) {
-          setSelectedTeam(data[0]);
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
         }
+        return res.json();
+      })
+      .then((data) => {
+        // Extract team names from valid teams
+        const teamNames = (data || [])
+          .filter((team: any) => team && team.name)
+          .map((team: any) => team.name);
+        setTeams(teamNames);
+        if (teamNames.length > 0 && !selectedTeam) {
+          setSelectedTeam(teamNames[0]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching teams:", error);
+        setTeams([]);
       })
       .finally(() => {
         setIsLoadingLocal(false);
         setIsLoading(false);
       });
-  }, [setIsLoading, setLoadingMessage]);
+  }, [setIsLoading, setLoadingMessage, selectedTeam]);
 
   useEffect(() => {
     if (!selectedTeam) return;
@@ -84,33 +97,60 @@ export default function TeamDashboard() {
 
     // Fetch team standings data
     fetch(`/api/standings?season=${season}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((standings) => {
         const teamStanding = standings.find(
-          (s: any) => s.team.name === selectedTeam
+          (s: any) => s.team?.name === selectedTeam
         );
         if (teamStanding) {
           setTeamStats({
-            teamName: teamStanding.team.name,
-            logo: teamStanding.team.logo,
-            position: teamStanding.rank,
-            points: teamStanding.points,
-            played: teamStanding.all.played,
-            won: teamStanding.all.win,
-            drawn: teamStanding.all.draw,
-            lost: teamStanding.all.lose,
-            goalsFor: teamStanding.all.goals.for,
-            goalsAgainst: teamStanding.all.goals.against,
-            goalDifference: teamStanding.goalsDiff,
+            teamName: teamStanding.team?.name || selectedTeam,
+            logo: teamStanding.team?.logo || "/next.svg",
+            position: teamStanding.rank || 0,
+            points: teamStanding.points || 0,
+            played: teamStanding.all?.played || 0,
+            won: teamStanding.all?.win || 0,
+            drawn: teamStanding.all?.draw || 0,
+            lost: teamStanding.all?.lose || 0,
+            goalsFor: teamStanding.all?.goals?.for || 0,
+            goalsAgainst: teamStanding.all?.goals?.against || 0,
+            goalDifference: teamStanding.goalsDiff || 0,
           });
         }
+      })
+      .catch((error) => {
+        console.error("Error fetching standings:", error);
       });
 
     // Fetch team players data
     fetch(`/api/players?season=${season}&team=${selectedTeam}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((players) => {
-        setTeamPlayers(players);
+        // Filter out invalid players
+        const validPlayers = (players || []).filter(
+          (player: any) =>
+            player &&
+            player.player &&
+            player.player.name &&
+            player.statistics &&
+            Array.isArray(player.statistics) &&
+            player.statistics.length > 0
+        );
+        setTeamPlayers(validPlayers);
+      })
+      .catch((error) => {
+        console.error("Error fetching players:", error);
+        setTeamPlayers([]);
       })
       .finally(() => {
         setIsLoadingLocal(false);
@@ -119,29 +159,29 @@ export default function TeamDashboard() {
   }, [selectedTeam, season, setIsLoading, setLoadingMessage]);
 
   const topScorers = teamPlayers
-    .filter((p) => p.statistics[0]?.goals?.total > 0)
+    .filter((p) => p.statistics?.[0]?.goals?.total > 0)
     .sort(
       (a, b) =>
-        (b.statistics[0]?.goals?.total || 0) -
-        (a.statistics[0]?.goals?.total || 0)
+        (b.statistics?.[0]?.goals?.total || 0) -
+        (a.statistics?.[0]?.goals?.total || 0)
     )
     .slice(0, 5);
 
   const topAssists = teamPlayers
-    .filter((p) => p.statistics[0]?.goals?.assists > 0)
+    .filter((p) => p.statistics?.[0]?.goals?.assists > 0)
     .sort(
       (a, b) =>
-        (b.statistics[0]?.goals?.assists || 0) -
-        (a.statistics[0]?.goals?.assists || 0)
+        (b.statistics?.[0]?.goals?.assists || 0) -
+        (a.statistics?.[0]?.goals?.assists || 0)
     )
     .slice(0, 5);
 
   const topRated = teamPlayers
-    .filter((p) => p.statistics[0]?.games?.rating > 0)
+    .filter((p) => p.statistics?.[0]?.games?.rating > 0)
     .sort(
       (a, b) =>
-        (b.statistics[0]?.games?.rating || 0) -
-        (a.statistics[0]?.games?.rating || 0)
+        (b.statistics?.[0]?.games?.rating || 0) -
+        (a.statistics?.[0]?.games?.rating || 0)
     )
     .slice(0, 5);
 
@@ -194,8 +234,8 @@ export default function TeamDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TeamDisplay
-                  name={teamStats.teamName}
-                  logo={teamStats.logo || ""}
+                  name={teamStats.teamName || "Unknown Team"}
+                  logo={teamStats.logo || "/next.svg"}
                   size="md"
                 />
               </CardTitle>
@@ -204,25 +244,25 @@ export default function TeamDashboard() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">
-                    {teamStats.position}
+                    {teamStats.position || 0}
                   </div>
                   <div className="text-sm text-muted-foreground">Position</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">
-                    {teamStats.points}
+                    {teamStats.points || 0}
                   </div>
                   <div className="text-sm text-muted-foreground">Points</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">
-                    {teamStats.played}
+                    {teamStats.played || 0}
                   </div>
                   <div className="text-sm text-muted-foreground">Played</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">
-                    {teamStats.goalDifference}
+                    {teamStats.goalDifference || 0}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     Goal Difference
@@ -245,29 +285,31 @@ export default function TeamDashboard() {
                 <div className="flex justify-between">
                   <span>Won</span>
                   <span className="font-semibold text-green-600">
-                    {teamStats.won}
+                    {teamStats.won || 0}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Drawn</span>
                   <span className="font-semibold text-yellow-600">
-                    {teamStats.drawn}
+                    {teamStats.drawn || 0}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Lost</span>
                   <span className="font-semibold text-red-600">
-                    {teamStats.lost}
+                    {teamStats.lost || 0}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Goals For</span>
-                  <span className="font-semibold">{teamStats.goalsFor}</span>
+                  <span className="font-semibold">
+                    {teamStats.goalsFor || 0}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Goals Against</span>
                   <span className="font-semibold">
-                    {teamStats.goalsAgainst}
+                    {teamStats.goalsAgainst || 0}
                   </span>
                 </div>
               </CardContent>
@@ -291,10 +333,12 @@ export default function TeamDashboard() {
                         <span className="text-sm font-medium">
                           {index + 1}.
                         </span>
-                        <span className="text-sm">{player.player.name}</span>
+                        <span className="text-sm">
+                          {player.player?.name || "Unknown Player"}
+                        </span>
                       </div>
                       <span className="font-semibold text-green-600">
-                        {player.statistics[0]?.goals?.total || 0}
+                        {player.statistics?.[0]?.goals?.total || 0}
                       </span>
                     </div>
                   ))}
@@ -325,10 +369,12 @@ export default function TeamDashboard() {
                         <span className="text-sm font-medium">
                           {index + 1}.
                         </span>
-                        <span className="text-sm">{player.player.name}</span>
+                        <span className="text-sm">
+                          {player.player?.name || "Unknown Player"}
+                        </span>
                       </div>
                       <span className="font-semibold text-blue-600">
-                        {player.statistics[0]?.goals?.assists || 0}
+                        {player.statistics?.[0]?.goals?.assists || 0}
                       </span>
                     </div>
                   ))}
@@ -359,31 +405,31 @@ export default function TeamDashboard() {
                   >
                     <div className="flex items-center gap-3">
                       <PlayerDisplay
-                        name={player.player.name}
-                        photo={player.player.photo}
+                        name={player.player?.name || "Unknown Player"}
+                        photo={player.player?.photo || "/next.svg"}
                         size="md"
                         className="flex-1"
                       />
                       <div className="text-sm text-muted-foreground">
-                        {player.statistics[0]?.games?.position || "N/A"}
+                        {player.statistics?.[0]?.games?.position || "N/A"}
                       </div>
                     </div>
                     <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
                       <div className="text-center">
                         <div className="font-semibold">
-                          {player.statistics[0]?.games?.appearences || 0}
+                          {player.statistics?.[0]?.games?.appearences || 0}
                         </div>
                         <div className="text-muted-foreground">Apps</div>
                       </div>
                       <div className="text-center">
                         <div className="font-semibold text-green-600">
-                          {player.statistics[0]?.goals?.total || 0}
+                          {player.statistics?.[0]?.goals?.total || 0}
                         </div>
                         <div className="text-muted-foreground">Goals</div>
                       </div>
                       <div className="text-center">
                         <div className="font-semibold text-blue-600">
-                          {player.statistics[0]?.goals?.assists || 0}
+                          {player.statistics?.[0]?.goals?.assists || 0}
                         </div>
                         <div className="text-muted-foreground">Assists</div>
                       </div>

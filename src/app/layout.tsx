@@ -57,7 +57,7 @@ export default function RootLayout({
             <LoadingProvider>
               <AppProvider>
                 <ParticleBackground />
-                <AppContent>{children}</AppContent>
+                {children}
               </AppProvider>
             </LoadingProvider>
           </ThemeProvider>

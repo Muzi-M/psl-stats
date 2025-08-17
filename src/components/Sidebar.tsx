@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";

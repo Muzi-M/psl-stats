@@ -5,7 +5,6 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 export default function AuthLayout({
   children,
@@ -35,20 +34,19 @@ export default function AuthLayout({
         <div className="flex items-center justify-between p-6">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg">
-              <Image
+              <img
                 src="/Infinix_logo-removebg-preview.png"
                 alt="Infinix Logo"
-                width={48}
-                height={48}
-                className="object-contain"
+                className="w-full h-full object-contain"
                 onError={(e) => {
                   console.error("Logo failed to load:", e);
                   // Fallback to text if image fails
                   const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
+                  target.style.display = "none";
                   const parent = target.parentElement;
                   if (parent) {
-                    parent.innerHTML = '<span class="text-white font-bold text-xl">I</span>';
+                    parent.innerHTML =
+                      '<span class="text-white font-bold text-xl">I</span>';
                   }
                 }}
               />
@@ -89,20 +87,19 @@ export default function AuthLayout({
               Powered by
             </span>
             <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 rounded">
-              <Image
+              <img
                 src="/Infinix_logo-removebg-preview.png"
                 alt="Infinix Logo"
-                width={32}
-                height={32}
-                className="object-contain"
+                className="w-full h-full object-contain"
                 onError={(e) => {
                   console.error("Footer logo failed to load:", e);
                   // Fallback to text if image fails
                   const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
+                  target.style.display = "none";
                   const parent = target.parentElement;
                   if (parent) {
-                    parent.innerHTML = '<span class="text-white font-bold text-sm">I</span>';
+                    parent.innerHTML =
+                      '<span class="text-white font-bold text-sm">I</span>';
                   }
                 }}
               />

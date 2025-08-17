@@ -39,15 +39,15 @@ export default function SignIn() {
         setIsCheckingSession(false);
       }
     };
-    
+
     // Add a timeout to prevent infinite loading
     const timeout = setTimeout(() => {
       console.log("Session check timeout, showing sign-in page");
       setIsCheckingSession(false);
     }, 3000);
-    
+
     checkSession();
-    
+
     return () => clearTimeout(timeout);
   }, [router]);
 

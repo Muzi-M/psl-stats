@@ -126,7 +126,7 @@ export default function TeamPage() {
           <div className="flex items-center gap-4">
             <TeamDisplay
               name={teamData.name}
-              logo={teamData.logo}
+              logo={teamData.logo || "/next.svg"}
               size="lg"
               className="text-2xl lg:text-3xl font-bold"
             />

@@ -75,8 +75,11 @@ export default function OverviewDashboard() {
                   key={team.rank}
                   className="flex items-center gap-2 lg:gap-3 text-sm lg:text-base p-2 rounded-md hover:bg-accent/50 transition-all duration-200 hover:scale-[1.02] transform-gpu group/item"
                 >
+                  <span className="font-bold text-lg text-muted-foreground flex-shrink-0 group-hover/item:text-primary transition-colors duration-200">
+                    {team.rank}.
+                  </span>
                   <TeamDisplay
-                    name={`${team.rank}. ${team.team.name}`}
+                    name={team.team.name}
                     logo={team.team.logo}
                     size="md"
                     className="flex-1 group-hover/item:text-primary transition-colors duration-200"
@@ -107,17 +110,22 @@ export default function OverviewDashboard() {
                   key={i}
                   className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-1 p-2 rounded-md hover:bg-accent/50 transition-all duration-200 hover:scale-[1.02] transform-gpu group/item"
                 >
-                  <div className="flex flex-wrap items-center gap-1">
-                    <span className="truncate group-hover/item:text-primary transition-colors duration-200">
-                      {f.teams.home.name}{" "}
-                    </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <TeamDisplay
+                      name={f.teams.home.name}
+                      logo={f.teams.home.logo}
+                      size="sm"
+                      className="group-hover/item:text-primary transition-colors duration-200"
+                    />
                     <span className="font-bold">{f.goals.home}</span>
                     <span> : </span>
                     <span className="font-bold">{f.goals.away}</span>
-                    <span className="truncate group-hover/item:text-primary transition-colors duration-200">
-                      {" "}
-                      {f.teams.away.name}
-                    </span>
+                    <TeamDisplay
+                      name={f.teams.away.name}
+                      logo={f.teams.away.logo}
+                      size="sm"
+                      className="group-hover/item:text-primary transition-colors duration-200"
+                    />
                   </div>
                   <div className="text-xs text-muted-foreground lg:text-sm group-hover/item:text-primary/70 transition-colors duration-200">
                     {new Date(f.fixture.date).toLocaleDateString()}

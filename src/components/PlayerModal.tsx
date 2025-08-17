@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import PlayerDisplay from "./ui/PlayerDisplay";
 import TeamDisplay from "./ui/TeamDisplay";
 

@@ -125,16 +125,12 @@ export default function StandingsTable() {
                     <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">
                       {team.rank}
                     </span>
-                    <div className="relative overflow-hidden rounded-full border border-primary/20">
-                      <img
-                        src={team.team.logo}
-                        alt={team.team.name}
-                        className="h-6 w-6 transition-all duration-200 group-hover:scale-110"
-                      />
-                    </div>
-                    <span className="font-medium text-sm lg:text-base truncate group-hover:text-primary transition-colors duration-200">
-                      {team.team.name}
-                    </span>
+                    <TeamDisplay
+                      name={team.team.name}
+                      logo={team.team.logo}
+                      size="sm"
+                      className="font-medium text-sm lg:text-base truncate group-hover:text-primary transition-colors duration-200"
+                    />
                   </div>
                   <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">
                     {team.points} pts

@@ -3,6 +3,7 @@
 import { useLoading } from "@/context/LoadingContext";
 import Sidebar from "./Sidebar";
 import PageLoader from "./PageLoader";
+import Footer from "./Footer";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
@@ -53,8 +54,9 @@ export default function AppContent({ children }: AppContentProps) {
         )}
 
         {/* Main content */}
-        <main className="flex-1 p-4 lg:p-6 bg-background min-w-0">
-          <div className="max-w-7xl mx-auto">{children}</div>
+        <main className="flex-1 p-4 lg:p-6 bg-background min-w-0 flex flex-col">
+          <div className="max-w-7xl mx-auto flex-1">{children}</div>
+          <Footer />
         </main>
       </div>
     </>

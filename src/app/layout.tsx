@@ -4,6 +4,7 @@ import { LoadingProvider } from "@/context/LoadingContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import AppContent from "@/components/AppContent";
 import { ParticleBackground } from "@/components/ui/floating-animation";
+import SessionProvider from "@/components/SessionProvider";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -51,14 +52,16 @@ export default function RootLayout({
         <link rel="icon" href="/infinix-fav-icon.png?v=2" />
       </head>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <LoadingProvider>
-            <AppProvider>
-              <ParticleBackground />
-              <AppContent>{children}</AppContent>
-            </AppProvider>
-          </LoadingProvider>
-        </ThemeProvider>
+        <SessionProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <LoadingProvider>
+              <AppProvider>
+                <ParticleBackground />
+                <AppContent>{children}</AppContent>
+              </AppProvider>
+            </LoadingProvider>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

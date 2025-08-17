@@ -8,6 +8,7 @@ The PSL Dashboard is a modern, responsive web application that provides comprehe
 
 ### **Core Functionality**
 
+- 🔐 **Secure Authentication**: Google OAuth integration with NextAuth.js
 - 📊 **Real-time Analytics**: Live standings, player stats, and team performance
 - 👥 **Player Management**: Detailed player profiles with statistics and performance metrics
 - 🏆 **Team Analytics**: Comprehensive team data and performance tracking
@@ -38,6 +39,7 @@ The PSL Dashboard is a modern, responsive web application that provides comprehe
 ### **Backend**
 
 - **Next.js API Routes**: Server-side API endpoints
+- **NextAuth.js v5**: Authentication and session management
 - **MongoDB**: NoSQL database
 - **Mongoose 8**: MongoDB object modeling
 - **RapidAPI**: External football data API
@@ -56,12 +58,18 @@ psl-dashboard/
 ├── src/
 │   ├── app/                    # Next.js App Router
 │   │   ├── api/               # API routes
+│   │   │   ├── auth/          # Authentication endpoints
+│   │   │   │   └── [...nextauth]/ # NextAuth.js API routes
 │   │   │   ├── fixtures/      # Fixture data endpoints
 │   │   │   ├── overview/      # Dashboard overview data
 │   │   │   ├── players/       # Player data endpoints
 │   │   │   ├── seed/          # Data seeding endpoints
 │   │   │   ├── standings/     # League standings data
 │   │   │   └── teams/         # Team data endpoints
+│   │   ├── auth/              # Authentication pages
+│   │   │   ├── signin/        # Sign in page
+│   │   │   ├── signout/       # Sign out page
+│   │   │   └── error/         # Error page
 │   │   ├── fixtures/          # Fixtures page
 │   │   ├── players/           # Players page
 │   │   ├── standings/         # Standings page
@@ -71,9 +79,11 @@ psl-dashboard/
 │   │   └── page.tsx           # Home page
 │   ├── components/            # React components
 │   │   ├── ui/               # Reusable UI components
+│   │   │   ├── avatar.tsx    # Avatar component
 │   │   │   ├── button.tsx    # Button component
 │   │   │   ├── card.tsx      # Card component
 │   │   │   ├── charts.tsx    # Chart components
+│   │   │   ├── dropdown-menu.tsx # Dropdown menu component
 │   │   │   └── floating-animation.tsx # 3D animation components
 │   │   ├── AppContent.tsx    # Main app layout wrapper
 │   │   ├── Header.tsx        # Application header
@@ -84,6 +94,7 @@ psl-dashboard/
 │   │   ├── PlayerModal.tsx   # Player detail modal
 │   │   ├── SearchBar.tsx     # Search functionality
 │   │   ├── SeasonToggle.tsx  # Season selection
+│   │   ├── SessionProvider.tsx # NextAuth session provider
 │   │   ├── Sidebar.tsx       # Navigation sidebar
 │   │   ├── StandingsTable.tsx # League standings
 │   │   ├── Table.tsx         # Reusable table component
@@ -92,13 +103,16 @@ psl-dashboard/
 │   │   ├── TeamFilter.tsx    # Team filtering
 │   │   ├── ThemeProvider.tsx # Theme management
 │   │   ├── TopRatedChart.tsx # Top rated players chart
-│   │   └── TopScorersChart.tsx # Top scorers chart
+│   │   ├── TopScorersChart.tsx # Top scorers chart
+│   │   └── UserProfile.tsx   # User profile component
 │   ├── context/              # React context providers
 │   │   ├── AppContext.tsx    # Application state
 │   │   └── LoadingContext.tsx # Loading state management
 │   ├── lib/                  # Utility libraries
+│   │   ├── auth.ts          # NextAuth.js configuration
 │   │   ├── db.ts            # Database connection
 │   │   ├── fetcher.ts       # Data fetching utilities
+│   │   ├── mongodb.ts       # MongoDB client configuration
 │   │   └── utils.ts         # General utilities
 │   ├── models/              # Data models
 │   │   └── Fixture.ts       # Fixture data model
@@ -108,8 +122,11 @@ psl-dashboard/
 │       └── lodash.d.ts      # Lodash type extensions
 ├── public/                  # Static assets
 ├── .env.local              # Environment variables
+├── env.example             # Environment variables template
+├── AUTHENTICATION_SETUP.md # Authentication setup guide
 ├── components.json         # UI component configuration
 ├── eslint.config.mjs       # ESLint configuration
+├── middleware.ts           # NextAuth.js middleware
 ├── next.config.ts          # Next.js configuration
 ├── package.json            # Dependencies and scripts
 ├── postcss.config.mjs      # PostCSS configuration
@@ -393,11 +410,27 @@ Seeds fixture data from RapidAPI.
    Create `.env.local` file:
 
    ```env
+   # NextAuth Configuration
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=your-nextauth-secret-key-here
+
+   # Google OAuth Configuration
+   GOOGLE_CLIENT_ID=your-google-client-id-here
+   GOOGLE_CLIENT_SECRET=your-google-client-secret-here
+
+   # MongoDB Configuration
    MONGODB_URI=your_mongodb_connection_string
    RAPIDAPI_KEY=your_rapidapi_key
    ```
 
-4. **Database Setup**
+4. **Google OAuth Setup**
+
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create OAuth 2.0 credentials
+   - Add redirect URI: `http://localhost:3000/api/auth/callback/google`
+   - Update `.env.local` with your credentials
+
+5. **Database Setup**
 
    ```bash
    # Seed initial data
@@ -406,7 +439,7 @@ Seeds fixture data from RapidAPI.
    curl -X POST http://localhost:3000/api/seed/fixtures
    ```
 
-5. **Start Development Server**
+6. **Start Development Server**
    ```bash
    npm run dev
    ```
@@ -451,6 +484,47 @@ Seeds fixture data from RapidAPI.
 - Reduced motion support
 - Mobile-optimized effects
 
+## 🔐 **Authentication System**
+
+### **Features**
+
+- **Google OAuth**: Secure authentication using Google accounts
+- **Session Management**: Persistent sessions with JWT tokens
+- **Route Protection**: Middleware-based route protection
+- **User Profile**: Avatar and profile dropdown management
+- **Error Handling**: Comprehensive error pages and handling
+
+### **Setup**
+
+1. **Google OAuth Configuration**
+
+   - Create OAuth 2.0 credentials in Google Cloud Console
+   - Set authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+   - Add credentials to environment variables
+
+2. **Environment Variables**
+
+   ```env
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=your-secure-secret
+   GOOGLE_CLIENT_ID=your-google-client-id
+   GOOGLE_CLIENT_SECRET=your-google-client-secret
+   ```
+
+3. **MongoDB Integration**
+   - User sessions stored in MongoDB
+   - Automatic user data management
+   - Secure session handling
+
+### **Usage**
+
+- Users are redirected to sign-in page when accessing protected routes
+- Google OAuth provides seamless authentication
+- User profile accessible via header dropdown
+- Automatic session management and renewal
+
+For detailed authentication setup, see [AUTHENTICATION_SETUP.md](./AUTHENTICATION_SETUP.md)
+
 ## 🔒 **Security Considerations**
 
 ### **Environment Variables**
@@ -458,12 +532,14 @@ Seeds fixture data from RapidAPI.
 - API keys stored in environment variables
 - No sensitive data in client-side code
 - Secure database connections
+- Authentication secrets properly configured
 
 ### **Data Validation**
 
 - Input validation on API endpoints
 - TypeScript type checking
 - Error handling and logging
+- Authentication state validation
 
 ## 🚀 **Deployment**
 

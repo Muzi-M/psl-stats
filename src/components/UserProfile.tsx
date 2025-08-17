@@ -34,9 +34,11 @@ export default function UserProfile() {
       console.log("UserProfile sign out initiated...");
       await signOut({
         callbackUrl: "/auth/signin",
-        redirect: true,
+        redirect: false, // Don't redirect automatically
       });
       console.log("UserProfile sign out completed successfully");
+      // Manually redirect to sign-in page
+      window.location.href = "/auth/signin";
     } catch (error) {
       console.error("UserProfile sign out error:", error);
       // Fallback: try to redirect manually

@@ -34,13 +34,12 @@ export default function AuthLayout({
         {/* Header with App Identity and Theme Toggle */}
         <div className="flex items-center justify-between p-6">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg overflow-hidden">
+            <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg overflow-hidden relative">
               <Image
                 src="/Infinix_logo-removebg-preview.png"
                 alt="Infinix Logo"
-                width={48}
-                height={48}
-                className="w-full h-full object-contain"
+                fill
+                className="object-contain"
               />
             </div>
             <div>
@@ -78,13 +77,12 @@ export default function AuthLayout({
             <span className="text-sm text-gray-600 dark:text-gray-400">
               Powered by
             </span>
-            <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 rounded overflow-hidden">
+            <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 rounded overflow-hidden relative">
               <Image
                 src="/Infinix_logo-removebg-preview.png"
                 alt="Infinix Logo"
-                width={32}
-                height={32}
-                className="w-full h-full object-contain"
+                fill
+                className="object-contain"
               />
             </div>
           </div>

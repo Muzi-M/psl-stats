@@ -61,7 +61,7 @@ export default function OverviewDashboard() {
     <div className="space-y-4 lg:space-y-6">
       <SeasonToggle />
 
-      <div className="grid gap-4 lg:gap-6 sm:grid-cols-2 lg:grid-cols-2">
+      <div className="grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-2">
         <Card className="hover:shadow-xl transition-all duration-300 ease-out group">
           <CardHeader>
             <CardTitle className="text-lg lg:text-xl group-hover:text-primary transition-colors duration-200">

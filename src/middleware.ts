@@ -16,6 +16,7 @@ export default function middleware(req: NextRequest) {
     "__Secure-next-auth.session-token"
   );
   const csrfToken = req.cookies.get("__Host-next-auth.csrf-token");
+  const secureCsrfToken = req.cookies.get("__Secure-next-auth.csrf-token");
 
   // Also check for JWT token cookies
   const jwtToken = req.cookies.get("next-auth.jwt-token");
@@ -31,18 +32,28 @@ export default function middleware(req: NextRequest) {
     (cookie) =>
       cookie.name.includes("next-auth") &&
       cookie.value &&
-      cookie.value.length > 10
+      cookie.value.length > 10 &&
+      cookie.value !== "null"
   );
 
-  // Check if any auth-related cookies exist
+  // Check if any auth-related cookies exist and have valid values
   const isLoggedIn = !!(
-    sessionToken ||
-    secureSessionToken ||
-    csrfToken ||
-    jwtToken ||
-    secureJwtToken ||
-    authToken ||
-    secureAuthToken ||
+    (sessionToken && sessionToken.value && sessionToken.value !== "null") ||
+    (secureSessionToken &&
+      secureSessionToken.value &&
+      secureSessionToken.value !== "null") ||
+    (csrfToken && csrfToken.value && csrfToken.value !== "null") ||
+    (secureCsrfToken &&
+      secureCsrfToken.value &&
+      secureCsrfToken.value !== "null") ||
+    (jwtToken && jwtToken.value && jwtToken.value !== "null") ||
+    (secureJwtToken &&
+      secureJwtToken.value &&
+      secureJwtToken.value !== "null") ||
+    (authToken && authToken.value && authToken.value !== "null") ||
+    (secureAuthToken &&
+      secureAuthToken.value &&
+      secureAuthToken.value !== "null") ||
     hasNextAuthCookie
   );
 
@@ -53,28 +64,31 @@ export default function middleware(req: NextRequest) {
     sessionToken: !!sessionToken,
     secureSessionToken: !!secureSessionToken,
     csrfToken: !!csrfToken,
+    secureCsrfToken: !!secureCsrfToken,
     jwtToken: !!jwtToken,
     secureJwtToken: !!secureJwtToken,
     authToken: !!authToken,
     secureAuthToken: !!secureAuthToken,
     hasNextAuthCookie,
     isLoggedIn,
-    sessionTokenValue: sessionToken?.value ? "exists" : "null",
-    secureSessionTokenValue: secureSessionToken?.value ? "exists" : "null",
-    jwtTokenValue: jwtToken?.value ? "exists" : "null",
-    secureJwtTokenValue: secureJwtToken?.value ? "exists" : "null",
-    authTokenValue: authToken?.value ? "exists" : "null",
-    secureAuthTokenValue: secureAuthToken?.value ? "exists" : "null",
+    sessionTokenValue: sessionToken?.value || "null",
+    secureSessionTokenValue: secureSessionToken?.value || "null",
+    jwtTokenValue: jwtToken?.value || "null",
+    secureJwtTokenValue: secureJwtToken?.value || "null",
+    authTokenValue: authToken?.value || "null",
+    secureAuthTokenValue: secureAuthToken?.value || "null",
     allCookies: allCookies.map((c) => c.name).join(", "),
   });
 
   // If the user is not logged in and trying to access a protected route
   if (!isLoggedIn && !isPublicRoute) {
+    console.log("User not logged in, redirecting to signin");
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
 
   // If the user is logged in and trying to access auth pages, redirect to home
   if (isLoggedIn && isPublicRoute) {
+    console.log("User logged in, redirecting to home");
     return NextResponse.redirect(new URL("/", req.url));
   }
 

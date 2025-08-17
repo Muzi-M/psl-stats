@@ -1,272 +1,260 @@
 # Authentication Setup Guide
 
+This document provides comprehensive guidance for setting up and troubleshooting authentication in the PSL Dashboard application.
+
 ## Overview
 
-This guide covers the authentication system implementation for the PSL Dashboard, including the recent fixes for the "UntrustedHost" error and the new auth page layout.
+The PSL Dashboard uses NextAuth.js with Google OAuth for authentication. The system is designed to provide secure, seamless authentication with proper session management.
 
-## Recent Fixes Applied
+## Configuration
 
-### 1. NextAuth Trust Host Configuration
+### Environment Variables
 
-**Issue**: The "UntrustedHost: Host must be trusted" error was occurring because NextAuth.js wasn't configured to trust the Heroku domain.
+Ensure the following environment variables are properly configured:
 
-**Fix**: Added `trustHost: true` to the NextAuth configuration in `src/lib/auth.ts`:
-
-```typescript
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  // ... other configuration
-  trustHost: true, // This fixes the UntrustedHost error
-});
-```
-
-### 2. Auth Page Layout Redesign
-
-**Issue**: Auth pages were showing the full sidebar with menu items, but the requirement was to show only the app identity and "Powered by" section.
-
-**Fix**: Created a dedicated auth layout (`src/app/auth/layout.tsx`) that:
-
-- Covers the whole page
-- Shows app identity ("PSL Dashboard")
-- Shows "Powered by Infinix" section
-- Includes theme toggle
-- Hides menu items (using `opacity-0` for spacing)
-- Maintains dark theme styling
-
-## Required Environment Variables
-
-### For Production (Heroku)
-
-```bash
+```env
 # NextAuth Configuration
-NEXTAUTH_URL=https://your-app-name.herokuapp.com
-NEXTAUTH_SECRET=your-generated-secret-key
+NEXTAUTH_URL=https://your-domain.com
+NEXTAUTH_SECRET=your-nextauth-secret-key-here
 
-# Google OAuth
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID=your-google-client-id-here
+GOOGLE_CLIENT_SECRET=your-google-client-secret-here
 
-# Database
-MONGODB_URI=your-mongodb-connection-string
+# MongoDB Configuration
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/psl-dashboard
 ```
 
-### For Local Development
+### Google OAuth Setup
 
-```bash
-# NextAuth Configuration
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-generated-secret-key
-
-# Google OAuth
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-
-# Database
-MONGODB_URI=mongodb://localhost:27017/psl-dashboard
-```
-
-## Google OAuth Setup
-
-### Step 1: Create Google Cloud Project
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
 2. Create a new project or select an existing one
-3. Enable the Google+ API:
-   - Navigate to "APIs & Services" > "Library"
-   - Search for "Google+ API" and enable it
+3. Enable the Google+ API
+4. Go to "Credentials" and create an OAuth 2.0 Client ID
+5. Add your domain to the authorized origins:
+   - `https://your-domain.com`
+   - `http://localhost:3000` (for development)
+6. Add authorized redirect URIs:
+   - `https://your-domain.com/api/auth/callback/google`
+   - `http://localhost:3000/api/auth/callback/google` (for development)
 
-### Step 2: Create OAuth 2.0 Credentials
+## Recent Fixes and Improvements
 
-1. Go to "APIs & Services" > "Credentials"
-2. Click "Create Credentials" > "OAuth 2.0 Client IDs"
-3. Choose "Web application"
-4. Add authorized redirect URIs:
-   - **Production**: `https://your-app-name.herokuapp.com/api/auth/callback/google`
-   - **Development**: `http://localhost:3000/api/auth/callback/google`
-5. Copy the generated Client ID and Client Secret
+### Logo Display Issues (Fixed)
 
-### Step 3: Set Environment Variables
+**Problem**: Logos were not displaying properly and showing fallback "I" icons.
 
-Set the credentials as environment variables:
+**Solution**:
 
-```bash
-GOOGLE_CLIENT_ID=your-client-id
-GOOGLE_CLIENT_SECRET=your-client-secret
-```
+- Updated to use Next.js `Image` component for better optimization
+- Added proper error handling and loading states
+- Improved image container styling with `overflow-hidden`
 
-## NextAuth Secret Generation
+**Files Modified**:
 
-Generate a secure secret for `NEXTAUTH_SECRET`:
+- `src/app/auth/layout.tsx`
 
-```bash
-# Using OpenSSL
-openssl rand -base64 32
+### OAuth Flow Issues (Fixed)
 
-# Or using Node.js
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-```
+**Problem**: Users were being redirected back to the sign-in page after clicking "Sign in with Google".
 
-## Auth Page Layout Structure
+**Root Causes**:
 
-The new auth layout (`src/app/auth/layout.tsx`) provides:
+1. Cookie detection issues in middleware
+2. Improper session token handling
+3. Missing secure cookie configuration
 
-### Left Sidebar
+**Solutions**:
 
-- **App Identity**: "PSL Dashboard" title and description
-- **Hidden Navigation**: Menu items are hidden but maintain spacing
-- **Powered By**: Infinix logo and branding
-- **Theme Toggle**: Dark/light mode switch
+1. **Enhanced Middleware**: Improved cookie detection logic to properly validate session tokens
+2. **NextAuth Configuration**: Added explicit cookie configuration and session management
+3. **Sign-in Flow**: Updated to handle authentication results properly with better error handling
 
-### Main Content Area
+**Files Modified**:
 
-- **Centered Content**: Auth forms and error messages
-- **Responsive Design**: Adapts to different screen sizes
-- **Dark Theme**: Consistent with the app's design
-
-## File Structure
-
-```
-src/app/auth/
-├── layout.tsx          # New auth layout
-├── signin/page.tsx     # Sign-in page
-├── signout/page.tsx    # Sign-out page
-└── error/page.tsx      # Error page
-```
+- `src/lib/auth.ts`
+- `src/middleware.ts`
+- `src/app/auth/signin/page.tsx`
 
 ## Troubleshooting
 
-### Common Issues
+### Common Issues and Solutions
 
-1. **"UntrustedHost" Error**
+#### 1. Logo Not Displaying
 
-   - **Cause**: NextAuth doesn't trust the production domain
-   - **Solution**: Ensure `trustHost: true` is in NextAuth config and `NEXTAUTH_URL` is set correctly
+**Symptoms**:
 
-2. **"Configuration" Error**
+- Icons showing instead of logos
+- Console errors about image loading
 
-   - **Cause**: Missing or incorrect environment variables
-   - **Solution**: Verify all required environment variables are set
+**Solutions**:
 
-3. **Google OAuth Errors**
+- Verify the logo file exists in `/public/Infinix_logo-removebg-preview.png`
+- Check browser console for CORS or loading errors
+- Ensure the image path is correct in the code
 
-   - **Cause**: Incorrect redirect URIs or credentials
-   - **Solution**: Check Google Cloud Console settings and environment variables
+#### 2. OAuth Redirect Loop
 
-4. **Session Issues**
-   - **Cause**: Inconsistent `NEXTAUTH_SECRET` or incorrect `NEXTAUTH_URL`
-   - **Solution**: Ensure consistent secret across deployments and correct URL
+**Symptoms**:
 
-### Heroku Deployment Checklist
+- User clicks "Sign in with Google" but stays on sign-in page
+- Console shows authentication cookies as "null"
 
-- [ ] Set `NEXTAUTH_URL` to your Heroku app URL
-- [ ] Set `NEXTAUTH_SECRET` with a secure random string
-- [ ] Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
-- [ ] Add Heroku domain to Google OAuth redirect URIs
-- [ ] Ensure `trustHost: true` is in NextAuth config
+**Solutions**:
 
-### Environment Variable Verification
+1. **Check Environment Variables**:
 
-Check your Heroku environment variables:
+   ```bash
+   # Verify these are set correctly
+   echo $GOOGLE_CLIENT_ID
+   echo $GOOGLE_CLIENT_SECRET
+   echo $NEXTAUTH_SECRET
+   echo $NEXTAUTH_URL
+   ```
 
-```bash
-heroku config
+2. **Verify Google OAuth Configuration**:
+
+   - Ensure redirect URIs are correct
+   - Check that the domain is authorized
+   - Verify API is enabled in Google Cloud Console
+
+3. **Check Cookie Settings**:
+   - Ensure `NEXTAUTH_URL` matches your domain exactly
+   - For production, use HTTPS
+   - Check browser cookie settings
+
+#### 3. Session Not Persisting
+
+**Symptoms**:
+
+- User gets logged out after page refresh
+- Middleware logs show no valid session tokens
+
+**Solutions**:
+
+1. **Check NEXTAUTH_SECRET**:
+
+   - Must be a strong, unique secret
+   - Should be at least 32 characters
+   - Must be consistent across deployments
+
+2. **Verify Cookie Configuration**:
+   - Production: Use `__Secure-` prefixed cookies
+   - Development: Use standard cookies
+   - Ensure `sameSite` and `secure` settings are correct
+
+#### 4. MongoDB Connection Issues
+
+**Symptoms**:
+
+- Authentication fails with database errors
+- Session data not persisting
+
+**Solutions**:
+
+1. **Check MongoDB URI**:
+
+   - Ensure connection string is correct
+   - Verify network access and credentials
+   - Check if database exists
+
+2. **Verify MongoDB Adapter**:
+   - Ensure `@auth/mongodb-adapter` is installed
+   - Check that collections are created automatically
+
+### Debug Mode
+
+Enable debug logging by setting:
+
+```env
+NODE_ENV=development
 ```
 
-Verify all required variables are present and correctly set.
+This will provide detailed logs for:
 
-## Security Considerations
+- NextAuth callbacks
+- Middleware decisions
+- Session management
+- OAuth flow
 
-1. **Never commit secrets** to version control
-2. **Use strong, unique secrets** for `NEXTAUTH_SECRET`
-3. **Regularly rotate** OAuth credentials
-4. **Monitor authentication logs** for suspicious activity
-5. **Use HTTPS** in production (Heroku provides this automatically)
+### Production Deployment Checklist
+
+1. **Environment Variables**:
+
+   - [ ] `NEXTAUTH_URL` set to production domain
+   - [ ] `NEXTAUTH_SECRET` is strong and unique
+   - [ ] `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` configured
+   - [ ] `MONGODB_URI` points to production database
+
+2. **Google OAuth**:
+
+   - [ ] Production domain added to authorized origins
+   - [ ] Production callback URL configured
+   - [ ] API enabled in Google Cloud Console
+
+3. **Security**:
+
+   - [ ] HTTPS enabled
+   - [ ] Secure cookies configured
+   - [ ] CORS settings appropriate
+
+4. **Monitoring**:
+   - [ ] Error logging enabled
+   - [ ] Authentication metrics tracked
+   - [ ] Session monitoring in place
 
 ## Testing
 
-### Local Testing
+### Local Development Testing
 
-```bash
-npm run dev
-```
+1. **Start the development server**:
 
-Visit `http://localhost:3000/auth/signin` to test authentication flow.
+   ```bash
+   npm run dev
+   ```
+
+2. **Test authentication flow**:
+
+   - Navigate to `/auth/signin`
+   - Click "Continue with Google"
+   - Verify redirect to Google OAuth
+   - Complete authentication
+   - Verify redirect back to dashboard
+
+3. **Test session persistence**:
+   - Refresh the page
+   - Verify user remains logged in
+   - Check browser cookies
 
 ### Production Testing
 
-1. Deploy to Heroku
-2. Visit your app's sign-in page
-3. Test Google OAuth flow
-4. Verify session persistence
-5. Test sign-out functionality
+1. **Deploy to staging environment**
+2. **Test with production Google OAuth credentials**
+3. **Verify all environment variables**
+4. **Test authentication flow end-to-end**
+5. **Monitor logs for any issues**
+
+## Security Considerations
+
+1. **Environment Variables**: Never commit secrets to version control
+2. **HTTPS**: Always use HTTPS in production
+3. **Cookie Security**: Use secure, httpOnly cookies
+4. **Session Management**: Implement proper session timeouts
+5. **Error Handling**: Don't expose sensitive information in error messages
 
 ## Support
 
-If you encounter issues:
+If you encounter issues not covered in this guide:
 
-1. Check the troubleshooting section above
-2. Verify all environment variables are set correctly
-3. Check Heroku logs: `heroku logs --tail`
-4. Ensure Google OAuth credentials are properly configured
+1. Check the application logs for detailed error messages
+2. Verify all environment variables are correctly set
+3. Test with a fresh browser session (clear cookies)
+4. Review the NextAuth.js documentation for additional guidance
+5. Check Google Cloud Console for OAuth configuration issues
 
-## Immediate Fixes for Current Issues
+## Recent Updates
 
-### Current Problems Identified:
-
-1. **Sidebar showing on auth pages** - Fixed with new layout
-2. **Google OAuth redirect loop** - Users redirected back to sign-in page
-3. **Edge Runtime compatibility issues** - Fixed middleware to work with Edge Runtime
-
-### Required Actions:
-
-#### 1. Set Correct Environment Variables on Heroku
-
-```bash
-# Set the correct NextAuth URL
-heroku config:set NEXTAUTH_URL=https://infinixdigital-footy-48dc94474adc.herokuapp.com
-
-# Generate and set a secure secret
-heroku config:set NEXTAUTH_SECRET=$(openssl rand -base64 32)
-
-# Set Google OAuth credentials (replace with your actual values)
-heroku config:set GOOGLE_CLIENT_ID=your-actual-google-client-id
-heroku config:set GOOGLE_CLIENT_SECRET=your-actual-google-client-secret
-
-# Verify the settings
-heroku config
-```
-
-#### 2. Update Google OAuth Redirect URIs
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Navigate to "APIs & Services" > "Credentials"
-3. Edit your OAuth 2.0 Client ID
-4. Add this exact redirect URI:
-   ```
-   https://infinixdigital-footy-48dc94474adc.herokuapp.com/api/auth/callback/google
-   ```
-5. Save the changes
-
-#### 3. Deploy the Updated Code
-
-```bash
-git add .
-git commit -m "Fix authentication layout, redirect issues, and Edge Runtime compatibility"
-git push heroku main
-```
-
-#### 4. Test the Authentication
-
-1. Visit: https://infinixdigital-footy-48dc94474adc.herokuapp.com/auth/signin
-2. Click "Continue with Google"
-3. Complete the OAuth flow
-4. You should be redirected to the dashboard
-
-#### 5. Check Heroku Logs
-
-If issues persist, check the logs:
-
-```bash
-heroku logs --tail
-```
-
-Look for any authentication-related errors.
+- **2025-08-17**: Fixed logo display issues and OAuth flow problems
+- **2025-08-17**: Enhanced middleware cookie detection
+- **2025-08-17**: Improved error handling in sign-in flow
+- **2025-08-17**: Added comprehensive troubleshooting guide

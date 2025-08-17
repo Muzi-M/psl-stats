@@ -17,6 +17,7 @@ import { Loader2 } from "lucide-react";
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -53,20 +54,35 @@ export default function SignIn() {
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
+    setError(null);
     try {
       console.log("Starting Google sign in...");
       console.log("Current URL:", window.location.href);
+      console.log("Environment:", process.env.NODE_ENV);
 
       // Let NextAuth handle the entire OAuth flow
-      await signIn("google", {
+      const result = await signIn("google", {
         callbackUrl: "/",
-        redirect: true,
+        redirect: false, // Don't redirect automatically, handle it manually
       });
 
-      // This code won't execute if redirect is true, but keeping for safety
-      console.log("Sign in initiated, redirecting to Google...");
+      console.log("Sign in result:", result);
+
+      if (result?.error) {
+        console.error("Sign in error:", result.error);
+        setError(`Sign in failed: ${result.error}`);
+        setIsLoading(false);
+      } else if (result?.ok) {
+        console.log("Sign in successful, redirecting...");
+        router.push("/");
+      } else {
+        // If no result, the redirect should have happened
+        console.log("No result returned, checking if redirect happened");
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error("Sign in error:", error);
+      setError("An unexpected error occurred during sign in");
       setIsLoading(false);
     }
   };
@@ -110,6 +126,12 @@ export default function SignIn() {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
+          {error && (
+            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            </div>
+          )}
+
           <div className="space-y-4">
             <Button
               onClick={handleGoogleSignIn}

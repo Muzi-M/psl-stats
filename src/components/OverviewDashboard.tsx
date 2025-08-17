@@ -33,12 +33,39 @@ export default function OverviewDashboard() {
     setIsLoading(true);
 
     fetch(`/api/overview?season=${season}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
-        setStandings(data.standings || []);
-        setScorers(data.scorers || []);
-        setTopRated(data.topRated || []);
-        setRecentFixtures(data.fixtures || []);
+        // Filter out invalid data
+        const validStandings = (data.standings || []).filter(
+          (team: any) => team && team.team && team.team.name
+        );
+        const validScorers = (data.scorers || []).filter(
+          (player: any) => player && player.player && player.player.name
+        );
+        const validTopRated = (data.topRated || []).filter(
+          (player: any) => player && player.player && player.player.name
+        );
+        const validFixtures = (data.fixtures || []).filter(
+          (fixture: any) =>
+            fixture && fixture.teams && fixture.teams.home && fixture.teams.away
+        );
+
+        setStandings(validStandings);
+        setScorers(validScorers);
+        setTopRated(validTopRated);
+        setRecentFixtures(validFixtures);
+      })
+      .catch((error) => {
+        console.error("Error fetching overview data:", error);
+        setStandings([]);
+        setScorers([]);
+        setTopRated([]);
+        setRecentFixtures([]);
       })
       .finally(() => {
         setIsDataLoading(false);
@@ -79,13 +106,13 @@ export default function OverviewDashboard() {
                     {team.rank}.
                   </span>
                   <TeamDisplay
-                    name={team.team.name}
-                    logo={team.team.logo}
+                    name={team.team?.name || "Unknown Team"}
+                    logo={team.team?.logo || "/next.svg"}
                     size="md"
                     className="flex-1 group-hover/item:text-primary transition-colors duration-200"
                   />
                   <span className="ml-auto text-muted-foreground flex-shrink-0 group-hover/item:text-primary transition-colors duration-200">
-                    {team.points} pts
+                    {team.points || 0} pts
                   </span>
                 </li>
               ))}
@@ -112,23 +139,25 @@ export default function OverviewDashboard() {
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <TeamDisplay
-                      name={f.teams.home.name}
-                      logo={f.teams.home.logo}
+                      name={f.teams?.home?.name || "Unknown Team"}
+                      logo={f.teams?.home?.logo || "/next.svg"}
                       size="sm"
                       className="group-hover/item:text-primary transition-colors duration-200"
                     />
-                    <span className="font-bold">{f.goals.home}</span>
+                    <span className="font-bold">{f.goals?.home || 0}</span>
                     <span> : </span>
-                    <span className="font-bold">{f.goals.away}</span>
+                    <span className="font-bold">{f.goals?.away || 0}</span>
                     <TeamDisplay
-                      name={f.teams.away.name}
-                      logo={f.teams.away.logo}
+                      name={f.teams?.away?.name || "Unknown Team"}
+                      logo={f.teams?.away?.logo || "/next.svg"}
                       size="sm"
                       className="group-hover/item:text-primary transition-colors duration-200"
                     />
                   </div>
                   <div className="text-xs text-muted-foreground lg:text-sm group-hover/item:text-primary/70 transition-colors duration-200">
-                    {new Date(f.fixture.date).toLocaleDateString()}
+                    {f.fixture?.date
+                      ? new Date(f.fixture.date).toLocaleDateString()
+                      : "Date TBD"}
                   </div>
                 </li>
               ))}

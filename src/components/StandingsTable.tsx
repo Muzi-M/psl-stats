@@ -27,9 +27,22 @@ export default function StandingsTable() {
     setIsLoading(true);
 
     fetch(`/api/standings?season=${season}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
-        setStandings(data);
+        // Filter out invalid data
+        const validStandings = (data || []).filter(
+          (team: any) => team && team.team && team.team.name
+        );
+        setStandings(validStandings);
+      })
+      .catch((error) => {
+        console.error("Error fetching standings:", error);
+        setStandings([]);
       })
       .finally(() => {
         setIsLoadingLocal(false);
@@ -41,6 +54,25 @@ export default function StandingsTable() {
     return (
       <div className="flex items-center justify-center py-8 lg:py-12">
         <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  if (standings.length === 0) {
+    return (
+      <div className="space-y-4">
+        <Card className="hover:shadow-xl transition-all duration-300 ease-out">
+          <CardHeader>
+            <CardTitle className="text-lg lg:text-xl">
+              League Standings
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-center py-8 text-muted-foreground">
+              <p>No standings data available</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -75,37 +107,39 @@ export default function StandingsTable() {
                     key={team.rank}
                     className="transition-all duration-200 hover:bg-accent/50 hover:scale-[1.01] transform-gpu"
                   >
-                    <TableCell className="font-medium">{team.rank}</TableCell>
+                    <TableCell className="font-medium">
+                      {team.rank || "N/A"}
+                    </TableCell>
                     <TableCell>
                       <TeamDisplay
-                        name={team.team.name}
-                        logo={team.team.logo}
+                        name={team.team?.name || "Unknown Team"}
+                        logo={team.team?.logo || "/next.svg"}
                         size="md"
                       />
                     </TableCell>
                     <TableCell className="text-center">
-                      {team.all.played}
+                      {team.all?.played || 0}
                     </TableCell>
                     <TableCell className="text-center">
-                      {team.all.win}
+                      {team.all?.win || 0}
                     </TableCell>
                     <TableCell className="text-center">
-                      {team.all.draw}
+                      {team.all?.draw || 0}
                     </TableCell>
                     <TableCell className="text-center">
-                      {team.all.lose}
+                      {team.all?.lose || 0}
                     </TableCell>
                     <TableCell className="text-center">
-                      {team.all.goals.for}
+                      {team.all?.goals?.for || 0}
                     </TableCell>
                     <TableCell className="text-center">
-                      {team.all.goals.against}
+                      {team.all?.goals?.against || 0}
                     </TableCell>
                     <TableCell className="text-center">
-                      {team.goalsDiff}
+                      {team.goalsDiff || 0}
                     </TableCell>
                     <TableCell className="text-center font-bold">
-                      {team.points}
+                      {team.points || 0}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -123,51 +157,55 @@ export default function StandingsTable() {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">
-                      {team.rank}
+                      {team.rank || "N/A"}
                     </span>
                     <TeamDisplay
-                      name={team.team.name}
-                      logo={team.team.logo}
+                      name={team.team?.name || "Unknown Team"}
+                      logo={team.team?.logo || "/next.svg"}
                       size="sm"
                       className="font-medium text-sm lg:text-base truncate group-hover:text-primary transition-colors duration-200"
                     />
                   </div>
                   <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">
-                    {team.points} pts
+                    {team.points || 0} pts
                   </span>
                 </div>
 
                 <div className="grid grid-cols-4 gap-2 text-xs">
                   <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
                     <div className="text-muted-foreground">P</div>
-                    <div className="font-medium">{team.all.played}</div>
+                    <div className="font-medium">{team.all?.played || 0}</div>
                   </div>
                   <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
                     <div className="text-muted-foreground">W</div>
-                    <div className="font-medium">{team.all.win}</div>
+                    <div className="font-medium">{team.all?.win || 0}</div>
                   </div>
                   <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
                     <div className="text-muted-foreground">D</div>
-                    <div className="font-medium">{team.all.draw}</div>
+                    <div className="font-medium">{team.all?.draw || 0}</div>
                   </div>
                   <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
                     <div className="text-muted-foreground">L</div>
-                    <div className="font-medium">{team.all.lose}</div>
+                    <div className="font-medium">{team.all?.lose || 0}</div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 text-xs mt-2">
                   <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
                     <div className="text-muted-foreground">GF</div>
-                    <div className="font-medium">{team.all.goals.for}</div>
+                    <div className="font-medium">
+                      {team.all?.goals?.for || 0}
+                    </div>
                   </div>
                   <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
                     <div className="text-muted-foreground">GA</div>
-                    <div className="font-medium">{team.all.goals.against}</div>
+                    <div className="font-medium">
+                      {team.all?.goals?.against || 0}
+                    </div>
                   </div>
                   <div className="text-center p-1 rounded bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
                     <div className="text-muted-foreground">GD</div>
-                    <div className="font-medium">{team.goalsDiff}</div>
+                    <div className="font-medium">{team.goalsDiff || 0}</div>
                   </div>
                 </div>
               </div>

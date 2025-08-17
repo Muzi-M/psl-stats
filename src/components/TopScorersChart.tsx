@@ -4,13 +4,32 @@ import TeamDisplay from "./ui/TeamDisplay";
 import PlayerDisplay from "./ui/PlayerDisplay";
 
 export default function TopScorersChart({ data }: { data: any[] }) {
-  const topScorers = data.slice(0, 5);
+  // Filter out invalid data and take top 5
+  const topScorers = data
+    .filter(
+      (player: any) =>
+        player &&
+        player.player &&
+        player.player.name &&
+        player.statistics &&
+        Array.isArray(player.statistics) &&
+        player.statistics.length > 0
+    )
+    .slice(0, 5);
+
+  if (topScorers.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-8 text-muted-foreground">
+        <p>No scorer data available</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3 pb-2">
       {topScorers.map((player: any, index: number) => (
         <div
-          key={`${player.player.id || player.player.name}-${index}`}
+          key={`${player.player.name}-${index}`}
           className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
         >
           <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -19,14 +38,14 @@ export default function TopScorersChart({ data }: { data: any[] }) {
             </span>
             <div className="min-w-0 flex-1">
               <PlayerDisplay
-                name={player.player.name}
-                photo={player.player.photo}
+                name={player.player.name || "Unknown Player"}
+                photo={player.player.photo || "/next.svg"}
                 size="sm"
                 className="mb-1"
               />
               <TeamDisplay
                 name={player.statistics?.[0]?.team?.name || "Unknown Team"}
-                logo={player.statistics?.[0]?.team?.logo || ""}
+                logo={player.statistics?.[0]?.team?.logo || "/next.svg"}
                 size="sm"
                 className="text-sm text-muted-foreground"
               />

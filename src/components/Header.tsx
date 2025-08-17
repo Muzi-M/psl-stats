@@ -2,8 +2,8 @@
 
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import { SearchBar } from "./SearchBar";
-import { SeasonToggle } from "./SeasonToggle";
+import SearchBar from "./SearchBar";
+import SeasonToggle from "./SeasonToggle";
 import UserProfile from "./UserProfile";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";

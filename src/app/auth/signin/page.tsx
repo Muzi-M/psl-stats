@@ -21,10 +21,18 @@ export default function SignIn() {
 
   useEffect(() => {
     const checkSession = async () => {
-      const session = await getSession();
-      if (session) {
-        router.push("/");
-      } else {
+      try {
+        const session = await getSession();
+        console.log("Session check result:", session);
+        if (session) {
+          console.log("User is already signed in, redirecting to dashboard");
+          router.push("/");
+        } else {
+          console.log("No session found, showing sign-in page");
+          setIsCheckingSession(false);
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
         setIsCheckingSession(false);
       }
     };

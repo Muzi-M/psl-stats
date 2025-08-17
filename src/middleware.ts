@@ -17,20 +17,34 @@ export default function middleware(req: NextRequest) {
   );
   const csrfToken = req.cookies.get("__Host-next-auth.csrf-token");
 
-  // Check if any auth-related cookies exist
-  const isLoggedIn = !!(sessionToken || secureSessionToken || csrfToken);
+  // Also check for JWT token cookies
+  const jwtToken = req.cookies.get("next-auth.jwt-token");
+  const secureJwtToken = req.cookies.get("__Secure-next-auth.jwt-token");
 
-  // Debug logging (only in development)
-  if (process.env.NODE_ENV === "development") {
-    console.log("Middleware Debug:", {
-      pathname,
-      isPublicRoute,
-      sessionToken: !!sessionToken,
-      secureSessionToken: !!secureSessionToken,
-      csrfToken: !!csrfToken,
-      isLoggedIn,
-    });
-  }
+  // Check if any auth-related cookies exist
+  const isLoggedIn = !!(
+    sessionToken ||
+    secureSessionToken ||
+    csrfToken ||
+    jwtToken ||
+    secureJwtToken
+  );
+
+  // Debug logging (always log for troubleshooting)
+  console.log("Middleware Debug:", {
+    pathname,
+    isPublicRoute,
+    sessionToken: !!sessionToken,
+    secureSessionToken: !!secureSessionToken,
+    csrfToken: !!csrfToken,
+    jwtToken: !!jwtToken,
+    secureJwtToken: !!secureJwtToken,
+    isLoggedIn,
+    sessionTokenValue: sessionToken?.value ? "exists" : "null",
+    secureSessionTokenValue: secureSessionToken?.value ? "exists" : "null",
+    jwtTokenValue: jwtToken?.value ? "exists" : "null",
+    secureJwtTokenValue: secureJwtToken?.value ? "exists" : "null",
+  });
 
   // If the user is not logged in and trying to access a protected route
   if (!isLoggedIn && !isPublicRoute) {

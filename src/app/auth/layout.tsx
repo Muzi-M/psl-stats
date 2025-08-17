@@ -35,12 +35,10 @@ export default function AuthLayout({
         <div className="flex items-center justify-between p-6">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center overflow-hidden">
-              <Image
+              <img
                 src="/Infinix_logo-removebg-preview.png"
                 alt="Infinix Logo"
-                width={32}
-                height={32}
-                className="object-contain"
+                className="w-full h-full object-contain"
               />
             </div>
             <div>
@@ -79,12 +77,10 @@ export default function AuthLayout({
               Powered by
             </span>
             <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded flex items-center justify-center overflow-hidden">
-              <Image
+              <img
                 src="/Infinix_logo-removebg-preview.png"
                 alt="Infinix Logo"
-                width={20}
-                height={20}
-                className="object-contain"
+                className="w-full h-full object-contain"
               />
             </div>
           </div>

@@ -35,6 +35,9 @@ export default function SignIn() {
     setIsLoading(true);
     try {
       console.log("Starting Google sign in...");
+      console.log("Current URL:", window.location.href);
+      console.log("NEXTAUTH_URL:", process.env.NEXT_PUBLIC_NEXTAUTH_URL);
+
       const result = await signIn("google", {
         callbackUrl: "/",
         redirect: false,
@@ -47,7 +50,21 @@ export default function SignIn() {
         setIsLoading(false);
       } else if (result?.ok) {
         console.log("Sign in successful, redirecting...");
-        router.push("/");
+        console.log("Result details:", result);
+
+        // Try multiple redirect approaches
+        try {
+          // First try router push
+          await router.push("/");
+          console.log("Router push completed");
+        } catch (routerError) {
+          console.log(
+            "Router push failed, trying window.location:",
+            routerError
+          );
+          // Fallback to window.location
+          window.location.href = "/";
+        }
       } else {
         console.log("No result from sign in");
         setIsLoading(false);

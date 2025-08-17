@@ -11,12 +11,26 @@ export default function middleware(req: NextRequest) {
   );
 
   // Check for authentication token in cookies
-  const token =
-    req.cookies.get("next-auth.session-token") ||
-    req.cookies.get("__Secure-next-auth.session-token") ||
-    req.cookies.get("__Host-next-auth.csrf-token");
+  const sessionToken = req.cookies.get("next-auth.session-token");
+  const secureSessionToken = req.cookies.get(
+    "__Secure-next-auth.session-token"
+  );
+  const csrfToken = req.cookies.get("__Host-next-auth.csrf-token");
 
-  const isLoggedIn = !!token;
+  // Check if any auth-related cookies exist
+  const isLoggedIn = !!(sessionToken || secureSessionToken || csrfToken);
+
+  // Debug logging (only in development)
+  if (process.env.NODE_ENV === "development") {
+    console.log("Middleware Debug:", {
+      pathname,
+      isPublicRoute,
+      sessionToken: !!sessionToken,
+      secureSessionToken: !!secureSessionToken,
+      csrfToken: !!csrfToken,
+      isLoggedIn,
+    });
+  }
 
   // If the user is not logged in and trying to access a protected route
   if (!isLoggedIn && !isPublicRoute) {

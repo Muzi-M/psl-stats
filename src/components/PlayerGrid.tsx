@@ -117,116 +117,137 @@ export default function PlayerGrid() {
           </p>
         </div>
       ) : (
-        <div className="grid gap-3 lg:gap-4">
-          {filtered.map((p, i) => {
-            // Ensure all required data exists before rendering
-            if (!p.player?.name || !p.statistics?.[0]) {
-              return null;
-            }
+        <div className="space-y-4">
+          {/* Selected Team Header */}
+          <div className="bg-primary/10 border-2 border-primary/30 rounded-lg p-4 lg:p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
+                <h2 className="text-lg lg:text-xl font-bold text-primary">
+                  Currently Viewing: {team}
+                </h2>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {filtered.length} player{filtered.length !== 1 ? "s" : ""} found
+              </div>
+            </div>
+          </div>
 
-            const stats = p.statistics[0];
-            const playerPhoto = p.player.photo || "/next.svg";
-            const teamLogo = stats?.team?.logo || "/next.svg";
+          <div className="grid gap-3 lg:gap-4">
+            {filtered.map((p, i) => {
+              // Ensure all required data exists before rendering
+              if (!p.player?.name || !p.statistics?.[0]) {
+                return null;
+              }
 
-            return (
-              <div
-                key={`${p.player.name}-${i}`}
-                className="border rounded-lg p-4 lg:p-6 shadow-sm hover:shadow-xl transition-all duration-300 ease-out transform-gpu bg-card hover:bg-accent/50 group"
-              >
-                {/* Player Header */}
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="flex-shrink-0">
-                    <div className="relative overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary/40 transition-all duration-300">
-                      <Image
-                        src={playerPhoto}
-                        alt={p.player.name}
-                        width={80}
-                        height={80}
-                        className="object-cover w-16 h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:scale-110"
-                        unoptimized
+              const stats = p.statistics[0];
+              const playerPhoto = p.player.photo || "/next.svg";
+              const teamLogo = stats?.team?.logo || "/next.svg";
+
+              return (
+                <div
+                  key={`${p.player.name}-${i}`}
+                  className="border rounded-lg p-4 lg:p-6 shadow-sm hover:shadow-xl transition-all duration-300 ease-out transform-gpu bg-card hover:bg-accent/50 group"
+                >
+                  {/* Player Header */}
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex-shrink-0">
+                      <div className="relative overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary/40 transition-all duration-300">
+                        <Image
+                          src={playerPhoto}
+                          alt={p.player.name}
+                          width={80}
+                          height={80}
+                          className="object-cover w-16 h-16 lg:w-20 lg:h-20 transition-all duration-300 group-hover:scale-110"
+                          unoptimized
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg lg:text-xl font-bold group-hover:text-primary transition-colors duration-200">
+                        {p.player.name}
+                      </h3>
+                      <TeamDisplay
+                        name={p.teamName || "Unknown Team"}
+                        logo={teamLogo}
+                        size="md"
+                        className="text-sm text-muted-foreground group-hover:text-primary/70 transition-colors duration-200"
                       />
                     </div>
                   </div>
 
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg lg:text-xl font-bold group-hover:text-primary transition-colors duration-200">
-                      {p.player.name}
-                    </h3>
-                    <TeamDisplay
-                      name={p.teamName || "Unknown Team"}
-                      logo={teamLogo}
-                      size="md"
-                      className="text-sm text-muted-foreground group-hover:text-primary/70 transition-colors duration-200"
-                    />
-                  </div>
-                </div>
-
-                {/* Player Stats Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 lg:gap-4">
-                  <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <span className="text-xs text-muted-foreground">Age</span>
-                    <span className="font-medium text-sm lg:text-base">
-                      {p.player.age || "N/A"}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <span className="text-xs text-muted-foreground">
-                      Position
-                    </span>
-                    <span className="font-medium text-sm lg:text-base">
-                      {stats?.games?.position || "N/A"}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <span className="text-xs text-muted-foreground">Apps</span>
-                    <span className="font-medium text-sm lg:text-base">
-                      {stats?.games?.appearences || 0}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <span className="text-xs text-muted-foreground">Goals</span>
-                    <span className="font-medium text-sm lg:text-base text-green-600">
-                      {stats?.goals?.total || 0}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <span className="text-xs text-muted-foreground">
-                      Assists
-                    </span>
-                    <span className="font-medium text-sm lg:text-base text-blue-600">
-                      {stats?.goals?.assists || 0}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                    <span className="text-xs text-muted-foreground">
-                      Minutes
-                    </span>
-                    <span className="font-medium text-sm lg:text-base">
-                      {stats?.games?.minutes || 0}
-                    </span>
-                  </div>
-
-                  {stats?.games?.rating && (
+                  {/* Player Stats Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 lg:gap-4">
                     <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
-                      <span className="text-xs text-muted-foreground">
-                        Rating
-                      </span>
-                      <span className="font-medium text-sm lg:text-base text-yellow-600">
-                        {typeof stats.games.rating === "string"
-                          ? parseFloat(stats.games.rating).toFixed(1)
-                          : stats.games.rating.toFixed(1)}
+                      <span className="text-xs text-muted-foreground">Age</span>
+                      <span className="font-medium text-sm lg:text-base">
+                        {p.player.age || "N/A"}
                       </span>
                     </div>
-                  )}
+
+                    <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <span className="text-xs text-muted-foreground">
+                        Position
+                      </span>
+                      <span className="font-medium text-sm lg:text-base">
+                        {stats?.games?.position || "N/A"}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <span className="text-xs text-muted-foreground">
+                        Apps
+                      </span>
+                      <span className="font-medium text-sm lg:text-base">
+                        {stats?.games?.appearences || 0}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <span className="text-xs text-muted-foreground">
+                        Goals
+                      </span>
+                      <span className="font-medium text-sm lg:text-base text-green-600">
+                        {stats?.goals?.total || 0}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <span className="text-xs text-muted-foreground">
+                        Assists
+                      </span>
+                      <span className="font-medium text-sm lg:text-base text-blue-600">
+                        {stats?.goals?.assists || 0}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                      <span className="text-xs text-muted-foreground">
+                        Minutes
+                      </span>
+                      <span className="font-medium text-sm lg:text-base">
+                        {stats?.games?.minutes || 0}
+                      </span>
+                    </div>
+
+                    {stats?.games?.rating && (
+                      <div className="flex flex-col p-3 rounded-md bg-background/50 group-hover:bg-background/80 transition-all duration-200 hover:scale-105 transform-gpu">
+                        <span className="text-xs text-muted-foreground">
+                          Rating
+                        </span>
+                        <span className="font-medium text-sm lg:text-base text-yellow-600">
+                          {typeof stats.games.rating === "string"
+                            ? parseFloat(stats.games.rating).toFixed(1)
+                            : stats.games.rating.toFixed(1)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

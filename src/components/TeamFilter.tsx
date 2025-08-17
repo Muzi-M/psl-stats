@@ -78,23 +78,54 @@ export default function TeamFilter({ value, onChange }: TeamFilterProps) {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-          {teams.map((teamName, index) => (
-            <button
-              key={`${teamName}-${index}`}
-              onClick={() => onChange(teamName)}
-              className={`p-3 rounded-lg border transition-all duration-300 ease-out text-center group transform-gpu hover:scale-105 hover:-translate-y-1 ${
-                value === teamName
-                  ? "border-primary bg-primary/10 text-primary shadow-lg scale-105 -translate-y-1"
-                  : "border-border bg-card hover:bg-accent hover:shadow-lg"
-              }`}
-            >
-              <div className="flex flex-col items-center gap-2">
-                <div className="text-xs sm:text-sm font-medium truncate w-full group-hover:text-primary transition-colors duration-200">
-                  {teamName || "Unknown Team"}
+          {teams.map((teamName, index) => {
+            const isSelected = value === teamName;
+            return (
+              <button
+                key={`${teamName}-${index}`}
+                onClick={() => onChange(teamName)}
+                className={`p-3 rounded-lg border-2 transition-all duration-300 ease-out text-center group transform-gpu hover:scale-105 hover:-translate-y-1 relative overflow-hidden ${
+                  isSelected
+                    ? "border-primary bg-primary text-primary-foreground shadow-xl scale-105 -translate-y-1 ring-4 ring-primary/20 font-semibold"
+                    : "border-border bg-card hover:bg-accent hover:shadow-lg hover:border-primary/50"
+                }`}
+              >
+                {/* Selection indicator */}
+                {isSelected && (
+                  <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-t-[20px] border-t-primary-foreground transform rotate-45 translate-x-2 -translate-y-2"></div>
+                )}
+
+                <div className="flex flex-col items-center gap-2">
+                  <div
+                    className={`text-xs sm:text-sm font-medium truncate w-full transition-colors duration-200 ${
+                      isSelected
+                        ? "text-primary-foreground"
+                        : "group-hover:text-primary"
+                    }`}
+                  >
+                    {teamName || "Unknown Team"}
+                  </div>
+
+                  {/* Selection checkmark */}
+                  {isSelected && (
+                    <div className="absolute top-1 right-1 w-4 h-4 bg-primary-foreground rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-2.5 h-2.5 text-primary"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
       </CardContent>
     </Card>

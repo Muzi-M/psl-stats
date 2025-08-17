@@ -142,7 +142,7 @@ export default function OverviewDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64 lg:h-80">
+            <div className="min-h-64 lg:min-h-80">
               <TopScorersChart data={scorers} />
             </div>
           </CardContent>
@@ -159,7 +159,7 @@ export default function OverviewDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64 lg:h-80">
+            <div className="min-h-64 lg:min-h-80">
               <TopRatedChart data={topRated} />
             </div>
           </CardContent>

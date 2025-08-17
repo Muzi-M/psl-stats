@@ -70,7 +70,7 @@ export default function StandingsTable() {
               </TableHeader>
               <TableBody>
                 {standings.map((team: any) => (
-                  <TableRow 
+                  <TableRow
                     key={team.rank}
                     className="transition-all duration-200 hover:bg-accent/50 hover:scale-[1.01] transform-gpu"
                   >
@@ -126,7 +126,9 @@ export default function StandingsTable() {
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">{team.rank}</span>
+                    <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">
+                      {team.rank}
+                    </span>
                     <div className="relative overflow-hidden rounded-full border border-primary/20">
                       <img
                         src={team.team.logo}
@@ -138,7 +140,9 @@ export default function StandingsTable() {
                       {team.team.name}
                     </span>
                   </div>
-                  <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">{team.points} pts</span>
+                  <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">
+                    {team.points} pts
+                  </span>
                 </div>
 
                 <div className="grid grid-cols-4 gap-2 text-xs">

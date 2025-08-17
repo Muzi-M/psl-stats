@@ -89,12 +89,9 @@ export default function TeamFilter({ value, onChange }: TeamFilterProps) {
               }`}
             >
               <div className="flex flex-col items-center gap-2">
-                <TeamDisplay
-                  name={teamName || "Unknown Team"}
-                  logo="/next.svg"
-                  size="lg"
-                  className="text-xs sm:text-sm font-medium truncate w-full group-hover:text-primary transition-colors duration-200"
-                />
+                <div className="text-xs sm:text-sm font-medium truncate w-full group-hover:text-primary transition-colors duration-200">
+                  {teamName || "Unknown Team"}
+                </div>
               </div>
             </button>
           ))}

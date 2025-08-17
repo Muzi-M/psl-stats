@@ -33,7 +33,7 @@ const ChartContainer = ({
 const ChartTooltip = ({
   className,
   ...props
-}: React.ComponentProps<typeof RechartsTooltip>) => (
+}: React.ComponentProps<typeof RechartsTooltip> & { className?: string }) => (
   <RechartsTooltip
     contentStyle={{
       background: "hsl(var(--background))",

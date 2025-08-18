@@ -46,7 +46,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
         sessionStorage.clear();
       }
 
-      // Sign out with NextAuth
+      // Sign out with NextAuth - this will invalidate the JWT token
       await signOut({
         callbackUrl: "/auth/signin",
         redirect: false,
@@ -55,6 +55,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
       console.log("Sign out completed successfully");
 
       // Force redirect to sign-in page immediately
+      // The new middleware will properly validate the session is gone
       window.location.href = "/auth/signin";
     } catch (error) {
       console.error("Sign out error:", error);

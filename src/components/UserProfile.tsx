@@ -47,12 +47,12 @@ export default function UserProfile() {
 
       console.log("UserProfile sign out completed successfully");
 
-      // Force redirect to sign-in page
-      window.location.replace("/auth/signin");
+      // Force redirect to sign-in page immediately
+      window.location.href = "/auth/signin";
     } catch (error) {
       console.error("UserProfile sign out error:", error);
       // Fallback: force redirect to sign-in page
-      window.location.replace("/auth/signin");
+      window.location.href = "/auth/signin";
     }
   };
 

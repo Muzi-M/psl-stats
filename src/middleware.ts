@@ -47,8 +47,9 @@ export default function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
 
-  // If the user is logged in and trying to access auth pages, redirect to home
-  if (isLoggedIn && isPublicRoute) {
+  // If the user is logged in and trying to access signin page, redirect to home
+  // But allow signout page to complete the sign-out process
+  if (isLoggedIn && pathname === "/auth/signin") {
     console.log("User logged in, redirecting to home");
     return NextResponse.redirect(new URL("/", req.url));
   }

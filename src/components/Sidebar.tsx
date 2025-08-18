@@ -39,17 +39,27 @@ export default function Sidebar({ onClose }: SidebarProps) {
   const handleSignOut = async () => {
     try {
       console.log("Sign out initiated...");
+
+      // Clear any local storage or session storage
+      if (typeof window !== "undefined") {
+        localStorage.clear();
+        sessionStorage.clear();
+      }
+
+      // Sign out with NextAuth
       await signOut({
         callbackUrl: "/auth/signin",
-        redirect: false, // Don't redirect automatically
+        redirect: false,
       });
+
       console.log("Sign out completed successfully");
-      // Manually redirect to sign-in page
-      window.location.href = "/auth/signin";
+
+      // Force redirect to sign-in page
+      window.location.replace("/auth/signin");
     } catch (error) {
       console.error("Sign out error:", error);
-      // Fallback: try to redirect manually
-      window.location.href = "/auth/signin";
+      // Fallback: force redirect to sign-in page
+      window.location.replace("/auth/signin");
     }
   };
 

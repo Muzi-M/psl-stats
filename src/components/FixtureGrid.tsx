@@ -7,6 +7,7 @@ import debounce from "lodash.debounce";
 import { Search } from "lucide-react";
 import LoadingSpinner from "./LoadingSpinner";
 import TeamDisplay from "./ui/TeamDisplay";
+import { Card } from "./ui/card";
 
 type Fixture = {
   fixture: { date: string; status: { short: string } };
@@ -186,9 +187,9 @@ export default function FixturesGrid() {
       {/* Fixtures Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {filteredFixtures.map((f, i) => (
-          <div
+          <Card
             key={`${f.fixture?.date}-${f.teams?.home?.name}-${f.teams?.away?.name}-${i}`}
-            className="border rounded p-4 shadow-sm hover:shadow-md transition"
+            className="p-4"
           >
             <p className="text-sm text-muted-foreground mb-1">
               {f.fixture?.date
@@ -227,7 +228,7 @@ export default function FixturesGrid() {
                 />
               </Link>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 

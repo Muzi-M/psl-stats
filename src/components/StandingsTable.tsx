@@ -166,7 +166,7 @@ export default function StandingsTable() {
                 )}`}
                 className="block"
               >
-                <div className="border rounded-lg p-3 bg-card shadow-sm hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 ease-out transform-gpu group">
+                <Card className="p-3 group">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-lg group-hover:text-primary transition-colors duration-200">
@@ -221,7 +221,7 @@ export default function StandingsTable() {
                       <div className="font-medium">{team.goalsDiff || 0}</div>
                     </div>
                   </div>
-                </div>
+                </Card>
               </Link>
             ))}
           </div>

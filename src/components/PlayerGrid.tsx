@@ -9,6 +9,7 @@ import { useLoading } from "@/context/LoadingContext";
 import TeamFilter from "./TeamFilter";
 import LoadingSpinner from "./LoadingSpinner";
 import TeamDisplay from "./ui/TeamDisplay";
+import { Card } from "./ui/card";
 
 type Player = {
   player: {
@@ -146,9 +147,9 @@ export default function PlayerGrid() {
               const teamLogo = stats?.team?.logo || "/next.svg";
 
               return (
-                <div
+                <Card
                   key={`${p.player.name}-${i}`}
-                  className="border rounded-lg p-4 lg:p-6 shadow-sm hover:shadow-xl transition-all duration-300 ease-out transform-gpu bg-card hover:bg-accent/50 group"
+                  className="p-4 lg:p-6 hover:bg-accent/50 group"
                 >
                   {/* Player Header */}
                   <div className="flex items-center gap-4 mb-4">
@@ -257,7 +258,7 @@ export default function PlayerGrid() {
                       </div>
                     )}
                   </div>
-                </div>
+                </Card>
               );
             })}
           </div>

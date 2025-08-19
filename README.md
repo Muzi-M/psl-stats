@@ -18,12 +18,14 @@ The PSL Dashboard is a modern, responsive web application that provides comprehe
 - 🎨 **3D Animations**: Modern UI with smooth animations and visual effects
 - 🌙 **Dark/Light Mode**: Theme switching with system preference detection
 - ⚡ **Performance Optimized**: Fast loading with hardware-accelerated animations
+- 🚀 **Intelligent Caching**: In-memory caching system for faster data access
 
 ### **Data Sources**
 
 - **RapidAPI**: Real-time football data integration
 - **MongoDB**: Persistent data storage with Mongoose ODM
 - **Next.js API Routes**: Server-side data processing and caching
+- **In-Memory Cache**: Intelligent caching system for improved performance
 
 ## 🛠 **Technology Stack**
 
@@ -113,6 +115,8 @@ psl-dashboard/
 │   │   └── LoadingContext.tsx # Loading state management
 │   ├── lib/                  # Utility libraries
 │   │   ├── auth.ts          # NextAuth.js configuration
+│   │   ├── cache.ts         # Caching system
+│   │   ├── cachedFetcher.ts # Cached data fetching utilities
 │   │   ├── db.ts            # Database connection
 │   │   ├── fetcher.ts       # Data fetching utilities
 │   │   ├── mongodb.ts       # MongoDB client configuration
@@ -661,8 +665,9 @@ npm run start
 - **Code Splitting**: Automatic route-based splitting
 - **Image Optimization**: Next.js Image component
 - **Bundle Analysis**: Optimized JavaScript bundles
-- **Caching**: Efficient caching strategies
+- **Intelligent Caching**: In-memory caching system with configurable TTL
 - **CDN**: Global content delivery
+- **Database Query Optimization**: Reduced database load through caching
 
 ### **Lighthouse Scores**
 
@@ -701,6 +706,7 @@ This documentation should be updated whenever:
 
 ### **Additional Documentation**
 
+- [CACHING_SYSTEM.md](./CACHING_SYSTEM.md) - Comprehensive caching system documentation
 - [ENHANCED_CHARTS_DOCUMENTATION.md](./ENHANCED_CHARTS_DOCUMENTATION.md) - Comprehensive guide to all chart components
 - [RADAR_CHARTS_DOCUMENTATION.md](./RADAR_CHARTS_DOCUMENTATION.md) - Detailed radar chart functionality
 - [COMPONENT_DOCUMENTATION.md](./COMPONENT_DOCUMENTATION.md) - Detailed component documentation

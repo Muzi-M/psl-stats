@@ -37,45 +37,45 @@ export default function OverviewDashboard() {
     setLoadingMessage("Loading overview data...");
     setIsLoading(true);
 
-    fetch(`/api/overview?season=${season}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // Filter out invalid data
-        const validStandings = (data.standings || []).filter(
-          (team: any) => team && team.team && team.team.name
-        );
-        const validScorers = (data.scorers || []).filter(
-          (player: any) => player && player.player && player.player.name
-        );
-        const validTopRated = (data.topRated || []).filter(
-          (player: any) => player && player.player && player.player.name
-        );
-        const validFixtures = (data.fixtures || []).filter(
-          (fixture: any) =>
-            fixture && fixture.teams && fixture.teams.home && fixture.teams.away
-        );
+    // Use cached fetch for better performance
+    import("@/lib/cachedFetcher").then(({ cachedFetch }) => {
+      cachedFetch(`/api/overview?season=${season}`)
+        .then((data: any) => {
+          // Filter out invalid data
+          const validStandings = (data.standings || []).filter(
+            (team: any) => team && team.team && team.team.name
+          );
+          const validScorers = (data.scorers || []).filter(
+            (player: any) => player && player.player && player.player.name
+          );
+          const validTopRated = (data.topRated || []).filter(
+            (player: any) => player && player.player && player.player.name
+          );
+          const validFixtures = (data.fixtures || []).filter(
+            (fixture: any) =>
+              fixture &&
+              fixture.teams &&
+              fixture.teams.home &&
+              fixture.teams.away
+          );
 
-        setStandings(validStandings);
-        setScorers(validScorers);
-        setTopRated(validTopRated);
-        setRecentFixtures(validFixtures);
-      })
-      .catch((error) => {
-        console.error("Error fetching overview data:", error);
-        setStandings([]);
-        setScorers([]);
-        setTopRated([]);
-        setRecentFixtures([]);
-      })
-      .finally(() => {
-        setIsDataLoading(false);
-        setIsLoading(false);
-      });
+          setStandings(validStandings);
+          setScorers(validScorers);
+          setTopRated(validTopRated);
+          setRecentFixtures(validFixtures);
+        })
+        .catch((error) => {
+          console.error("Error fetching overview data:", error);
+          setStandings([]);
+          setScorers([]);
+          setTopRated([]);
+          setRecentFixtures([]);
+        })
+        .finally(() => {
+          setIsDataLoading(false);
+          setIsLoading(false);
+        });
+    });
   }, [season, setIsLoading, setLoadingMessage]);
 
   if (isDataLoading) {

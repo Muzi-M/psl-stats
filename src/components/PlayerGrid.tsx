@@ -48,36 +48,33 @@ export default function PlayerGrid() {
     const url = new URLSearchParams({ season: season.toString() });
     if (team) url.append("team", team);
 
-    fetch(`/api/players?${url.toString()}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // Filter out any players with missing required data
-        const validPlayers = data.filter(
-          (player: any) =>
-            player &&
-            player.player &&
-            player.player.name &&
-            player.statistics &&
-            Array.isArray(player.statistics) &&
-            player.statistics.length > 0
-        );
-        setPlayers(validPlayers);
-        setFiltered(validPlayers);
-      })
-      .catch((error) => {
-        console.error("Error fetching players:", error);
-        setPlayers([]);
-        setFiltered([]);
-      })
-      .finally(() => {
-        setIsLoadingLocal(false);
-        setIsLoading(false);
-      });
+    // Use cached fetch for better performance
+    import("@/lib/cachedFetcher").then(({ cachedFetch }) => {
+      cachedFetch(`/api/players?${url.toString()}`)
+        .then((data: any) => {
+          // Filter out any players with missing required data
+          const validPlayers = data.filter(
+            (player: any) =>
+              player &&
+              player.player &&
+              player.player.name &&
+              player.statistics &&
+              Array.isArray(player.statistics) &&
+              player.statistics.length > 0
+          );
+          setPlayers(validPlayers);
+          setFiltered(validPlayers);
+        })
+        .catch((error) => {
+          console.error("Error fetching players:", error);
+          setPlayers([]);
+          setFiltered([]);
+        })
+        .finally(() => {
+          setIsLoadingLocal(false);
+          setIsLoading(false);
+        });
+    });
   }, [season, team, setIsLoading, setLoadingMessage]);
 
   // Debounced search

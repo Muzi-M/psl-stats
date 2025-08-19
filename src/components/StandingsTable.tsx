@@ -28,28 +28,25 @@ export default function StandingsTable() {
     setLoadingMessage("Loading standings...");
     setIsLoading(true);
 
-    fetch(`/api/standings?season=${season}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // Filter out invalid data
-        const validStandings = (data || []).filter(
-          (team: any) => team && team.team && team.team.name
-        );
-        setStandings(validStandings);
-      })
-      .catch((error) => {
-        console.error("Error fetching standings:", error);
-        setStandings([]);
-      })
-      .finally(() => {
-        setIsLoadingLocal(false);
-        setIsLoading(false);
-      });
+    // Use cached fetch for better performance
+    import("@/lib/cachedFetcher").then(({ cachedFetch }) => {
+      cachedFetch(`/api/standings?season=${season}`)
+        .then((data: any) => {
+          // Filter out invalid data
+          const validStandings = (data || []).filter(
+            (team: any) => team && team.team && team.team.name
+          );
+          setStandings(validStandings);
+        })
+        .catch((error) => {
+          console.error("Error fetching standings:", error);
+          setStandings([]);
+        })
+        .finally(() => {
+          setIsLoadingLocal(false);
+          setIsLoading(false);
+        });
+    });
   }, [season, setIsLoading, setLoadingMessage]);
 
   if (isLoading) {

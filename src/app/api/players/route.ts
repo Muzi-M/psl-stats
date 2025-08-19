@@ -1,9 +1,17 @@
 import { connectToDatabase } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import cache from "@/lib/cache";
 
 export async function GET(req: NextRequest) {
   const season = parseInt(req.nextUrl.searchParams.get("season") || "2023");
   const team = req.nextUrl.searchParams.get("team");
+
+  // Check cache first
+  const cacheKey = `players-${season}${team ? `-${team}` : ""}`;
+  const cachedData = cache.get(cacheKey);
+  if (cachedData) {
+    return NextResponse.json(cachedData);
+  }
 
   const query: any = { type: "player", season };
   if (team) query.teamName = team;
@@ -21,6 +29,9 @@ export async function GET(req: NextRequest) {
       _id: 0,
     })
     .toArray();
+
+  // Cache the result
+  cache.set(cacheKey, players);
 
   return NextResponse.json(players);
 }

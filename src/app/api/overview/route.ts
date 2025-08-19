@@ -1,8 +1,16 @@
 import { connectToDatabase } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import cache from "@/lib/cache";
 
 export async function GET(req: NextRequest) {
   const season = parseInt(req.nextUrl.searchParams.get("season") || "2023");
+
+  // Check cache first
+  const cacheKey = `overview-${season}`;
+  const cachedData = cache.get(cacheKey);
+  if (cachedData) {
+    return NextResponse.json(cachedData);
+  }
 
   const client = await connectToDatabase();
   const db = client.connection.db;
@@ -36,10 +44,15 @@ export async function GET(req: NextRequest) {
     .sort((a: any, b: any) => b.avgRating - a.avgRating)
     .slice(0, 10);
 
-  return NextResponse.json({
+  const result = {
     standings,
     scorers,
     topRated,
     fixtures,
-  });
+  };
+
+  // Cache the result
+  cache.set(cacheKey, result);
+
+  return NextResponse.json(result);
 }

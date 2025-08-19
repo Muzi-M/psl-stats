@@ -34,56 +34,50 @@ export default function FixturesGrid() {
     setLoadingMessage("Loading fixtures...");
     setIsLoading(true);
 
-    fetch(`/api/fixtures?season=${season}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // Filter out invalid data
-        const validFixtures = (data || []).filter(
-          (fixture: any) =>
-            fixture &&
-            fixture.teams &&
-            fixture.teams.home &&
-            fixture.teams.away &&
-            fixture.fixture
-        );
-        setFixtures(validFixtures);
-        setFilteredFixtures(validFixtures);
-      })
-      .catch((error) => {
-        console.error("Error fetching fixtures:", error);
-        setFixtures([]);
-        setFilteredFixtures([]);
-      })
-      .finally(() => {
-        setIsLoadingLocal(false);
-        setIsLoading(false);
-      });
+    // Use cached fetch for better performance
+    import("@/lib/cachedFetcher").then(({ cachedFetch }) => {
+      cachedFetch(`/api/fixtures?season=${season}`)
+        .then((data: any) => {
+          // Filter out invalid data
+          const validFixtures = (data || []).filter(
+            (fixture: any) =>
+              fixture &&
+              fixture.teams &&
+              fixture.teams.home &&
+              fixture.teams.away &&
+              fixture.fixture
+          );
+          setFixtures(validFixtures);
+          setFilteredFixtures(validFixtures);
+        })
+        .catch((error) => {
+          console.error("Error fetching fixtures:", error);
+          setFixtures([]);
+          setFilteredFixtures([]);
+        })
+        .finally(() => {
+          setIsLoadingLocal(false);
+          setIsLoading(false);
+        });
+    });
   }, [season, setIsLoading, setLoadingMessage]);
 
   useEffect(() => {
-    fetch("/api/teams")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // Extract team names from valid teams
-        const teamNames = (data || [])
-          .filter((team: any) => team && team.name)
-          .map((team: any) => team.name);
-        setTeams(teamNames);
-      })
-      .catch((error) => {
-        console.error("Error fetching teams:", error);
-        setTeams([]);
-      });
+    // Use cached fetch for better performance
+    import("@/lib/cachedFetcher").then(({ cachedFetch }) => {
+      cachedFetch("/api/teams")
+        .then((data: any) => {
+          // Extract team names from valid teams
+          const teamNames = (data || [])
+            .filter((team: any) => team && team.name)
+            .map((team: any) => team.name);
+          setTeams(teamNames);
+        })
+        .catch((error) => {
+          console.error("Error fetching teams:", error);
+          setTeams([]);
+        });
+    });
   }, []);
 
   // Debounced search

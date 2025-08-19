@@ -13,15 +13,15 @@ export const metadata: Metadata = {
     "Comprehensive analytics and insights for the Premier Soccer League with real-time data, player statistics, team standings, and fixture management.",
   icons: {
     icon: [
-      { url: "/infinix-fav-icon.png?v=4", type: "image/png", sizes: "16x16" },
-      { url: "/infinix-fav-icon.png?v=4", type: "image/png", sizes: "32x32" },
-      { url: "/infinix-fav-icon.png?v=4", type: "image/png", sizes: "48x48" },
-      { url: "/infinix-fav-icon.png?v=4", type: "image/png", sizes: "64x64" },
-      { url: "/infinix-fav-icon.png?v=4", type: "image/png", sizes: "96x96" },
-      { url: "/infinix-fav-icon.png?v=4", type: "image/png", sizes: "128x128" },
+      { url: "/infinix-fav-icon.png?v=5", type: "image/png", sizes: "16x16" },
+      { url: "/infinix-fav-icon.png?v=5", type: "image/png", sizes: "32x32" },
+      { url: "/infinix-fav-icon.png?v=5", type: "image/png", sizes: "48x48" },
+      { url: "/infinix-fav-icon.png?v=5", type: "image/png", sizes: "64x64" },
+      { url: "/infinix-fav-icon.png?v=5", type: "image/png", sizes: "96x96" },
+      { url: "/infinix-fav-icon.png?v=5", type: "image/png", sizes: "128x128" },
     ],
-    shortcut: "/infinix-fav-icon.png?v=4",
-    apple: "/infinix-fav-icon.png?v=4",
+    shortcut: "/infinix-fav-icon.png?v=5",
+    apple: "/infinix-fav-icon.png?v=5",
   },
 };
 
@@ -37,47 +37,47 @@ export default function RootLayout({
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/infinix-fav-icon.png?v=4"
+          href="/infinix-fav-icon.png?v=5"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/infinix-fav-icon.png?v=4"
+          href="/infinix-fav-icon.png?v=5"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="48x48"
-          href="/infinix-fav-icon.png?v=4"
+          href="/infinix-fav-icon.png?v=5"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="64x64"
-          href="/infinix-fav-icon.png?v=4"
+          href="/infinix-fav-icon.png?v=5"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="96x96"
-          href="/infinix-fav-icon.png?v=4"
+          href="/infinix-fav-icon.png?v=5"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="128x128"
-          href="/infinix-fav-icon.png?v=4"
+          href="/infinix-fav-icon.png?v=5"
         />
-        <link rel="shortcut icon" href="/infinix-fav-icon.png?v=4" />
+        <link rel="shortcut icon" href="/infinix-fav-icon.png?v=5" />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/infinix-fav-icon.png?v=4"
+          href="/infinix-fav-icon.png?v=5"
         />
         <link rel="manifest" href="/site.webmanifest" />
         {/* Force favicon refresh */}
-        <link rel="icon" href="/infinix-fav-icon.png?v=4" />
+        <link rel="icon" href="/infinix-fav-icon.png?v=5" />
       </head>
       <body>
         <SessionProvider>

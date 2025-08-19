@@ -6,7 +6,6 @@ import SearchBar from "./SearchBar";
 import SeasonToggle from "./SeasonToggle";
 import UserProfile from "./UserProfile";
 import { Menu, X } from "lucide-react";
-import Image from "next/image";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -35,24 +34,13 @@ export default function Header({ onMenuToggle, isSidebarOpen }: HeaderProps) {
           </Button>
 
           <div className="flex items-center space-x-2">
-            <div className="relative h-8 w-8">
-              <Image
-                src="/logo.png"
-                alt="PSL Logo"
-                fill
-                className="object-contain"
-                priority
-                unoptimized
-                onLoad={() => console.log("Header logo loaded successfully")}
-                onError={(e) => {
-                  console.error("Header logo failed to load:", e);
-                }}
-              />
-            </div>
-            <div className="hidden sm:block">
+            <div className="block">
               <h1 className="text-lg font-bold text-primary">PSL Dashboard</h1>
               <p className="text-xs text-muted-foreground">
                 Premier Soccer League
+              </p>
+              <p className="text-xs text-muted-foreground/70">
+                by Infinix Digital
               </p>
             </div>
           </div>

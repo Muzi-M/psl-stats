@@ -11,6 +11,7 @@ The PSL Dashboard is a modern, responsive web application that provides comprehe
 - 🔐 **Secure Authentication**: Google OAuth integration with NextAuth.js
 - 📊 **Real-time Analytics**: Live standings, player stats, and team performance
 - 👥 **Player Management**: Detailed player profiles with statistics and performance metrics
+- 📈 **Radar Charts**: Advanced player performance visualization with interactive radar charts
 - 🏆 **Team Analytics**: Comprehensive team data and performance tracking
 - 📅 **Fixture Management**: Match schedules, results, and upcoming games
 - 📱 **Mobile Responsive**: Optimized for all devices with touch-friendly interface
@@ -33,7 +34,7 @@ The PSL Dashboard is a modern, responsive web application that provides comprehe
 - **TypeScript 5**: Type-safe development
 - **Tailwind CSS 4**: Utility-first CSS framework
 - **Radix UI**: Accessible component primitives
-- **Recharts**: Data visualization library
+- **Recharts**: Data visualization library with radar charts
 - **Lucide React**: Modern icon library
 
 ### **Backend**
@@ -83,6 +84,7 @@ psl-dashboard/
 │   │   │   ├── button.tsx    # Button component
 │   │   │   ├── card.tsx      # Card component
 │   │   │   ├── charts.tsx    # Chart components
+│   │   │   ├── radar-chart.tsx # Radar chart components
 │   │   │   ├── dropdown-menu.tsx # Dropdown menu component
 │   │   │   └── floating-animation.tsx # 3D animation components
 │   │   ├── AppContent.tsx    # Main app layout wrapper
@@ -92,6 +94,7 @@ psl-dashboard/
 │   │   ├── PageLoader.tsx    # Page loading component
 │   │   ├── PlayerGrid.tsx    # Player display grid
 │   │   ├── PlayerModal.tsx   # Player detail modal
+│   │   ├── PlayerRadarGrid.tsx # Player radar chart grid
 │   │   ├── SearchBar.tsx     # Search functionality
 │   │   ├── SeasonToggle.tsx  # Season selection
 │   │   ├── SessionProvider.tsx # NextAuth session provider
@@ -202,6 +205,44 @@ League standings display with both desktop table and mobile card layouts.
 - Team logos and statistics
 - Responsive design
 - 3D hover animations
+
+### **Data Visualization**
+
+#### **Radar Charts**
+
+Advanced player performance visualization using interactive radar charts.
+
+**Components:**
+
+- `PlayerRadarChart`: Individual player performance radar chart
+- `PlayerComparisonRadarChart`: Multi-player comparison radar chart
+- `PlayerRadarGrid`: Team-wide radar chart grid with toggle functionality
+
+**Features:**
+
+- **Normalized Data**: All statistics normalized to 0-10 scale for fair comparison
+- **Interactive Tooltips**: Hover over chart elements for detailed values
+- **Multi-Player Comparison**: Compare up to 6 players simultaneously
+- **Responsive Design**: Charts adapt to different screen sizes
+- **Theme Support**: Adapts to light/dark mode
+- **Performance Metrics**: Goals, assists, appearances, minutes, rating, and consistency
+
+**Usage:**
+
+```tsx
+// Individual player radar chart
+<PlayerRadarChart
+  data={preparePlayerRadarData(playerData)}
+  playerName={playerData.player.name}
+  height={350}
+/>
+
+// Player comparison
+<PlayerComparisonRadarChart
+  players={playersToCompare}
+  height={400}
+/>
+```
 
 ### **UI Components**
 
@@ -609,6 +650,15 @@ This documentation should be updated whenever:
 - Configuration changes are made
 - New features are implemented
 - Dependencies are updated
+
+### **Additional Documentation**
+
+- [RADAR_CHARTS_DOCUMENTATION.md](./RADAR_CHARTS_DOCUMENTATION.md) - Comprehensive guide to radar chart functionality
+- [COMPONENT_DOCUMENTATION.md](./COMPONENT_DOCUMENTATION.md) - Detailed component documentation
+- [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) - API endpoints and data structures
+- [AUTHENTICATION_SETUP.md](./AUTHENTICATION_SETUP.md) - Authentication configuration
+- [DEPLOYMENT.md](./DEPLOYMENT.md) - Deployment instructions
+- [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - Development setup and guidelines
 
 ## 📄 **License**
 

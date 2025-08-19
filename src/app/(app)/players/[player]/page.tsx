@@ -6,6 +6,10 @@ import { useAppContext } from "@/context/AppContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import TeamDisplay from "@/components/ui/TeamDisplay";
+import {
+  PlayerRadarChart,
+  preparePlayerRadarData,
+} from "@/components/ui/radar-chart";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -188,6 +192,22 @@ export default function PlayerPage() {
               <div className="text-sm text-muted-foreground">Rating</div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Performance Radar Chart */}
+      <Card className="hover:shadow-xl transition-all duration-300 ease-out">
+        <CardHeader>
+          <CardTitle className="text-lg lg:text-xl">
+            Performance Analysis
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <PlayerRadarChart
+            data={preparePlayerRadarData(playerData)}
+            playerName={playerData.player.name}
+            height={350}
+          />
         </CardContent>
       </Card>
 

@@ -9,6 +9,7 @@ import { useLoading } from "@/context/LoadingContext";
 import TeamFilter from "./TeamFilter";
 import LoadingSpinner from "./LoadingSpinner";
 import TeamDisplay from "./ui/TeamDisplay";
+import PlayerRadarGrid from "./PlayerRadarGrid";
 import { Card } from "./ui/card";
 
 type Player = {
@@ -134,6 +135,9 @@ export default function PlayerGrid() {
               </div>
             </div>
           </div>
+
+          {/* Radar Charts Section */}
+          <PlayerRadarGrid players={filtered} teamName={team} />
 
           <div className="grid gap-3 lg:gap-4">
             {filtered.map((p, i) => {

@@ -12,6 +12,11 @@ import {
   PieChart as PieChartPrimitive,
   RadialBar,
   RadialBarChart as RadialBarChartPrimitive,
+  Radar,
+  RadarChart as RadarChartPrimitive,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
   XAxis,
@@ -101,4 +106,10 @@ export {
   Pie,
   RadialBar,
   LabelList,
+  // Export radar chart components
+  Radar,
+  RadarChartPrimitive,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
 };

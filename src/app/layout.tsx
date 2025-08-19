@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     icon: [
       { url: "/infinix-fav-icon.png", type: "image/png", sizes: "32x32" },
       { url: "/infinix-fav-icon.png", type: "image/png", sizes: "16x16" },
+      { url: "/infinix-fav-icon.png", type: "image/png", sizes: "48x48" },
     ],
     shortcut: "/infinix-fav-icon.png",
     apple: "/infinix-fav-icon.png",

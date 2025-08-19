@@ -5,6 +5,7 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function AuthLayout({
   children,
@@ -34,12 +35,22 @@ export default function AuthLayout({
         <div className="flex items-center justify-between p-6">
           <div className="flex items-center space-x-3">
             <div className="relative w-32 h-12">
-              <img
-                src="/Infinix_logo-removebg-preview.png"
+              <Image
+                src="/logo.png"
                 alt="Infinix Logo"
-                className="w-full h-full object-contain"
+                fill
+                className="object-contain"
+                priority
+                unoptimized
+                onLoad={() => console.log("Header logo loaded successfully")}
                 onError={(e) => {
                   console.error("Header logo failed to load:", e);
+                  // Fallback to regular img tag
+                  const img = document.createElement("img");
+                  img.src = "/logo.png";
+                  img.alt = "Infinix Logo";
+                  img.className = "w-full h-full object-contain";
+                  e.currentTarget.parentElement?.appendChild(img);
                   e.currentTarget.style.display = "none";
                 }}
               />
@@ -80,13 +91,15 @@ export default function AuthLayout({
               Powered by
             </span>
             <div className="relative w-32 h-12">
-              <img
-                src="/Infinix_logo-removebg-preview.png"
+              <Image
+                src="/logo.png"
                 alt="Infinix Logo"
-                className="w-full h-full object-contain"
+                fill
+                className="object-contain"
+                unoptimized
+                onLoad={() => console.log("Footer logo loaded successfully")}
                 onError={(e) => {
                   console.error("Footer logo failed to load:", e);
-                  e.currentTarget.style.display = "none";
                 }}
               />
             </div>

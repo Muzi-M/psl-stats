@@ -101,7 +101,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
               <span className="font-medium">Powered by</span>
               <div className="relative w-32 h-12">
                 <Image
-                  src="/Infinix_logo-removebg-preview.png"
+                  src="/logo.png"
                   alt="Infinix"
                   fill
                   className="object-contain"
@@ -179,7 +179,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
             <span className="font-medium">Powered by</span>
             <div className="relative w-32 h-12">
               <Image
-                src="/Infinix_logo-removebg-preview.png"
+                src="/logo.png"
                 alt="Infinix"
                 fill
                 className="object-contain"

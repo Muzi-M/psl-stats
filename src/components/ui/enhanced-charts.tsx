@@ -71,7 +71,6 @@ export function TeamPerformanceChart({
 }: TeamPerformanceChartProps) {
   const chartData = data.map((team) => ({
     name: team.team,
-    points: team.points,
     wins: team.wins,
     draws: team.draws,
     losses: team.losses,
@@ -79,7 +78,6 @@ export function TeamPerformanceChart({
   }));
 
   const colors = {
-    points: "hsl(var(--primary))",
     wins: "#10b981", // green
     draws: "#f59e0b", // amber
     losses: "#ef4444", // red
@@ -112,7 +110,6 @@ export function TeamPerformanceChart({
           />
           <EnhancedTooltip />
           <Legend />
-          <Bar dataKey="points" fill={colors.points} name="Points" />
           <Bar dataKey="wins" fill={colors.wins} name="Wins" />
           <Bar dataKey="draws" fill={colors.draws} name="Draws" />
           <Bar dataKey="losses" fill={colors.losses} name="Losses" />

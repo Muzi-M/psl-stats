@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 import { ChevronDown, Users, Trophy, Target, TrendingUp } from "lucide-react";
 import TeamDisplay from "./ui/TeamDisplay";
 import PlayerDisplay from "./ui/PlayerDisplay";
+import { PlayerStatsComparisonChart } from "./ui/enhanced-charts";
 
 interface TeamStats {
   teamName: string;
@@ -398,6 +399,30 @@ export default function TeamDashboard() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Player Statistics Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Player Performance Analysis
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <PlayerStatsComparisonChart
+                data={teamPlayers.slice(0, 10).map((player) => ({
+                  player: player.player?.name || "Unknown Player",
+                  team: player.teamName || "Unknown Team",
+                  goals: player.statistics?.[0]?.goals?.total || 0,
+                  assists: player.statistics?.[0]?.goals?.assists || 0,
+                  appearances: player.statistics?.[0]?.games?.appearences || 0,
+                  rating: player.statistics?.[0]?.games?.rating || 0,
+                }))}
+                title="Team Player Statistics"
+                height={350}
+              />
+            </CardContent>
+          </Card>
 
           {/* Squad Overview */}
           <Card>

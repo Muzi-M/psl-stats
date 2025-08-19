@@ -16,6 +16,11 @@ import {
 import { Button } from "./ui/button";
 import Link from "next/link";
 import TeamDisplay from "./ui/TeamDisplay";
+import {
+  TeamPerformanceChart,
+  GoalsDistributionChart,
+  MatchResultsChart,
+} from "./ui/enhanced-charts";
 
 export default function OverviewDashboard() {
   const { season } = useAppContext();
@@ -84,6 +89,60 @@ export default function OverviewDashboard() {
   return (
     <div className="space-y-4 lg:space-y-6">
       <SeasonToggle />
+
+      {/* Enhanced Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Team Performance Chart */}
+        <Card className="hover:shadow-xl transition-all duration-300 ease-out">
+          <CardContent className="pt-6">
+            <TeamPerformanceChart
+              data={standings.slice(0, 8).map((team: any) => ({
+                team: team.team?.name || "Unknown Team",
+                points: team.points || 0,
+                wins: team.all?.win || 0,
+                draws: team.all?.draw || 0,
+                losses: team.all?.lose || 0,
+                goalsFor: team.all?.goals?.for || 0,
+                goalsAgainst: team.all?.goals?.against || 0,
+              }))}
+              title="Team Performance Overview"
+              height={350}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Goals Distribution Chart */}
+        <Card className="hover:shadow-xl transition-all duration-300 ease-out">
+          <CardContent className="pt-6">
+            <GoalsDistributionChart
+              data={scorers.slice(0, 8).map((player: any) => ({
+                player: player.player?.name || "Unknown Player",
+                team: player.statistics?.[0]?.team?.name || "Unknown Team",
+                goals: player.statistics?.[0]?.goals?.total || 0,
+              }))}
+              title="Goals Distribution"
+              height={350}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Match Results Chart */}
+      <Card className="hover:shadow-xl transition-all duration-300 ease-out">
+        <CardContent className="pt-6">
+          <MatchResultsChart
+            data={recentFixtures.slice(0, 10).map((fixture: any) => ({
+              date: fixture.fixture?.date || new Date().toISOString(),
+              homeTeam: fixture.teams?.home?.name || "Unknown Team",
+              awayTeam: fixture.teams?.away?.name || "Unknown Team",
+              homeScore: fixture.goals?.home || 0,
+              awayScore: fixture.goals?.away || 0,
+            }))}
+            title="Recent Match Results"
+            height={300}
+          />
+        </CardContent>
+      </Card>
 
       <div className="grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-2">
         <Card className="hover:shadow-xl transition-all duration-300 ease-out group">

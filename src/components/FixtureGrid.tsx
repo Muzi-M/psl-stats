@@ -7,7 +7,8 @@ import debounce from "lodash.debounce";
 import { Search } from "lucide-react";
 import LoadingSpinner from "./LoadingSpinner";
 import TeamDisplay from "./ui/TeamDisplay";
-import { Card } from "./ui/card";
+import { Card, CardContent } from "./ui/card";
+import { MatchResultsChart } from "./ui/enhanced-charts";
 
 type Fixture = {
   fixture: { date: string; status: { short: string } };
@@ -183,6 +184,23 @@ export default function FixturesGrid() {
       <div className="text-sm text-muted-foreground">
         Showing {filteredFixtures.length} of {fixtures.length} fixtures
       </div>
+
+      {/* Match Results Chart */}
+      <Card className="hover:shadow-xl transition-all duration-300 ease-out">
+        <CardContent className="pt-6">
+          <MatchResultsChart
+            data={filteredFixtures.slice(0, 15).map((fixture) => ({
+              date: fixture.fixture?.date || new Date().toISOString(),
+              homeTeam: fixture.teams?.home?.name || "Unknown Team",
+              awayTeam: fixture.teams?.away?.name || "Unknown Team",
+              homeScore: fixture.goals?.home || 0,
+              awayScore: fixture.goals?.away || 0,
+            }))}
+            title="Fixture Results Analysis"
+            height={350}
+          />
+        </CardContent>
+      </Card>
 
       {/* Fixtures Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

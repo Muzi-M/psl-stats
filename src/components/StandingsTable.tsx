@@ -15,6 +15,7 @@ import {
 } from "./Table";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import TeamDisplay from "./ui/TeamDisplay";
+import { TeamPerformanceChart, TeamFormTrendChart } from "./ui/enhanced-charts";
 
 export default function StandingsTable() {
   const [standings, setStandings] = useState<any[]>([]);
@@ -79,7 +80,49 @@ export default function StandingsTable() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Enhanced Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Team Performance Chart */}
+        <Card className="hover:shadow-xl transition-all duration-300 ease-out">
+          <CardContent className="pt-6">
+            <TeamPerformanceChart
+              data={standings.map((team: any) => ({
+                team: team.team?.name || "Unknown Team",
+                points: team.points || 0,
+                wins: team.all?.win || 0,
+                draws: team.all?.draw || 0,
+                losses: team.all?.lose || 0,
+                goalsFor: team.all?.goals?.for || 0,
+                goalsAgainst: team.all?.goals?.against || 0,
+              }))}
+              title="Team Performance Analysis"
+              height={400}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Team Form Trend Chart */}
+        <Card className="hover:shadow-xl transition-all duration-300 ease-out">
+          <CardContent className="pt-6">
+            <TeamFormTrendChart
+              data={standings.slice(0, 10).map((team: any) => ({
+                team: team.team?.name || "Unknown Team",
+                lastMatches: [
+                  { result: "W" as const, opponent: "Team A", score: "2-1" },
+                  { result: "D" as const, opponent: "Team B", score: "1-1" },
+                  { result: "L" as const, opponent: "Team C", score: "0-2" },
+                  { result: "W" as const, opponent: "Team D", score: "3-0" },
+                  { result: "W" as const, opponent: "Team E", score: "1-0" },
+                ],
+              }))}
+              title="Team Form Trend (Last 5 Matches)"
+              height={400}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
       <Card className="hover:shadow-xl transition-all duration-300 ease-out">
         <CardHeader>
           <CardTitle className="text-lg lg:text-xl">League Standings</CardTitle>

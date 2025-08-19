@@ -13,12 +13,12 @@ export const metadata: Metadata = {
     "Comprehensive analytics and insights for the Premier Soccer League with real-time data, player statistics, team standings, and fixture management.",
   icons: {
     icon: [
-      { url: "/infinix-fav-icon.png", type: "image/png", sizes: "32x32" },
-      { url: "/infinix-fav-icon.png", type: "image/png", sizes: "16x16" },
-      { url: "/infinix-fav-icon.png", type: "image/png", sizes: "48x48" },
+      { url: "/infinix-fav-icon.png?v=3", type: "image/png", sizes: "32x32" },
+      { url: "/infinix-fav-icon.png?v=3", type: "image/png", sizes: "16x16" },
+      { url: "/infinix-fav-icon.png?v=3", type: "image/png", sizes: "48x48" },
     ],
-    shortcut: "/infinix-fav-icon.png",
-    apple: "/infinix-fav-icon.png",
+    shortcut: "/infinix-fav-icon.png?v=3",
+    apple: "/infinix-fav-icon.png?v=3",
   },
 };
 
@@ -34,23 +34,23 @@ export default function RootLayout({
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/infinix-fav-icon.png"
+          href="/infinix-fav-icon.png?v=3"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/infinix-fav-icon.png"
+          href="/infinix-fav-icon.png?v=3"
         />
-        <link rel="shortcut icon" href="/infinix-fav-icon.png" />
+        <link rel="shortcut icon" href="/infinix-fav-icon.png?v=3" />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/infinix-fav-icon.png"
+          href="/infinix-fav-icon.png?v=3"
         />
         <link rel="manifest" href="/site.webmanifest" />
         {/* Force favicon refresh */}
-        <link rel="icon" href="/infinix-fav-icon.png?v=2" />
+        <link rel="icon" href="/infinix-fav-icon.png?v=3" />
       </head>
       <body>
         <SessionProvider>
